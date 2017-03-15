@@ -23,11 +23,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    inosdecryptor.cpp
+SOURCES += \
+    Source/inosdecryptor.cpp \
+    Source/main.cpp \
+    Source/mainwindow.cpp \
+    Source/nostextfiledecryptor.cpp
 
-HEADERS  += mainwindow.h \
-    inosdecryptor.h
+HEADERS  += \
+    Source/inosdecryptor.h \
+    Source/mainwindow.h \
+    Source/nostextfiledecryptor.h
 
-FORMS    += mainwindow.ui
+FORMS    += \
+    Source/mainwindow.ui

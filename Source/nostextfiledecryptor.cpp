@@ -21,7 +21,8 @@ QByteArray NosTextFileDecryptor::decrypt(QByteArray &array)
         currIndex++;
         if (currentByte == 0xFF)
         {
-            return decryptedFile;
+            decryptedFile.push_back(0xD);
+            continue;
         }
 
         int validate = currentByte & 0x7F;

@@ -24,15 +24,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-    Source/inosdecryptor.cpp \
     Source/main.cpp \
     Source/mainwindow.cpp \
-    Source/nostextfiledecryptor.cpp
+    Source/nostextfiledecryptor.cpp \
+    inosfileopener.cpp \
+    Source/nostextopener.cpp
 
 HEADERS  += \
     Source/inosdecryptor.h \
     Source/mainwindow.h \
-    Source/nostextfiledecryptor.h
+    Source/nostextfiledecryptor.h \
+    Source/inosfileopener.h \
+    Source/nostextopener.h
 
 FORMS    += \
     Source/mainwindow.ui

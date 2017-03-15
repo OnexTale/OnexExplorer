@@ -27,7 +27,6 @@ SOURCES += \
     Source/main.cpp \
     Source/mainwindow.cpp \
     Source/nostextfiledecryptor.cpp \
-    inosfileopener.cpp \
     Source/nostextopener.cpp
 
 HEADERS  += \

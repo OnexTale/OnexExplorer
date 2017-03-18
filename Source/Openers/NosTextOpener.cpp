@@ -9,14 +9,20 @@ bool NosTextOpener::decrypt(QFile &file)
 {
     file.seek(0);
 
-    int fileAmount = file.read(4).toInt();
+    int fileAmount = readNextInt(file);
 
     for (int i = 0; i < fileAmount; ++i)
     {
-        int fileNumber = file.read(4).toInt();
-        int stringNameSize = file.read(4).toInt();
+        int fileNumber = readNextInt(file);
+        int stringNameSize = readNextInt(file);
         QString stringName = file.read(stringNameSize);
-        int isDat = file.read(4).toInt();
+        int isDat = readNextInt(file);
+        int fileSize = readNextInt(file);
+        QByteArray fileContent = file.read(fileSize);
+
+        QByteArray decryptedArray = datDecryptor.decrypt(fileContent);
+
+        qDebug() << stringName << " : " << QString(decryptedArray);
     }
 
     return true;

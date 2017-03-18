@@ -9,8 +9,8 @@ private:
     const std::array<unsigned char, 16> cryptoArray;
 public:
     NosTextDatFileDecryptor();
-    virtual QByteArray encrypt(QByteArray& array) = 0;
-    virtual QByteArray decrypt(QByteArray& array) = 0;
+    virtual QByteArray encrypt(QByteArray& array);
+    virtual QByteArray decrypt(QByteArray& array);
     ~NosTextDatFileDecryptor();
 };
 

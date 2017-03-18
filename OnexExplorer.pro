@@ -27,14 +27,17 @@ SOURCES += \
     Source/main.cpp \
     Source/Decryptors/NosTextDatFileDecryptor.cpp \
     Source/Openers/NosTextOpener.cpp \
-    Source/MainWindow.cpp
+    Source/MainWindow.cpp \
+    Source/Decryptors/NosTextOthersFileDecryptor.cpp \
+    Source/Openers/INosFileOpener.cpp
 
 HEADERS  += \
     Source/Decryptors/NosTextDatFileDecryptor.h \
     Source/Decryptors/INosDecryptor.h \
     Source/Openers/INosFileOpener.h \
     Source/Openers/NosTextOpener.h \
-    Source/MainWindow.h
+    Source/MainWindow.h \
+    Source/Decryptors/NosTextOthersFileDecryptor.h
 
 FORMS    += \
     Source/mainwindow.ui

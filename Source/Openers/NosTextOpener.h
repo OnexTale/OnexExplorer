@@ -2,7 +2,7 @@
 #define NOSTEXTOPENER_H
 
 #include <QObject>
-#include "inosfileopener.h"
+#include "INosFileOpener.h"
 
 class NosTextOpener : public QObject, INosFileOpener
 {

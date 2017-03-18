@@ -1,17 +1,17 @@
-#include "nostextfiledecryptor.h"
+#include "NosTextDatFileDecryptor.h"
 
-NosTextFileDecryptor::NosTextFileDecryptor() :
+NosTextDatFileDecryptor::NosTextDatFileDecryptor() :
     cryptoArray({ 0x00, 0x20, 0x2D, 0x2E, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x0A, 0x00 })
 {
 
 }
 
-QByteArray NosTextFileDecryptor::encrypt(QByteArray &array)
+QByteArray NosTextDatFileDecryptor::encrypt(QByteArray &array)
 {
     return QByteArray();
 }
 
-QByteArray NosTextFileDecryptor::decrypt(QByteArray &array)
+QByteArray NosTextDatFileDecryptor::decrypt(QByteArray &array)
 {
     QByteArray decryptedFile;
     int currIndex = 0;
@@ -70,7 +70,7 @@ QByteArray NosTextFileDecryptor::decrypt(QByteArray &array)
     return decryptedFile;
 }
 
-NosTextFileDecryptor::~NosTextFileDecryptor()
+NosTextDatFileDecryptor::~NosTextDatFileDecryptor()
 {
 
 }

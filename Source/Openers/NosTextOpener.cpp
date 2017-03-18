@@ -1,4 +1,4 @@
-#include "nostextopener.h"
+#include "NosTextOpener.h"
 
 NosTextOpener::NosTextOpener()
 {

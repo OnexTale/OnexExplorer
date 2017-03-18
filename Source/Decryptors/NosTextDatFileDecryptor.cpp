@@ -52,7 +52,7 @@ QByteArray NosTextDatFileDecryptor::decrypt(QByteArray &array)
         }
         else
         {
-            for (; validate > 0; )
+            for (; validate > 0; --validate)
             {
                 if (currIndex >= array.size())
                     break;
@@ -61,8 +61,6 @@ QByteArray NosTextDatFileDecryptor::decrypt(QByteArray &array)
                 currIndex++;
 
                 decryptedFile.push_back(currentByte ^ 0x33);
-
-                --validate;
             }
         }
     }

@@ -9,7 +9,7 @@ private:
     QString name;
 public:
     OnexTreeItem(QString name, QByteArray content = QByteArray());
-    bool hasSingleContent();
+    bool hasParent();
     QByteArray getContent();
 };
 

@@ -30,7 +30,8 @@ SOURCES += \
     Source/MainWindow.cpp \
     Source/Decryptors/NosTextOthersFileDecryptor.cpp \
     Source/Openers/INosFileOpener.cpp \
-    Source/Ui/OnexTreeItem.cpp
+    Source/Ui/OnexTreeItem.cpp \
+    Source/Ui/SingleTextFilePreview.cpp
 
 HEADERS  += \
     Source/Decryptors/NosTextDatFileDecryptor.h \
@@ -40,7 +41,9 @@ HEADERS  += \
     Source/MainWindow.h \
     Source/Decryptors/NosTextOthersFileDecryptor.h \
     Source/Ui/OnexTreeItem.h \
-    Source/Ui/OnexTreeItem.h
+    Source/Ui/OnexTreeItem.h \
+    Source/Ui/SingleTextFilePreview.h
 
 FORMS    += \
-    Source/mainwindow.ui
+    Source/mainwindow.ui \
+    Source/Ui/SingleTextFilePreview.ui

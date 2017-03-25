@@ -45,3 +45,19 @@ void MainWindow::handleOpenResults(OnexTreeItem *item)
 {
     ui->treeWidget->addTopLevelItem(item);
 }
+
+void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int column)
+{
+    OnexTreeItem* item = static_cast<OnexTreeItem*>(treeItem);
+
+    if (item->childCount() != 0)
+        return;
+
+    if (!item->hasParent())
+        return;
+
+    SingleTextFilePreview *previewWindow = new SingleTextFilePreview(item->getContent(), ui->mdiArea);
+    ui->mdiArea->addSubWindow(previewWindow);
+    previewWindow->setAttribute(Qt::WA_DeleteOnClose);
+    previewWindow->show();
+}

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QDebug>
 #include <QFileDialog>
+#include "Ui/SingleTextFilePreview.h"
 #include "Openers/NosTextOpener.h"
 namespace Ui {
 class MainWindow;
@@ -19,6 +20,8 @@ public:
 
 private slots:
     void on_actionOpen_triggered();
+
+    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int column);
 
 private:
     Ui::MainWindow *ui;

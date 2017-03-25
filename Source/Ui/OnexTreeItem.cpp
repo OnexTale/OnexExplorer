@@ -7,9 +7,9 @@ OnexTreeItem::OnexTreeItem(QString name, QByteArray content)
     this->setText(0, name);
 }
 
-bool OnexTreeItem::hasSingleContent()
+bool OnexTreeItem::hasParent()
 {
-    return !this->parent();
+    return this->parent();
 }
 
 QByteArray OnexTreeItem::getContent()

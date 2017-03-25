@@ -25,6 +25,7 @@ private:
     NosTextOpener textOpener;
 
     void openFile(QString path);
+    void handleOpenResults(OnexTreeItem* item);
 };
 
 #endif // MAINWINDOW_H

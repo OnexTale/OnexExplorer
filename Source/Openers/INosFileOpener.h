@@ -2,13 +2,14 @@
 #define INOSFILEOPENER_H
 #include <QFile>
 #include <QtEndian>
+#include "../Ui/OnexTreeItem.h"
 
 class INosFileOpener
 {
 protected:
     int readNextInt(QFile& file);
 public:
-    virtual bool decrypt(QFile& file) = 0;
+    virtual OnexTreeItem* decrypt(QFile& file) = 0;
 };
 
 #endif // INOSFILEOPENER_H

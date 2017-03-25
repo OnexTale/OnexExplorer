@@ -5,10 +5,11 @@ NosTextOpener::NosTextOpener()
 
 }
 
-bool NosTextOpener::decrypt(QFile &file)
+OnexTreeItem *NosTextOpener::decrypt(QFile &file)
 {
     file.seek(0);
 
+    OnexTreeItem *item = new OnexTreeItem(file.fileName());
     int fileAmount = readNextInt(file);
 
     for (int i = 0; i < fileAmount; ++i)
@@ -22,8 +23,8 @@ bool NosTextOpener::decrypt(QFile &file)
 
         QByteArray decryptedArray = datDecryptor.decrypt(fileContent);
 
-        qDebug() << stringName << " : " << QString(decryptedArray);
+        item->addChild(new OnexTreeItem(stringName, decryptedArray));
     }
 
-    return true;
+    return item;
 }

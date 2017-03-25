@@ -13,7 +13,7 @@ private:
     NosTextDatFileDecryptor datDecryptor;
 public:
     NosTextOpener();
-    virtual bool decrypt(QFile& file);
+    virtual OnexTreeItem* decrypt(QFile& file);
 
 };
 

@@ -36,7 +36,12 @@ void MainWindow::openFile(QString path)
     if (!file.open(QIODevice::ReadOnly))
         return;
 
-    textOpener.decrypt(file);
+    handleOpenResults(textOpener.decrypt(file));
 
     file.close();
+}
+
+void MainWindow::handleOpenResults(OnexTreeItem *item)
+{
+    ui->treeWidget->addTopLevelItem(item);
 }

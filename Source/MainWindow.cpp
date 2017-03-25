@@ -61,3 +61,10 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int 
     previewWindow->setAttribute(Qt::WA_DeleteOnClose);
     previewWindow->show();
 }
+
+void MainWindow::on_actionClose_selected_triggered()
+{
+    int currentIndex = ui->treeWidget->currentColumn();
+    if (QTreeWidgetItem* item = ui->treeWidget->takeTopLevelItem(currentIndex))
+        delete item;
+}

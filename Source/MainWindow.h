@@ -23,6 +23,8 @@ private slots:
 
     void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int column);
 
+    void on_actionClose_selected_triggered();
+
 private:
     Ui::MainWindow *ui;
     NosTextOpener textOpener;

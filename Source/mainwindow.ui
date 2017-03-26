@@ -44,6 +44,16 @@
         </color>
        </brush>
       </property>
+      <widget class="QWidget" name="subwindow">
+       <property name="windowTitle">
+        <string>Subwindow</string>
+       </property>
+      </widget>
+      <widget class="QWidget" name="widget">
+       <property name="windowTitle">
+        <string>Subwindow</string>
+       </property>
+      </widget>
      </widget>
     </item>
     <item row="0" column="0">
@@ -75,7 +85,7 @@
      <x>0</x>
      <y>0</y>
      <width>1220</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -84,9 +94,6 @@
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionSave_as"/>
-    <addaction name="separator"/>
-    <addaction name="actionExport"/>
-    <addaction name="actionImport"/>
     <addaction name="separator"/>
     <addaction name="actionClose_selected"/>
     <addaction name="separator"/>
@@ -101,7 +108,17 @@
     </property>
     <addaction name="actionInformation"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionImport"/>
+    <addaction name="actionExport"/>
+    <addaction name="separator"/>
+    <addaction name="actionOptions"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuTools"/>
    <addaction name="menu"/>
   </widget>
   <action name="actionOpen">
@@ -155,6 +172,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionOptions">
+   <property name="text">
+    <string>Options</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+,</string>
    </property>
   </action>
  </widget>

@@ -19,7 +19,7 @@ public:
     ~SingleImagePreview();
 private:
     Ui::SingleImagePreview *ui;
-    qint16 byteArrayToShort(QByteArray& array);
+    qint16 byteArrayToShort(QByteArray array);
     QImage createQImage(int w, int h, qint8 formatType, QByteArray &content);
 };
 

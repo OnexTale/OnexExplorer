@@ -23,7 +23,7 @@ SingleImagePreview::~SingleImagePreview()
     delete ui;
 }
 
-qint16 SingleImagePreview::byteArrayToShort(QByteArray &array)
+qint16 SingleImagePreview::byteArrayToShort(QByteArray array)
 {
     return qFromLittleEndian<qint16>(reinterpret_cast<const uchar *>(array.data()));
 }

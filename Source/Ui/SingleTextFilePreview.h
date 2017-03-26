@@ -2,6 +2,7 @@
 #define SINGLETEXTFILEPREVIEW_H
 
 #include <QWidget>
+#include <iostream>
 
 namespace Ui {
 class SingleTextFilePreview;

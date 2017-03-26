@@ -20,9 +20,26 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
     for (int i = 0; i != fileAmount; ++i)
     {
         int id = readNextInt(file);
-        int offest = readNextInt(file);
+        int offset = readNextInt(file);
 
-        item->addChild(new OnexTreeItem(QString::number(id) + ".RAW"));
+        int previousOffset = file.pos();
+
+        file.seek(offset);
+
+        int creationDate = readNextInt(file);
+        int dataSize = readNextInt(file);
+        int compressedDataSize = readNextInt(file);
+        bool isCompressed = file.read(1).at(0);
+        QByteArray data = file.read(dataSize);
+        if (isCompressed)
+           qDebug() << QString::number(id) + ".RAW compressed";
+        else
+        {
+           qDebug() << QString::number(id) + ".RAW NOT COMPRESSED";
+        }
+
+        item->addChild(new OnexTreeItem(QString::number(id) + ".RAW", data));
+        file.seek(previousOffset);
 
     }
 

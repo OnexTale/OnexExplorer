@@ -1,6 +1,7 @@
 #ifndef NOSZLIBOPENER_H
 #define NOSZLIBOPENER_H
 #include "INosFileOpener.h"
+#include <QDebug>
 
 class NosZlibOpener : public INosFileOpener
 {

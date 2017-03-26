@@ -33,7 +33,8 @@ SOURCES += \
     Source/Ui/OnexTreeItem.cpp \
     Source/Ui/SingleTextFilePreview.cpp \
     Source/Decryptors/NosZlibDecryptor.cpp \
-    Source/Openers/NosZlibOpener.cpp
+    Source/Openers/NosZlibOpener.cpp \
+    Source/Ui/SingleImagePreview.cpp
 
 HEADERS  += \
     Source/Decryptors/NosTextDatFileDecryptor.h \
@@ -47,8 +48,10 @@ HEADERS  += \
     Source/Ui/SingleTextFilePreview.h \
     Source/Decryptors/NosZlibDecryptor.h \
     Source/Openers/NosZlibOpener.h \
-    Source/NosEnumTypes.h
+    Source/NosEnumTypes.h \
+    Source/Ui/SingleImagePreview.h
 
 FORMS    += \
     Source/mainwindow.ui \
-    Source/Ui/SingleTextFilePreview.ui
+    Source/Ui/SingleTextFilePreview.ui \
+    Source/Ui/SingleImagePreview.ui

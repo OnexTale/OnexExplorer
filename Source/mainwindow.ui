@@ -44,16 +44,6 @@
         </color>
        </brush>
       </property>
-      <widget class="QWidget" name="subwindow">
-       <property name="windowTitle">
-        <string>Subwindow</string>
-       </property>
-      </widget>
-      <widget class="QWidget" name="widget">
-       <property name="windowTitle">
-        <string>Subwindow</string>
-       </property>
-      </widget>
      </widget>
     </item>
     <item row="0" column="0">

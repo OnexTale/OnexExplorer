@@ -28,17 +28,6 @@ qint16 SingleImagePreview::byteArrayToShort(QByteArray &array)
     return qFromLittleEndian<qint16>(reinterpret_cast<const uchar *>(array.data()));
 }
 
-void SingleImagePreview::BGRAtoRGBA(QByteArray &array)
-{
-    char* data = array.data();
-    for (int i = 0; i < array.size(); i+=4)
-    {
-        qint8 tmpByte = array.at(i);
-        data[i] = data[i+2];
-        data[i+2] = tmpByte;
-    }
-}
-
 QImage SingleImagePreview::createQImage(int w, int h, qint8 formatType, QByteArray& content)
 {
     QImage::Format format = QImage::Format_Invalid;

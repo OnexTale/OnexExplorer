@@ -16,8 +16,11 @@
     <height>300</height>
    </size>
   </property>
+  <property name="acceptDrops">
+   <bool>false</bool>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>OnexExplorer [Beta]</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -85,6 +88,7 @@
     <addaction name="actionOpen"/>
     <addaction name="actionSave_as"/>
     <addaction name="separator"/>
+    <addaction name="actionClose_all"/>
     <addaction name="actionClose_selected"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
@@ -170,6 +174,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+,</string>
+   </property>
+  </action>
+  <action name="actionClose_all">
+   <property name="text">
+    <string>Close all</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+W</string>
    </property>
   </action>
  </widget>

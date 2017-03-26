@@ -36,7 +36,10 @@ void MainWindow::openFile(QString path)
     if (!file.open(QIODevice::ReadOnly))
         return;
 
-    handleOpenResults(textOpener.decrypt(file));
+    if (hasNTHeader(file))
+        handleOpenResults(zlibOpener.decrypt(file));
+    else
+        handleOpenResults(textOpener.decrypt(file));
 
     file.close();
 }
@@ -44,6 +47,13 @@ void MainWindow::openFile(QString path)
 void MainWindow::handleOpenResults(OnexTreeItem *item)
 {
     ui->treeWidget->addTopLevelItem(item);
+}
+
+bool MainWindow::hasNTHeader(QFile &file)
+{
+    QByteArray header = file.read(2);
+
+    return (QString(header) == "NT");
 }
 
 void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int column)

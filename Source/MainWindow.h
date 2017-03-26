@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include "Ui/SingleTextFilePreview.h"
 #include "Openers/NosTextOpener.h"
+#include "Openers/NosZlibOpener.h"
 namespace Ui {
 class MainWindow;
 }
@@ -28,9 +29,11 @@ private slots:
 private:
     Ui::MainWindow *ui;
     NosTextOpener textOpener;
+    NosZlibOpener zlibOpener;
 
     void openFile(QString path);
     void handleOpenResults(OnexTreeItem* item);
+    bool hasNTHeader(QFile& file);
 };
 
 #endif // MAINWINDOW_H

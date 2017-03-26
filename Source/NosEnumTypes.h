@@ -1,0 +1,13 @@
+#ifndef NOSENUMTYPES_H
+#define NOSENUMTYPES_H
+
+enum NosEnumTypes
+{
+    TOP_LEVEL_TEXT_ITEM,
+    TEXT_DAT_ENCRYPTED,
+    TEXT_OTHER_ENCRYPTED,
+
+
+};
+
+#endif // NOSENUMTYPES_H

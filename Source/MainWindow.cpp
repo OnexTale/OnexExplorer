@@ -47,6 +47,7 @@ void MainWindow::openFile(QString path)
 void MainWindow::handleOpenResults(OnexTreeItem *item)
 {
     ui->treeWidget->addTopLevelItem(item);
+    item->setExpanded(true);
 }
 
 bool MainWindow::hasNTHeader(QFile &file)

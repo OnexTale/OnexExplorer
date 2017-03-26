@@ -44,16 +44,6 @@
         </color>
        </brush>
       </property>
-      <widget class="QWidget" name="subwindow">
-       <property name="windowTitle">
-        <string>Subwindow</string>
-       </property>
-      </widget>
-      <widget class="QWidget" name="widget">
-       <property name="windowTitle">
-        <string>Subwindow</string>
-       </property>
-      </widget>
      </widget>
     </item>
     <item row="0" column="0">
@@ -85,7 +75,7 @@
      <x>0</x>
      <y>0</y>
      <width>1220</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

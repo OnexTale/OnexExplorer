@@ -7,6 +7,7 @@
 #include "Ui/SingleTextFilePreview.h"
 #include "Openers/NosTextOpener.h"
 #include "Openers/NosZlibOpener.h"
+#include "Ui/SingleImagePreview.h"
 namespace Ui {
 class MainWindow;
 }

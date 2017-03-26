@@ -32,10 +32,10 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
         bool isCompressed = file.read(1).at(0);
         QByteArray data = file.read(dataSize);
         if (isCompressed)
-           qDebug() << QString::number(id) + ".RAW compressed";
+           qDebug() << QString::number(id) + ".RAW compressed offset: " + QString::number(offset);
         else
         {
-           qDebug() << QString::number(id) + ".RAW NOT COMPRESSED";
+           qDebug() << QString::number(id) + ".RAW NOT COMPRESSED offset: " + QString::number(offset);
         }
 
         item->addChild(new OnexTreeItem(QString::number(id) + ".RAW", data));

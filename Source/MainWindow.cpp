@@ -66,7 +66,8 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int 
     if (!item->hasParent())
         return;
 
-    SingleTextFilePreview *previewWindow = new SingleTextFilePreview(item->getContent(), ui->mdiArea);
+    //SingleTextFilePreview *previewWindow = new SingleTextFilePreview(item->getContent(), ui->mdiArea);
+    SingleImagePreview *previewWindow = new SingleImagePreview(item->getContent(), ui->mdiArea);
     ui->mdiArea->addSubWindow(previewWindow);
     previewWindow->setAttribute(Qt::WA_DeleteOnClose);
     previewWindow->show();

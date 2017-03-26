@@ -7,8 +7,8 @@ SingleTextFilePreview::SingleTextFilePreview(QByteArray content, QWidget *parent
 {
     ui->setupUi(this);
     ui->plainTextEdit->appendPlainText(QString::fromLocal8Bit(content));
-    //for (auto & byte : content)
-    //    std::cout << (void*)byte << " ";
+    for (auto & byte : content)
+        std::cout << (void*)byte << " ";
 }
 
 SingleTextFilePreview::~SingleTextFilePreview()

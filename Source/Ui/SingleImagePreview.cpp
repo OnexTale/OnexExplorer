@@ -34,7 +34,7 @@ QImage SingleImagePreview::createQImage(int w, int h, qint8 formatType, QByteArr
     bool invert = false;
     switch (formatType) {
     case 0:
-        format = QImage::Format_RGB444;
+        format = QImage::Format_ARGB4444_Premultiplied;
         break;
     case 1:
         format = QImage::Format_RGB555;

@@ -7,11 +7,17 @@ SingleImagePreview::SingleImagePreview(QByteArray content, QWidget *parent) :
 {
     ui->setupUi(this);
 
-    qint16 x = byteArrayToShort(content.mid(0, 2));
-    qint16 y = byteArrayToShort(content.mid(2, 2));;
+    //qint16 x = byteArrayToShort(content.mid(0, 2));
+    //qint16 y = byteArrayToShort(content.mid(2, 2));;
 
-    qint8 formatType = content.at(4);
-    content.remove(0, 8);
+    //qint8 formatType = content.at(4);
+    //content.remove(0, 8);
+
+    qint8 formatType = 0;
+    qint16 x = byteArrayToShort(content.mid(1, 3));
+    qint16 y = byteArrayToShort(content.mid(3, 5));
+
+    content.remove(0, 13);
 
     QImage image = createQImage(x, y, formatType, content);
     ui->imgContent->setPixmap(QPixmap::fromImage(image));

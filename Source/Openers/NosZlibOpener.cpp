@@ -1,5 +1,15 @@
 #include "NosZlibOpener.h"
 
+QByteArray NosZlibOpener::toBigEndian(qint32 value)
+{
+    QByteArray result;
+    result.resize(4);
+
+    qToBigEndian(value, reinterpret_cast<uchar*>(result.data()));
+
+    return result;
+}
+
 NosZlibOpener::NosZlibOpener()
 {
 
@@ -32,7 +42,12 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
         bool isCompressed = file.read(1).at(0);
         QByteArray data = file.read(dataSize);
         if (isCompressed)
+        {
            qDebug() << QString::number(id) + ".RAW compressed offset: " + QString::number(offset);
+           QByteArray bigEndian = toBigEndian(compressedDataSize);
+           data.push_front(bigEndian);
+           data = decryptor.decrypt(data);
+        }
         else
         {
            qDebug() << QString::number(id) + ".RAW NOT COMPRESSED offset: " + QString::number(offset);

@@ -29,12 +29,7 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
     int ntHeaderNumber = getNTHeaderNumber(header);
     int fileAmount = readNextInt(file);
 
-    QStringList split = file.fileName().split("/");
-    QString fileName = "";
-    if (!split.empty())
-        fileName = split.back();
-
-    OnexTreeItem *item = new OnexTreeItem(fileName, NosEnumTypes::NOS_ARCHIVE);
+    OnexTreeItem *item = new OnexTreeItem(neatFileName(file.fileName()), NosEnumTypes::NOS_ARCHIVE);
 
     QByteArray separatorByte = file.read(1);
 

@@ -53,9 +53,9 @@ void MainWindow::handleOpenResults(OnexTreeItem *item)
 bool MainWindow::hasNTHeader(QFile &file)
 {
     file.seek(0);
-    QByteArray header = file.read(2);
+    QByteArray header = file.read(7);
 
-    return (QString(header) == "NT");
+    return (header == "NT Data");
 }
 
 void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int column)

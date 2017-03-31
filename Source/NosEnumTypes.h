@@ -3,11 +3,9 @@
 
 enum NosEnumTypes
 {
-    TOP_LEVEL_TEXT_ITEM,
-    TEXT_DAT_ENCRYPTED,
-    TEXT_OTHER_ENCRYPTED,
-
-
+    NONE,
+    NOS_ARCHIVE,
+    NOS_TEXT
 };
 
 #endif // NOSENUMTYPES_H

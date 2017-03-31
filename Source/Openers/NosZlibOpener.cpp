@@ -10,6 +10,11 @@ QByteArray NosZlibOpener::toBigEndian(qint32 value)
     return result;
 }
 
+int NosZlibOpener::getNTHeaderNumber(QByteArray &array)
+{
+    return array.mid(8, 2).toInt();
+}
+
 NosZlibOpener::NosZlibOpener()
 {
 
@@ -21,10 +26,15 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
 
     QByteArray header = file.read(NOS_HEADER_SIZE);
 
+    int ntHeaderNumber = getNTHeaderNumber(header);
     int fileAmount = readNextInt(file);
 
     QStringList split = file.fileName().split("/");
-    OnexTreeItem *item = new OnexTreeItem(split.at(split.size() - 1));
+    QString fileName = "";
+    if (!split.empty())
+        fileName = split.back();
+
+    OnexTreeItem *item = new OnexTreeItem(fileName, NosEnumTypes::NOS_ARCHIVE);
 
     QByteArray separatorByte = file.read(1);
 
@@ -44,17 +54,12 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
         QByteArray data = file.read(dataSize);
         if (isCompressed)
         {
-           qDebug() << QString::number(id) + ".RAW compressed offset: " + QString::number(offset);
            QByteArray bigEndian = toBigEndian(compressedDataSize);
            data.push_front(bigEndian);
            data = decryptor.decrypt(data);
         }
-        else
-        {
-           qDebug() << QString::number(id) + ".RAW NOT COMPRESSED offset: " + QString::number(offset);
-        }
 
-        item->addChild(new OnexTreeItem(QString::number(id), data));
+        item->addChild(new OnexTreeItem(QString::number(id), NosEnumTypes::NOS_ARCHIVE, data, ntHeaderNumber, creationDate));
         file.seek(previousOffset);
 
     }

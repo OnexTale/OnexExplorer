@@ -9,7 +9,7 @@ OnexTreeItem *NosTextOpener::decrypt(QFile &file)
 {
     file.seek(0);
 
-    OnexTreeItem *item = new OnexTreeItem(file.fileName());
+    OnexTreeItem *item = new OnexTreeItem(file.fileName(), NosEnumTypes::NOS_TEXT);
     int fileAmount = readNextInt(file);
 
     for (int i = 0; i < fileAmount; ++i)
@@ -23,7 +23,7 @@ OnexTreeItem *NosTextOpener::decrypt(QFile &file)
 
         QByteArray decryptedArray = datDecryptor.decrypt(fileContent);
 
-        item->addChild(new OnexTreeItem(stringName, decryptedArray));
+        item->addChild(new OnexTreeItem(stringName, NosEnumTypes::NOS_TEXT, decryptedArray));
     }
 
     return item;

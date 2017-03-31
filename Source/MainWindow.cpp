@@ -52,6 +52,7 @@ void MainWindow::handleOpenResults(OnexTreeItem *item)
 
 bool MainWindow::hasNTHeader(QFile &file)
 {
+    file.seek(0);
     QByteArray header = file.read(2);
 
     return (QString(header) == "NT");
@@ -67,8 +68,36 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int 
     if (!item->hasParent())
         return;
 
-    //SingleTextFilePreview *previewWindow = new SingleTextFilePreview(item->getContent(), ui->mdiArea);
-    SingleImagePreview *previewWindow = new SingleImagePreview(item->getContent(), ui->mdiArea);
+    NosEnumTypes type = item->getType();
+    QWidget* previewWindow = nullptr;
+
+    switch (type) {
+    case NOS_TEXT:
+    {
+        previewWindow = new SingleTextFilePreview(item->getContent(), ui->mdiArea);
+        break;
+    }
+    case NOS_ARCHIVE:
+    {
+        int headerValue = item->getHeaderValue();
+        if (headerValue == 24 || headerValue == 7)
+        {
+            previewWindow = new SingleImagePreview(item->getContent(), headerValue, ui->mdiArea);
+        }
+        break;
+    }
+    default:
+    {
+        break;
+    }
+    }
+
+    if (!previewWindow)
+    {
+        QMessageBox::warning(this, "Not supported", "This NosTale file cannot be opened yet.");
+        return;
+    }
+
     ui->mdiArea->addSubWindow(previewWindow);
     previewWindow->setAttribute(Qt::WA_DeleteOnClose);
     previewWindow->show();

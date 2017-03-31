@@ -5,6 +5,7 @@
 #include <QDebug>
 #include "INosFileOpener.h"
 #include "../Decryptors/NosTextDatFileDecryptor.h"
+#include "../NosEnumTypes.h"
 
 class NosTextOpener : public QObject, INosFileOpener
 {

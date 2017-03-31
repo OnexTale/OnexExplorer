@@ -11,6 +11,7 @@ private:
     static const int NOS_HEADER_SIZE = 0x10;
     NosZlibDecryptor decryptor;
     QByteArray toBigEndian(qint32 value);
+    int getNTHeaderNumber(QByteArray& array);
 public:
     NosZlibOpener();
     virtual OnexTreeItem* decrypt(QFile& file);

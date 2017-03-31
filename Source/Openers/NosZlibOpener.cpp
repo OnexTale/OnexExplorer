@@ -23,7 +23,8 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
 
     int fileAmount = readNextInt(file);
 
-    OnexTreeItem *item = new OnexTreeItem(file.fileName());
+    QStringList split = file.fileName().split("/");
+    OnexTreeItem *item = new OnexTreeItem(split.at(split.size() - 1));
 
     QByteArray separatorByte = file.read(1);
 
@@ -53,7 +54,7 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
            qDebug() << QString::number(id) + ".RAW NOT COMPRESSED offset: " + QString::number(offset);
         }
 
-        item->addChild(new OnexTreeItem(QString::number(id) + ".RAW", data));
+        item->addChild(new OnexTreeItem(QString::number(id), data));
         file.seek(previousOffset);
 
     }

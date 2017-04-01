@@ -19,7 +19,7 @@ SingleImagePreview::SingleImagePreview(QByteArray content, int headerValue, QWid
 
         content.remove(0, 13);
     }
-    else if (headerValue == NStpData)
+    else if (headerValue == NStpData || headerValue == NStpeData || headerValue == NStpuData)
     {
         x = byteArrayToShort(content.mid(0, 2));
         y = byteArrayToShort(content.mid(2, 2));;

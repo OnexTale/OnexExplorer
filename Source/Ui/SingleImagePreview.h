@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <iostream>
 #include <QMessageBox>
+#include "../ImageConverter.h"
 
 namespace Ui {
 class SingleImagePreview;
@@ -20,6 +21,7 @@ public:
     ~SingleImagePreview();
 private:
     Ui::SingleImagePreview *ui;
+    ImageConverter converter;
     qint16 byteArrayToShort(QByteArray array);
     QImage createQImage(int w, int h, qint8 formatType, QByteArray &content);
     void showWarningMessage();

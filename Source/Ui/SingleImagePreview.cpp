@@ -51,29 +51,7 @@ qint16 SingleImagePreview::byteArrayToShort(QByteArray array)
 
 QImage SingleImagePreview::createQImage(int w, int h, qint8 formatType, QByteArray& content)
 {
-    QImage::Format format = QImage::Format_Invalid;
-    bool invert = false;
-    switch (formatType) {
-    case 0:
-        format = QImage::Format_ARGB4444_Premultiplied;
-        break;
-    case 1:
-        format = QImage::Format_RGB555;
-        break;
-    case 2:
-        format = QImage::Format_RGBA8888;
-        invert = true;
-        break;
-
-    default:
-        break;
-    }
-
-   QImage image((uchar*)content.data(), w, h, format);
-   if (invert)
-       return image.rgbSwapped();
-
-   return image;
+    return converter.getFromData(content, w, h, static_cast<ImageConverter::ImageTypes>(formatType));
 }
 
 void SingleImagePreview::showWarningMessage()

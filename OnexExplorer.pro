@@ -34,7 +34,8 @@ SOURCES += \
     Source/Ui/SingleTextFilePreview.cpp \
     Source/Decryptors/NosZlibDecryptor.cpp \
     Source/Openers/NosZlibOpener.cpp \
-    Source/Ui/SingleImagePreview.cpp
+    Source/Ui/SingleImagePreview.cpp \
+    Source/ImageConverter.cpp
 
 HEADERS  += \
     Source/Decryptors/NosTextDatFileDecryptor.h \
@@ -49,7 +50,8 @@ HEADERS  += \
     Source/Decryptors/NosZlibDecryptor.h \
     Source/Openers/NosZlibOpener.h \
     Source/NosEnumTypes.h \
-    Source/Ui/SingleImagePreview.h
+    Source/Ui/SingleImagePreview.h \
+    Source/ImageConverter.h
 
 FORMS    += \
     Source/mainwindow.ui \

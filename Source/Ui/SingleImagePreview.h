@@ -7,6 +7,7 @@
 #include <iostream>
 #include <QMessageBox>
 #include "../ImageConverter.h"
+#include "../NosEnumTypes.h"
 
 namespace Ui {
 class SingleImagePreview;

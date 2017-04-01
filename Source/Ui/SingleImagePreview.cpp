@@ -11,7 +11,7 @@ SingleImagePreview::SingleImagePreview(QByteArray content, int headerValue, QWid
     qint16 y = 0;
     qint8 formatType = 0;
 
-    if (headerValue == 24)
+    if (headerValue == NSipData)
     {
         formatType = 0;
         x = byteArrayToShort(content.mid(1, 3));
@@ -19,7 +19,7 @@ SingleImagePreview::SingleImagePreview(QByteArray content, int headerValue, QWid
 
         content.remove(0, 13);
     }
-    else if (headerValue == 7)
+    else if (headerValue == NStpData)
     {
         x = byteArrayToShort(content.mid(0, 2));
         y = byteArrayToShort(content.mid(2, 2));;

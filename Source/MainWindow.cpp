@@ -18,7 +18,7 @@ void MainWindow::on_actionOpen_triggered()
 {
     QFileDialog openDialog(this);
 
-    openDialog.setFileMode(QFileDialog::ExistingFile);
+    openDialog.setFileMode(QFileDialog::ExistingFiles);
     openDialog.setNameFilter(tr("NosTale Files (*.NOS)"));
     openDialog.setViewMode(QFileDialog::Detail);
 
@@ -27,7 +27,10 @@ void MainWindow::on_actionOpen_triggered()
         selectedFiles = openDialog.selectedFiles();
 
     if (!selectedFiles.empty())
-        openFile(selectedFiles.first());
+    {
+        for (auto& file : selectedFiles)
+                openFile(file);
+    }
 }
 
 void MainWindow::openFile(QString path)

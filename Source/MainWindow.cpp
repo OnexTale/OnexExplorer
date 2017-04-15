@@ -178,6 +178,6 @@ void MainWindow::on_actionOptions_triggered()
         return;
     if (item->childCount() != 0)
         return;
-    QDialog* dialog = new FileInfo(item);
-    dialog->exec();
+    FileInfo dialog(item);
+    dialog.exec();
 }

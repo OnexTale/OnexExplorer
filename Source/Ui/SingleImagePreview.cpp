@@ -7,34 +7,43 @@ SingleImagePreview::SingleImagePreview(QByteArray content, int headerValue, QWid
 {
     ui->setupUi(this);
 
-    qint16 x = 0;
-    qint16 y = 0;
+    qint16 w = 0;
+    qint16 h = 0;
     qint8 formatType = 0;
 
     if (headerValue == NSipData)
     {
         formatType = 0;
-        x = byteArrayToShort(content.mid(1, 3));
-        y = byteArrayToShort(content.mid(3, 5));
+        w = byteArrayToShort(content.mid(1, 3));
+        h = byteArrayToShort(content.mid(3, 5));
 
         content.remove(0, 13);
     }
     else if (headerValue == NStpData || headerValue == NStpeData || headerValue == NStpuData)
     {
-        x = byteArrayToShort(content.mid(0, 2));
-        y = byteArrayToShort(content.mid(2, 2));;
+        w = byteArrayToShort(content.mid(0, 2));
+        h = byteArrayToShort(content.mid(2, 2));
 
         formatType = content.at(4);
         content.remove(0, 8);
     }
+    else if (headerValue == NStcData)
+    {
+        formatType = 3;
+        w = byteArrayToShort(content.mid(0, 2));
+        h = byteArrayToShort(content.mid(2, 2));
+
+        content.remove(0, 4);
+    }
     else
     {
         showWarningMessage();
+        //need to stop displaying empty image form!
         return;
     }
 
 
-    QImage image = createQImage(x, y, formatType, content);
+    QImage image = createQImage(w, h, formatType, content);
     ui->imgContent->setPixmap(QPixmap::fromImage(image));
 
 }

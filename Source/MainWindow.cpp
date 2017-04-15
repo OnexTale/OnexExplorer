@@ -80,7 +80,11 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int 
     case NOS_ARCHIVE:
     {
         int headerValue = item->getHeaderValue();
-        if (headerValue == NSipData || headerValue == NStpData || headerValue == NStpeData || headerValue == NStpuData)
+        if (headerValue == NSipData ||
+                headerValue == NStpData ||
+                headerValue == NStpeData ||
+                headerValue == NStpuData ||
+                headerValue == NStcData)
         {
             previewWindow = new SingleImagePreview(item->getContent(), headerValue, ui->mdiArea);
         }

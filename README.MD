@@ -8,6 +8,7 @@ OnexExplorer is an open-source tool for unpacking and repacking .NOS data files 
 - NStpData, NStpeData, NStpuData
 - all lang (txt&dat, lst is NOT supported yet)
 - NStcData
+- NS4BbData
 Other files will be added in future updates.
 
 ## License ##

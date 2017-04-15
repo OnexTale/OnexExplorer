@@ -2,6 +2,7 @@
 #define IMAGECONVERTER_H
 #include <QImage>
 #include <QMap>
+#include <QColor>
 
 class ImageConverter
 {

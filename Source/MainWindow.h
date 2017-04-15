@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QDebug>
 #include <QFileDialog>
+#include <QDropEvent>
+#include <QMimeData>
 #include "Ui/SingleTextFilePreview.h"
 #include "Ui/FileInfo.h"
 #include "Openers/NosTextOpener.h"
@@ -43,6 +45,9 @@ private:
     void handleOpenResults(OnexTreeItem* item);
     bool hasNTHeader(QFile& file);
     bool hasGBSHeader(QFile& file);
+
+    virtual void dropEvent(QDropEvent *e) override;
+    virtual void dragEnterEvent(QDragEnterEvent *e) override;
 };
 
 #endif // MAINWINDOW_H

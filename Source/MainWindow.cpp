@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setAcceptDrops(true);
 }
 
 MainWindow::~MainWindow()
@@ -64,6 +65,26 @@ bool MainWindow::hasGBSHeader(QFile &file)
     QByteArray header = file.read(10);
 
     return (header == "32GBS V1.0");
+}
+
+void MainWindow::dropEvent(QDropEvent *e)
+{
+    for (auto& url : e->mimeData()->urls())
+    {
+        QString fileName = url.toLocalFile();
+        openFile(fileName);
+    }
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *e)
+{
+    for (auto& url : e->mimeData()->urls())
+    {
+        QString fileName = url.toLocalFile();
+        if (QFileInfo(fileName).suffix() != "NOS")
+            return;
+    }
+    e->acceptProposedAction();
 }
 
 void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int column)

@@ -29,3 +29,8 @@ int OnexTreeItem::getHeaderValue()
 {
     return headerValue;
 }
+
+QString OnexTreeItem::getName()
+{
+    return name;
+}

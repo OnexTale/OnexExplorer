@@ -27,6 +27,10 @@ private slots:
 
     void on_actionClose_selected_triggered();
 
+    void on_actionExit_triggered();
+
+    void on_actionClose_all_triggered();
+
 private:
     Ui::MainWindow *ui;
     NosTextOpener textOpener;

@@ -57,3 +57,8 @@ FORMS    += \
     Source/mainwindow.ui \
     Source/Ui/SingleTextFilePreview.ui \
     Source/Ui/SingleImagePreview.ui
+
+DISTFILES +=
+
+RESOURCES += \
+    resources.qrc

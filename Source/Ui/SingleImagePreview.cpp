@@ -42,7 +42,6 @@ SingleImagePreview::SingleImagePreview(QByteArray content, int headerValue, QWid
         return;
     }
 
-
     QImage image = createQImage(w, h, formatType, content);
     ui->imgContent->setPixmap(QPixmap::fromImage(image));
 

@@ -17,6 +17,7 @@ public:
     QByteArray getContent();
     NosEnumTypes getType();
     int getHeaderValue();
+    QString getName();
 };
 
 #endif // ONEXTREEITEM_H

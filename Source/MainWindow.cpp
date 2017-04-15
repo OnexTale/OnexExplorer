@@ -104,12 +104,36 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int 
 
     ui->mdiArea->addSubWindow(previewWindow);
     previewWindow->setAttribute(Qt::WA_DeleteOnClose);
+    previewWindow->setWindowTitle(item->getName());
     previewWindow->show();
 }
 
 void MainWindow::on_actionClose_selected_triggered()
 {
-    int currentIndex = ui->treeWidget->currentColumn();
-    if (QTreeWidgetItem* item = ui->treeWidget->takeTopLevelItem(currentIndex))
+    QList<QTreeWidgetItem*> selectedItems = ui->treeWidget->selectedItems();
+    foreach (auto& item, selectedItems)
         delete item;
+}
+
+void MainWindow::on_actionExit_triggered()
+{
+    QMessageBox::StandardButton message = QMessageBox::question(this, "",
+                                                                "Exit program?",
+                                                                QMessageBox::Yes | QMessageBox::No,
+                                                                QMessageBox::No);
+        if (message == QMessageBox::Yes)
+            QApplication::quit();
+}
+
+void MainWindow::on_actionClose_all_triggered()
+{
+    QMessageBox::StandardButton message = QMessageBox::question(this, "",
+                                                                "Close all items?",
+                                                                QMessageBox::Yes | QMessageBox::No,
+                                                                QMessageBox::No);
+
+    if (message == QMessageBox::Yes)
+    {
+        ui->treeWidget->clear();
+    }
 }

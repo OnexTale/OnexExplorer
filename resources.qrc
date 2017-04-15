@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/oxe_icon_trans.ico</file>
+    </qresource>
+</RCC>

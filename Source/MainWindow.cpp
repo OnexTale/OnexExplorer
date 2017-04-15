@@ -36,7 +36,7 @@ void MainWindow::openFile(QString path)
     if (!file.open(QIODevice::ReadOnly))
         return;
 
-    if (hasNTHeader(file))
+    if (hasNTHeader(file) || hasGBSHeader(file))
         handleOpenResults(zlibOpener.decrypt(file));
     else
         handleOpenResults(textOpener.decrypt(file));
@@ -56,6 +56,14 @@ bool MainWindow::hasNTHeader(QFile &file)
     QByteArray header = file.read(7);
 
     return (header == "NT Data");
+}
+
+bool MainWindow::hasGBSHeader(QFile &file)
+{
+    file.seek(0);
+    QByteArray header = file.read(10);
+
+    return (header == "32GBS V1.0");
 }
 
 void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int column)
@@ -84,7 +92,8 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int 
                 headerValue == NStpData ||
                 headerValue == NStpeData ||
                 headerValue == NStpuData ||
-                headerValue == NStcData)
+                headerValue == NStcData ||
+                headerValue == NS4BbData)
         {
             previewWindow = new SingleImagePreview(item->getContent(), headerValue, ui->mdiArea);
         }

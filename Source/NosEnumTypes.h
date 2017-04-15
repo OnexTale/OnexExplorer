@@ -30,11 +30,11 @@ enum NosEnumTypes
 #define NSipData 24
 #define NSgrdData 26
 
+#define NS4BbData 101   //temporary
+
 /*
 #define NSpnData
 #define NSmnData
-
-#define NS4BbData
 
 #define PCHPKG_DATA
 

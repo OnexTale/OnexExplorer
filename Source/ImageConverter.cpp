@@ -42,7 +42,7 @@ QImage ImageConverter::convertRGB555(QByteArray& array, int width, int height)
 QImage ImageConverter::convertNSTC(QByteArray &array, int width, int height)
 {
     QImage img(width, height, QImage::Format_ARGB32);
-    img.fill(QColor(Qt::transparent).rgba());
+    img.fill(Qt::transparent);
 
     QMap<int, QColor> colors;
     colors[-1] = qRgb(150, 0, 255);
@@ -75,6 +75,39 @@ QImage ImageConverter::convertNSTC(QByteArray &array, int width, int height)
     return img.scaled(QSize(width*2, height*2));
 }
 
+QImage ImageConverter::convertBGRA8888_INTERLACED(QByteArray &array, int width, int height)
+{
+    QImage img(width, height, QImage::Format_RGBA8888);
+    img.fill(Qt::transparent);
+
+    short num = 0,
+            x = 0,
+            y = 0;
+    for (int i = 0; i < array.size();)
+    {
+        uchar b = array.at(i++);
+        uchar g = array.at(i++);
+        uchar r = array.at(i++);
+        uchar a = array.at(i++);
+        img.setPixel(x, y, qRgba(r, g, b, a));
+
+        x++;
+        if (x == (num + 256) || x == width)
+        {
+            x = num;
+            y++;
+        }
+        if (y == height)
+        {
+            y = 0;
+            num += 256;
+            x = num;
+        }
+    }
+
+    return img;
+}
+
 ImageConverter::ImageConverter()
 {
 
@@ -94,6 +127,9 @@ QImage ImageConverter::getFromData(QByteArray &array, int width, int height, Ima
         break;
     case NSTC:
         return convertNSTC(array, width, height);
+        break;
+    case BGRA8888_INTERLACED:
+        return convertBGRA8888_INTERLACED(array, width, height);
         break;
 
     default:

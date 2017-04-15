@@ -39,6 +39,7 @@ private:
     void openFile(QString path);
     void handleOpenResults(OnexTreeItem* item);
     bool hasNTHeader(QFile& file);
+    bool hasGBSHeader(QFile& file);
 };
 
 #endif // MAINWINDOW_H

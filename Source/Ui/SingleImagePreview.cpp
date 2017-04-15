@@ -35,6 +35,14 @@ SingleImagePreview::SingleImagePreview(QByteArray content, int headerValue, QWid
 
         content.remove(0, 4);
     }
+    else if (headerValue == NS4BbData)
+    {
+        formatType = 4;
+        w = byteArrayToShort(content.mid(0, 2));
+        h = byteArrayToShort(content.mid(2, 2));
+
+        content.remove(0, 4);
+    }
     else
     {
         showWarningMessage();

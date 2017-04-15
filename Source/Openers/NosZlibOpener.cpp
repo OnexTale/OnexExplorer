@@ -12,7 +12,12 @@ QByteArray NosZlibOpener::toBigEndian(qint32 value)
 
 int NosZlibOpener::getNTHeaderNumber(QByteArray &array)
 {
-    return array.mid(8, 2).toInt();
+    if (array.mid(0, 2) == "NT")
+        return array.mid(8, 2).toInt();
+    else if (array.mid(0, 2) == "32")
+        return 101;
+    else //if (array.mid(0, 2) == "CC")
+        return 102;
 }
 
 NosZlibOpener::NosZlibOpener()

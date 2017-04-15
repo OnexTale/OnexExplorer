@@ -34,3 +34,8 @@ QString OnexTreeItem::getName()
 {
     return name;
 }
+
+int OnexTreeItem::getTimestamp()
+{
+    return timestamp;
+}

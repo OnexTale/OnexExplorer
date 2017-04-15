@@ -146,3 +146,14 @@ void MainWindow::on_actionClose_all_triggered()
         ui->treeWidget->clear();
     }
 }
+
+void MainWindow::on_actionOptions_triggered()
+{
+    OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
+    if (item == nullptr)
+        return;
+    if (item->childCount() != 0)
+        return;
+    QDialog* dialog = new FileInfo(item);
+    dialog->exec();
+}

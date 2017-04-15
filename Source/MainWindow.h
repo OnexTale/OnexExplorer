@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QFileDialog>
 #include "Ui/SingleTextFilePreview.h"
+#include "Ui/FileInfo.h"
 #include "Openers/NosTextOpener.h"
 #include "Openers/NosZlibOpener.h"
 #include "Ui/SingleImagePreview.h"
@@ -30,6 +31,8 @@ private slots:
     void on_actionExit_triggered();
 
     void on_actionClose_all_triggered();
+
+    void on_actionOptions_triggered();
 
 private:
     Ui::MainWindow *ui;

@@ -18,6 +18,7 @@ public:
     NosEnumTypes getType();
     int getHeaderValue();
     QString getName();
+    int getTimestamp();
 };
 
 #endif // ONEXTREEITEM_H

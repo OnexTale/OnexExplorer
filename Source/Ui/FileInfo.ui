@@ -30,7 +30,7 @@
     <normaloff>:/resources/oxe_icon_trans.ico</normaloff>:/resources/oxe_icon_trans.ico</iconset>
   </property>
   <property name="windowOpacity">
-   <double>0.800000000000000</double>
+   <double>1.000000000000000</double>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="1">

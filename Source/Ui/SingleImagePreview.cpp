@@ -58,8 +58,14 @@ SingleImagePreview::SingleImagePreview(QByteArray content, int headerValue, QWid
         return;
     }
 
+    QStringList fNames = { "GBAR4444", "ARGB555", "BGRA8888", "NSTC", "BGRA8888_INTERLACED", "BARG4444" };
+    QString fName = "?";
+    if (fNames.count() > formatType)
+        fName = fNames.at(formatType);
+
     QImage image = createQImage(w, h, formatType, content);
     ui->imgContent->setPixmap(QPixmap::fromImage(image));
+    this->setWindowTitle(QString::number(w) + "x" + QString::number(h) + ", " + fName);
 
 }
 

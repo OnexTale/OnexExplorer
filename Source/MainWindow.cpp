@@ -130,7 +130,7 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int 
 
     ui->mdiArea->addSubWindow(previewWindow);
     previewWindow->setAttribute(Qt::WA_DeleteOnClose);
-    previewWindow->setWindowTitle(item->getName());
+    previewWindow->setWindowTitle(item->getName() + " - " + previewWindow->windowTitle());
     previewWindow->show();
 }
 

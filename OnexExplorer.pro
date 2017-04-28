@@ -65,3 +65,5 @@ DISTFILES +=
 
 RESOURCES += \
     resources.qrc
+
+RC_ICONS = ./resources/oxe_icon_trans.ico

@@ -1,6 +1,7 @@
 #include "ImageConverter.h"
 
-QImage ImageConverter::convertRGBA4444(QByteArray &array, int width, int height)
+QImage ImageConverter::convertGBAR4444(QByteArray &array, int width, int height)
+///GBAR = ARGB (endianness)
 {
     QImage img(width, height, QImage::Format_ARGB32);
 
@@ -32,7 +33,7 @@ QImage ImageConverter::convertBGRA8888(QByteArray &array, int width, int height)
     return img.rgbSwapped();
 }
 
-QImage ImageConverter::convertRGB555(QByteArray& array, int width, int height)
+QImage ImageConverter::convertARGB555(QByteArray& array, int width, int height)
 {
     QImage img((uchar*)array.data(), width, height, QImage::Format_RGB555);
 
@@ -108,6 +109,32 @@ QImage ImageConverter::convertBGRA8888_INTERLACED(QByteArray &array, int width, 
     return img;
 }
 
+QImage ImageConverter::convertBARG4444(QByteArray &array, int width, int height)
+///BARG = RGBA (endianness)
+{
+    QImage img(width, height, QImage::Format_ARGB32);
+
+    img.fill(Qt::transparent);
+
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; ++x)
+        {
+            uchar ba = array.at(y * 2 * height + x * 2);
+            uchar rg = array.at(y * 2 * height + x * 2 + 1);
+
+            uchar b = ba >> 4;
+            uchar a = ba & 0xF;
+            uchar r = rg >> 4;
+            uchar g = rg & 0xF;
+
+            img.setPixel(x, y, qRgba(r * 0x11, g * 0x11, b * 0x11, a * 0x11));
+        }
+    }
+
+    return img;
+}
+
 ImageConverter::ImageConverter()
 {
 
@@ -119,17 +146,20 @@ QImage ImageConverter::getFromData(QByteArray &array, int width, int height, Ima
     case BGRA8888:
         return convertBGRA8888(array, width, height);
         break;
-    case RGB555:
-        return convertRGB555(array, width, height);
+    case ARGB555:
+        return convertARGB555(array, width, height);
         break;
-    case RGBA4444:
-        return convertRGBA4444(array, width, height);
+    case GBAR4444:
+        return convertGBAR4444(array, width, height);
         break;
     case NSTC:
         return convertNSTC(array, width, height);
         break;
     case BGRA8888_INTERLACED:
         return convertBGRA8888_INTERLACED(array, width, height);
+        break;
+    case BARG4444:
+        return convertBARG4444(array, width, height);
         break;
 
     default:

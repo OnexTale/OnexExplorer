@@ -40,7 +40,7 @@ void MainWindow::openFile(QString path)
     if (!file.open(QIODevice::ReadOnly))
         return;
 
-    if (hasNTHeader(file) || hasGBSHeader(file))
+    if (hasValidHeader(file))
         handleOpenResults(zlibOpener.decrypt(file));
     else
         handleOpenResults(textOpener.decrypt(file));
@@ -54,20 +54,12 @@ void MainWindow::handleOpenResults(OnexTreeItem *item)
     item->setExpanded(true);
 }
 
-bool MainWindow::hasNTHeader(QFile &file)
+bool MainWindow::hasValidHeader(QFile &file)
 {
     file.seek(0);
-    QByteArray header = file.read(7);
+    QByteArray header = file.read(0x0B);
 
-    return (header == "NT Data");
-}
-
-bool MainWindow::hasGBSHeader(QFile &file)
-{
-    file.seek(0);
-    QByteArray header = file.read(10);
-
-    return (header == "32GBS V1.0");
+    return (header.indexOf("NT Data") || header.indexOf("32GBS V1.0") || header.indexOf("ITEMS V1.0") /*|| header.indexOf("CCINF V1.20")*/);
 }
 
 void MainWindow::dropEvent(QDropEvent *e)
@@ -117,7 +109,8 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int 
                 headerValue == NStpeData ||
                 headerValue == NStpuData ||
                 headerValue == NStcData ||
-                headerValue == NS4BbData)
+                headerValue == NS4BbData ||
+                headerValue == NSipData2006)
         {
             previewWindow = new SingleImagePreview(item->getContent(), headerValue, ui->mdiArea);
         }

@@ -19,6 +19,14 @@ SingleImagePreview::SingleImagePreview(QByteArray content, int headerValue, QWid
 
         content.remove(0, 13);
     }
+    else if (headerValue == NSipData2006)
+    {
+        formatType = 5;
+        w = byteArrayToShort(content.mid(1, 3));
+        h = byteArrayToShort(content.mid(3, 5));
+
+        content.remove(0, 13);
+    }
     else if (headerValue == NStpData || headerValue == NStpeData || headerValue == NStpuData)
     {
         w = byteArrayToShort(content.mid(0, 2));

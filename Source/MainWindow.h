@@ -43,8 +43,7 @@ private:
 
     void openFile(QString path);
     void handleOpenResults(OnexTreeItem* item);
-    bool hasNTHeader(QFile& file);
-    bool hasGBSHeader(QFile& file);
+    bool hasValidHeader(QFile& file);
 
     virtual void dropEvent(QDropEvent *e) override;
     virtual void dragEnterEvent(QDragEnterEvent *e) override;

@@ -58,8 +58,9 @@ bool MainWindow::hasValidHeader(QFile &file)
 {
     file.seek(0);
     QByteArray header = file.read(0x0B);
-
-    return (header.indexOf("NT Data") || header.indexOf("32GBS V1.0") || header.indexOf("ITEMS V1.0") /*|| header.indexOf("CCINF V1.20")*/);
+    if (header.mid(0, 7) == "NT Data" || header.mid(0, 10) == "32GBS V1.0" || header.mid(0, 10) == "ITEMS V1.0")
+        return true;
+    return false;
 }
 
 void MainWindow::dropEvent(QDropEvent *e)
@@ -99,6 +100,7 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int 
     case NOS_TEXT:
     {
         previewWindow = new SingleTextFilePreview(item->getContent(), ui->mdiArea);
+        previewWindow->setWindowTitle(item->getName());
         break;
     }
     case NOS_ARCHIVE:
@@ -113,6 +115,7 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int 
                 headerValue == NSipData2006)
         {
             previewWindow = new SingleImagePreview(item->getContent(), headerValue, ui->mdiArea);
+            previewWindow->setWindowTitle(item->getName() + " - " + previewWindow->windowTitle());
         }
         break;
     }
@@ -130,7 +133,6 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int 
 
     ui->mdiArea->addSubWindow(previewWindow);
     previewWindow->setAttribute(Qt::WA_DeleteOnClose);
-    previewWindow->setWindowTitle(item->getName() + " - " + previewWindow->windowTitle());
     previewWindow->show();
 }
 

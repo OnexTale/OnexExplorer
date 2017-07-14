@@ -36,7 +36,9 @@ SOURCES += \
     Source/Openers/NosZlibOpener.cpp \
     Source/Ui/SingleImagePreview.cpp \
     Source/ImageConverter.cpp \
-    Source/Ui/FileInfo.cpp
+    Source/Ui/FileInfo.cpp \
+    Source/Ui/OnexTreeImage.cpp \
+    Source/Ui/OnexTreeText.cpp
 
 HEADERS  += \
     Source/Decryptors/NosTextDatFileDecryptor.h \
@@ -53,7 +55,9 @@ HEADERS  += \
     Source/NosEnumTypes.h \
     Source/Ui/SingleImagePreview.h \
     Source/ImageConverter.h \
-    Source/Ui/FileInfo.h
+    Source/Ui/FileInfo.h \
+    Source/Ui/OnexTreeImage.h \
+    Source/Ui/OnexTreeText.h
 
 FORMS    += \
     Source/mainwindow.ui \

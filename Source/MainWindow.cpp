@@ -93,37 +93,8 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int 
     if (!item->hasParent())
         return;
 
-    NosEnumTypes type = item->getType();
-    QWidget* previewWindow = nullptr;
+    QWidget* previewWindow = item->onClicked();
 
-    switch (type) {
-    case NOS_TEXT:
-    {
-        previewWindow = new SingleTextFilePreview(item->getContent(), ui->mdiArea);
-        previewWindow->setWindowTitle(item->getName());
-        break;
-    }
-    case NOS_ARCHIVE:
-    {
-        int headerValue = item->getHeaderValue();
-        if (headerValue == NSipData ||
-                headerValue == NStpData ||
-                headerValue == NStpeData ||
-                headerValue == NStpuData ||
-                headerValue == NStcData ||
-                headerValue == NS4BbData ||
-                headerValue == NSipData2006)
-        {
-            previewWindow = new SingleImagePreview(item->getContent(), headerValue, ui->mdiArea);
-            previewWindow->setWindowTitle(item->getName() + " - " + previewWindow->windowTitle());
-        }
-        break;
-    }
-    default:
-    {
-        break;
-    }
-    }
 
     if (!previewWindow)
     {

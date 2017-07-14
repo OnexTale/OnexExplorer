@@ -7,6 +7,7 @@ FileInfo::FileInfo(OnexTreeItem *item, QWidget *parent) :
 {    
     ui->setupUi(this);
 
+    /*
     ui->name->setText(item->getName());
     ui->header->setText(QString::number(item->getHeaderValue()));
     ui->sizeb->setText(QString::number(item->getContent().size()));
@@ -17,6 +18,7 @@ FileInfo::FileInfo(OnexTreeItem *item, QWidget *parent) :
 
     QString date = QString("%1/%2/%3").arg(day, 2, 16, QChar('0')).arg(month, 2, 16, QChar('0')).arg(year, 4, 16, QChar('0'));
     ui->date->setText(date);
+    */
 }
 
 FileInfo::~FileInfo()

@@ -1,13 +1,6 @@
 #ifndef NOSENUMTYPES_H
 #define NOSENUMTYPES_H
 
-enum NosEnumTypes
-{
-    NONE,
-    NOS_ARCHIVE,
-    NOS_TEXT
-};
-
 #define PCHPKG 1
 #define NStuData 2
 #define NStkData 3

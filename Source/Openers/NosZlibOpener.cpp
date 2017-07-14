@@ -31,6 +31,7 @@ NosZlibOpener::NosZlibOpener()
 
 OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
 {
+    /*
     file.seek(0);
 
     QByteArray header = file.read(NOS_HEADER_SIZE);
@@ -69,4 +70,6 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
     }
 
     return item;
+    */
+    return nullptr;
 }

@@ -1,24 +1,21 @@
 #ifndef ONEXTREEITEM_H
 #define ONEXTREEITEM_H
 #include <QTreeWidgetItem>
+#include <memory>
 #include "../NosEnumTypes.h"
 
-class OnexTreeItem : public QTreeWidgetItem
+class OnexTreeItem : public QTreeWidgetItem, public std::enable_shared_from_this<OnexTreeItem>
 {
 private:
     QByteArray content;
     QString name;
-    NosEnumTypes type;
-    int timestamp;
-    int headerValue;
 public:
-    OnexTreeItem(QString name, NosEnumTypes type, QByteArray content = QByteArray(), int headerValue = -1, int timestamp = -1);
-    bool hasParent();
+    OnexTreeItem(QString name, QByteArray content = QByteArray());
     QByteArray getContent();
-    NosEnumTypes getType();
-    int getHeaderValue();
-    QString getName();
-    int getTimestamp();
+    bool hasParent();
+
+    virtual QString getName();
+    virtual QWidget* onClicked() = 0;
 };
 
 #endif // ONEXTREEITEM_H

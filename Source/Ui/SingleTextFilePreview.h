@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <iostream>
+#include "OnexTreeText.h"
 
 namespace Ui {
 class SingleTextFilePreview;
@@ -13,7 +14,7 @@ class SingleTextFilePreview : public QWidget
     Q_OBJECT
 
 public:
-    explicit SingleTextFilePreview(QByteArray content, QWidget *parent = 0);
+    explicit SingleTextFilePreview(std::shared_ptr<OnexTreeItem> item, QWidget *parent = 0);
     ~SingleTextFilePreview();
 
 private:

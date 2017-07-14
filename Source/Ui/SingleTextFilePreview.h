@@ -14,7 +14,7 @@ class SingleTextFilePreview : public QWidget
     Q_OBJECT
 
 public:
-    explicit SingleTextFilePreview(std::shared_ptr<OnexTreeItem> item, QWidget *parent = 0);
+    explicit SingleTextFilePreview(QByteArray &item, QWidget *parent = 0);
     ~SingleTextFilePreview();
 
 private:

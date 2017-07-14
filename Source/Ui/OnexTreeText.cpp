@@ -1,13 +1,14 @@
 #include "OnexTreeText.h"
+#include "SingleTextFilePreview.h"
 
-OnexTreeText::OnexTreeText(QString name, QByteArray content) : OnexTreeItem(name, content)
+OnexTreeText::OnexTreeText(QString name, int fileNumber, int isDat, QByteArray content) : OnexTreeItem(name, content)
 {
 
 }
 
 QWidget *OnexTreeText::onClicked()
 {
-    SingleTextFilePreview* window = new SingleTextFilePreview(shared_from_this());
+    SingleTextFilePreview* window = new SingleTextFilePreview(content);
     window->setWindowTitle(this->getName());
 
     return window;

@@ -2,7 +2,9 @@
 
 OnexTreeItem::OnexTreeItem(QString name, QByteArray content)
 {
+    this->name = name;
     this->content = content;
+    this->setText(0, name);
 }
 
 QByteArray OnexTreeItem::getContent()
@@ -18,4 +20,9 @@ bool OnexTreeItem::hasParent()
 QString OnexTreeItem::getName()
 {
     return name;
+}
+
+OnexTreeItem::~OnexTreeItem()
+{
+
 }

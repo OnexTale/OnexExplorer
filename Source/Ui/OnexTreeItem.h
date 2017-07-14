@@ -4,9 +4,9 @@
 #include <memory>
 #include "../NosEnumTypes.h"
 
-class OnexTreeItem : public QTreeWidgetItem, public std::enable_shared_from_this<OnexTreeItem>
+class OnexTreeItem : public QTreeWidgetItem
 {
-private:
+protected:
     QByteArray content;
     QString name;
 public:
@@ -16,6 +16,7 @@ public:
 
     virtual QString getName();
     virtual QWidget* onClicked() = 0;
+    virtual ~OnexTreeItem();
 };
 
 #endif // ONEXTREEITEM_H

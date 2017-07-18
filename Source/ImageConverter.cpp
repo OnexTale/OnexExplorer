@@ -84,7 +84,7 @@ QImage ImageConverter::convertBGRA8888_INTERLACED(QByteArray &array, int width, 
     short num = 0,
             x = 0,
             y = 0;
-    for (int i = 0; i < array.size();)
+    for (int i = 0; i < array.size() - startByte;)
     {
         uchar b = array.at(startByte + i++);
         uchar g = array.at(startByte + i++);

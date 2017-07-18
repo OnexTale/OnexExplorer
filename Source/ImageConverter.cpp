@@ -28,14 +28,16 @@ QImage ImageConverter::convertGBAR4444(QByteArray &array, int width, int height,
 
 QImage ImageConverter::convertBGRA8888(QByteArray &array, int width, int height, int startByte)
 {
-    QImage img((uchar*)array.mid(startByte).data(), width, height, QImage::Format_RGBA8888);
+    QByteArray tempArray = array.mid(startByte);
+    QImage img((uchar*)tempArray.data(), width, height, QImage::Format_RGBA8888);
 
     return img.rgbSwapped();
 }
 
 QImage ImageConverter::convertARGB555(QByteArray& array, int width, int height, int startByte)
 {
-    QImage img((uchar*)array.mid(startByte).data(), width, height, QImage::Format_RGB555);
+    QByteArray tempArray = array.mid(startByte);
+    QImage img((uchar*)tempArray.data(), width, height, QImage::Format_RGB555);
 
     return img;
 }

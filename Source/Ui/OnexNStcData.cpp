@@ -16,7 +16,7 @@ QImage OnexNStcData::getImage()
 ImageResolution OnexNStcData::getResolution()
 {
     int x = fromLittleEndianToShort(content.mid(0, 2));
-    int y = fromLittleEndianToShort(content.mid(0, 2));
+    int y = fromLittleEndianToShort(content.mid(2, 2));
 
     return ImageResolution{x, y};
 }

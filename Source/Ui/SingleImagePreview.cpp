@@ -44,7 +44,7 @@ SingleImagePreview::SingleImagePreview(QImage image, QWidget *parent) :
 
         content.remove(0, 4);
     }
-    else if (headerValue == NS4BbData)
+    else if (headerValue == t)
     {
         formatType = 4;
         w = byteArrayToShort(content.mid(0, 2));

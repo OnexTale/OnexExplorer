@@ -9,7 +9,6 @@ private:
 public:
     OnexNSipData(QString name, QByteArray content, NosZlibOpener* opener, int id, int creationDate, bool compressed);
 
-    //virtual QWidget* onClicked() override;
     virtual QImage getImage() override;
     virtual ImageResolution getResolution() override;
 

@@ -1,12 +1,13 @@
 #include "SingleImagePreview.h"
 #include "ui_SingleImagePreview.h"
 
-SingleImagePreview::SingleImagePreview(QByteArray content, int headerValue, QWidget *parent) :
+SingleImagePreview::SingleImagePreview(QImage image, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SingleImagePreview)
 {
     ui->setupUi(this);
 
+    /*
     qint16 w = 0;
     qint16 h = 0;
     qint8 formatType = 0;
@@ -66,6 +67,9 @@ SingleImagePreview::SingleImagePreview(QByteArray content, int headerValue, QWid
     QImage image = createQImage(w, h, formatType, content);
     ui->imgContent->setPixmap(QPixmap::fromImage(image));
     this->setWindowTitle(QString::number(w) + "x" + QString::number(h) + ", " + fName);
+    */
+
+    ui->imgContent->setPixmap(QPixmap::fromImage(image));
 
 }
 
@@ -74,17 +78,3 @@ SingleImagePreview::~SingleImagePreview()
     delete ui;
 }
 
-qint16 SingleImagePreview::byteArrayToShort(QByteArray array)
-{
-    return qFromLittleEndian<qint16>(reinterpret_cast<const uchar *>(array.data()));
-}
-
-QImage SingleImagePreview::createQImage(int w, int h, qint8 formatType, QByteArray& content)
-{
-    return converter.getFromData(content, w, h, static_cast<ImageConverter::ImageTypes>(formatType));
-}
-
-void SingleImagePreview::showWarningMessage()
-{
-    QMessageBox::warning(this, "Not supported", "This file cannot be opened as image.");
-}

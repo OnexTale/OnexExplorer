@@ -38,7 +38,9 @@ SOURCES += \
     Source/ImageConverter.cpp \
     Source/Ui/FileInfo.cpp \
     Source/Ui/OnexTreeImage.cpp \
-    Source/Ui/OnexTreeText.cpp
+    Source/Ui/OnexTreeText.cpp \
+    Source/Ui/OnexTreeZlibItem.cpp \
+    Source/Ui/OnexNSipData.cpp
 
 HEADERS  += \
     Source/Decryptors/NosTextDatFileDecryptor.h \
@@ -57,7 +59,9 @@ HEADERS  += \
     Source/ImageConverter.h \
     Source/Ui/FileInfo.h \
     Source/Ui/OnexTreeImage.h \
-    Source/Ui/OnexTreeText.h
+    Source/Ui/OnexTreeText.h \
+    Source/Ui/OnexTreeZlibItem.h \
+    Source/Ui/OnexNSipData.h
 
 FORMS    += \
     Source/mainwindow.ui \

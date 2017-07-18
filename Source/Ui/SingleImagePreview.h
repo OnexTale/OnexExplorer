@@ -18,7 +18,7 @@ class SingleImagePreview : public QWidget
     Q_OBJECT
 
 public:
-    explicit SingleImagePreview(QByteArray content, int headerValue, QWidget *parent = 0);
+    explicit SingleImagePreview(QImage image, QWidget *parent = 0);
     ~SingleImagePreview();
 private:
     Ui::SingleImagePreview *ui;

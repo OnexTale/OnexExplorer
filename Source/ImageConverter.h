@@ -7,13 +7,13 @@
 class ImageConverter
 {
 private:
-    QImage convertGBAR4444(QByteArray& array, int width, int height);
-    QImage convertBGRA8888(QByteArray& array, int width, int height);
-    QImage convertARGB555(QByteArray& array, int width, int height);
-    QImage convertNSTC(QByteArray& array, int width, int height);
-    QImage convertBGRA8888_INTERLACED(QByteArray& array, int width, int height);
-    QImage convertBARG4444(QByteArray& array, int width, int height);
 public:
+    QImage convertGBAR4444(QByteArray& array, int width, int height, int startByte = 0);
+    QImage convertBGRA8888(QByteArray& array, int width, int height, int startByte = 0);
+    QImage convertARGB555(QByteArray& array, int width, int height, int startByte = 0);
+    QImage convertNSTC(QByteArray& array, int width, int height, int startByte = 0);
+    QImage convertBGRA8888_INTERLACED(QByteArray& array, int width, int height, int startByte = 0);
+    QImage convertBARG4444(QByteArray& array, int width, int height, int startByte = 0);
     enum ImageTypes
     {
         GBAR4444 = 0,
@@ -24,7 +24,6 @@ public:
         BARG4444 = 5
     };
     ImageConverter();
-    QImage getFromData(QByteArray& array, int width, int height, ImageTypes format);
 };
 
 #endif // IMAGECONVERTER_H

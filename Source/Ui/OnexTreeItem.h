@@ -1,8 +1,7 @@
 #ifndef ONEXTREEITEM_H
 #define ONEXTREEITEM_H
 #include <QTreeWidgetItem>
-#include <memory>
-#include "../NosEnumTypes.h"
+#include <QtEndian>
 
 class OnexTreeItem : public QTreeWidgetItem
 {
@@ -13,9 +12,10 @@ public:
     OnexTreeItem(QString name, QByteArray content = QByteArray());
     QByteArray getContent();
     bool hasParent();
+    short fromLittleEndianToShort(QByteArray& array);
 
     virtual QString getName();
-    virtual QWidget* onClicked() = 0;
+    virtual QWidget *onClicked() = 0;
     virtual ~OnexTreeItem();
 };
 

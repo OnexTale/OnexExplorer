@@ -13,3 +13,8 @@ QWidget *OnexTreeText::onClicked()
 
     return window;
 }
+
+OnexTreeText::~OnexTreeText()
+{
+
+}

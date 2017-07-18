@@ -1,6 +1,6 @@
 #include "ImageConverter.h"
 
-QImage ImageConverter::convertGBAR4444(QByteArray &array, int width, int height)
+QImage ImageConverter::convertGBAR4444(QByteArray &array, int width, int height, int startByte)
 ///GBAR = ARGB (endianness)
 {
     QImage img(width, height, QImage::Format_ARGB32);
@@ -11,8 +11,8 @@ QImage ImageConverter::convertGBAR4444(QByteArray &array, int width, int height)
     {
         for (int x = 0; x < width; ++x)
         {
-            uchar gb = array.at(y * 2 * height + x * 2);
-            uchar ar = array.at(y * 2 * height + x * 2 + 1);
+            uchar gb = array.at(startByte + y * 2 * height + x * 2);
+            uchar ar = array.at(startByte + y * 2 * height + x * 2 + 1);
 
             uchar g = gb >> 4;
             uchar b = gb & 0xF;
@@ -26,21 +26,21 @@ QImage ImageConverter::convertGBAR4444(QByteArray &array, int width, int height)
     return img;
 }
 
-QImage ImageConverter::convertBGRA8888(QByteArray &array, int width, int height)
+QImage ImageConverter::convertBGRA8888(QByteArray &array, int width, int height, int startByte)
 {
-    QImage img((uchar*)array.data(), width, height, QImage::Format_RGBA8888);
+    QImage img((uchar*)array.mid(startByte).data(), width, height, QImage::Format_RGBA8888);
 
     return img.rgbSwapped();
 }
 
-QImage ImageConverter::convertARGB555(QByteArray& array, int width, int height)
+QImage ImageConverter::convertARGB555(QByteArray& array, int width, int height, int startByte)
 {
-    QImage img((uchar*)array.data(), width, height, QImage::Format_RGB555);
+    QImage img((uchar*)array.mid(startByte).data(), width, height, QImage::Format_RGB555);
 
     return img;
 }
 
-QImage ImageConverter::convertNSTC(QByteArray &array, int width, int height)
+QImage ImageConverter::convertNSTC(QByteArray &array, int width, int height, int startByte)
 {
     QImage img(width, height, QImage::Format_ARGB32);
     img.fill(Qt::transparent);
@@ -65,7 +65,7 @@ QImage ImageConverter::convertNSTC(QByteArray &array, int width, int height)
     {
         for (int y = 0; y < height; ++y)
         {
-            uchar value = array.at(y * width + x);
+            uchar value = array.at(startByte + y * width + x);
             if (colors.contains(value))
                 img.setPixel(x, y, colors[value].rgb());
             else
@@ -76,7 +76,7 @@ QImage ImageConverter::convertNSTC(QByteArray &array, int width, int height)
     return img.scaled(QSize(width*2, height*2));
 }
 
-QImage ImageConverter::convertBGRA8888_INTERLACED(QByteArray &array, int width, int height)
+QImage ImageConverter::convertBGRA8888_INTERLACED(QByteArray &array, int width, int height, int startByte)
 {
     QImage img(width, height, QImage::Format_RGBA8888);
     img.fill(Qt::transparent);
@@ -86,10 +86,10 @@ QImage ImageConverter::convertBGRA8888_INTERLACED(QByteArray &array, int width, 
             y = 0;
     for (int i = 0; i < array.size();)
     {
-        uchar b = array.at(i++);
-        uchar g = array.at(i++);
-        uchar r = array.at(i++);
-        uchar a = array.at(i++);
+        uchar b = array.at(startByte + i++);
+        uchar g = array.at(startByte + i++);
+        uchar r = array.at(startByte + i++);
+        uchar a = array.at(startByte + i++);
         img.setPixel(x, y, qRgba(r, g, b, a));
 
         x++;
@@ -109,7 +109,7 @@ QImage ImageConverter::convertBGRA8888_INTERLACED(QByteArray &array, int width, 
     return img;
 }
 
-QImage ImageConverter::convertBARG4444(QByteArray &array, int width, int height)
+QImage ImageConverter::convertBARG4444(QByteArray &array, int width, int height, int startByte)
 ///BARG = RGBA (endianness)
 {
     QImage img(width, height, QImage::Format_ARGB32);
@@ -120,8 +120,8 @@ QImage ImageConverter::convertBARG4444(QByteArray &array, int width, int height)
     {
         for (int x = 0; x < width; ++x)
         {
-            uchar ba = array.at(y * 2 * height + x * 2);
-            uchar rg = array.at(y * 2 * height + x * 2 + 1);
+            uchar ba = array.at(startByte + y * 2 * height + x * 2);
+            uchar rg = array.at(startByte + y * 2 * height + x * 2 + 1);
 
             uchar b = ba >> 4;
             uchar a = ba & 0xF;
@@ -140,29 +140,3 @@ ImageConverter::ImageConverter()
 
 }
 
-QImage ImageConverter::getFromData(QByteArray &array, int width, int height, ImageConverter::ImageTypes format)
-{
-    switch (format) {
-    case BGRA8888:
-        return convertBGRA8888(array, width, height);
-        break;
-    case ARGB555:
-        return convertARGB555(array, width, height);
-        break;
-    case GBAR4444:
-        return convertGBAR4444(array, width, height);
-        break;
-    case NSTC:
-        return convertNSTC(array, width, height);
-        break;
-    case BGRA8888_INTERLACED:
-        return convertBGRA8888_INTERLACED(array, width, height);
-        break;
-    case BARG4444:
-        return convertBARG4444(array, width, height);
-        break;
-
-    default:
-        break;
-    }
-}

@@ -12,7 +12,7 @@ public:
     OnexTreeItem(QString name, QByteArray content = QByteArray());
     QByteArray getContent();
     bool hasParent();
-    short fromLittleEndianToShort(QByteArray& array);
+    short fromLittleEndianToShort(QByteArray array);
 
     virtual QString getName();
     virtual QWidget *onClicked() = 0;

@@ -40,7 +40,8 @@ SOURCES += \
     Source/Ui/OnexTreeImage.cpp \
     Source/Ui/OnexTreeText.cpp \
     Source/Ui/OnexTreeZlibItem.cpp \
-    Source/Ui/OnexNSipData.cpp
+    Source/Ui/OnexNSipData.cpp \
+    Source/Ui/OnexNS4BbData.cpp
 
 HEADERS  += \
     Source/Decryptors/NosTextDatFileDecryptor.h \
@@ -61,7 +62,8 @@ HEADERS  += \
     Source/Ui/OnexTreeImage.h \
     Source/Ui/OnexTreeText.h \
     Source/Ui/OnexTreeZlibItem.h \
-    Source/Ui/OnexNSipData.h
+    Source/Ui/OnexNSipData.h \
+    Source/Ui/OnexNS4BbData.h
 
 FORMS    += \
     Source/mainwindow.ui \

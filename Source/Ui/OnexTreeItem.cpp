@@ -17,7 +17,7 @@ bool OnexTreeItem::hasParent()
     return this->parent();
 }
 
-short OnexTreeItem::fromLittleEndianToShort(QByteArray &array)
+short OnexTreeItem::fromLittleEndianToShort(QByteArray array)
 {
     return qFromLittleEndian<qint16>(reinterpret_cast<const uchar *>(array.data()));
 }

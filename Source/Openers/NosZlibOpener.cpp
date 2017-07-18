@@ -2,6 +2,7 @@
 #include "../Ui/OnexTreeZlibItem.h"
 #include "../Ui/OnexNSipData.h"
 #include "../Ui/OnexNS4BbData.h"
+#include "../Ui/OnexNStcData.h"
 
 
 QByteArray NosZlibOpener::toBigEndian(qint32 value)
@@ -38,6 +39,10 @@ OnexTreeItem *NosZlibOpener::createItemFromHeader(int header, QString name, QByt
 
         case NS4BbData:
             return new OnexNS4BbData(name, array, this, fileId, creationDate, compressed);
+        break;
+
+        case NStcData:
+            return new OnexNStcData(name, array, this, fileId, creationDate, compressed);
         break;
 
         default:

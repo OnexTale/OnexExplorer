@@ -6,6 +6,8 @@
 #include <QDebug>
 #include <iostream>
 #include <QMessageBox>
+#include <QMenu>
+#include <QFileDialog>
 #include "../ImageConverter.h"
 #include "../NosEnumTypes.h"
 
@@ -26,6 +28,9 @@ private:
     qint16 byteArrayToShort(QByteArray array);
     QImage createQImage(int w, int h, qint8 formatType, QByteArray &content);
     void showWarningMessage();
+private slots:
+    void showCustomMenu(const QPoint &pos);
+    void exportImage();
 };
 
 #endif // SINGLEIMAGEPREVIEW_H

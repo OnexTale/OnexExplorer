@@ -24,6 +24,8 @@ public:
     ~MainWindow();
 
 private slots:
+    void onCustomMenuShow(const QPoint& point);
+    void clearMenu();
     void on_actionOpen_triggered();
 
     void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int column);
@@ -40,6 +42,7 @@ private:
     Ui::MainWindow *ui;
     NosTextOpener textOpener;
     NosZlibOpener zlibOpener;
+    QMenu* contextMenu = nullptr;
 
     void openFile(QString path);
     void handleOpenResults(OnexTreeItem* item);

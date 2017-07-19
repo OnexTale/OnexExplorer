@@ -20,6 +20,9 @@ public:
     virtual QImage getImage() = 0;
     virtual ImageResolution getResolution() = 0;
 
+private slots:
+    virtual void onExportAll();
+
 };
 
 #endif // ONEXTREEIMAGE_H

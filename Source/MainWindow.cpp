@@ -7,11 +7,52 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setAcceptDrops(true);
+
+    ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    connect(ui->treeWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onCustomMenuShow(QPoint)));
 }
 
 MainWindow::~MainWindow()
 {
+    if (contextMenu)
+    {
+        clearMenu();
+        delete contextMenu;
+    }
+
     delete ui;
+}
+
+void MainWindow::onCustomMenuShow(const QPoint &point)
+{
+    if (contextMenu)
+    {
+        clearMenu();
+        delete contextMenu;
+        contextMenu = nullptr;
+    }
+    OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
+    if (item == nullptr)
+        return;
+
+    contextMenu = item->getContextMenu();
+
+    if (contextMenu->isEmpty())
+        return;
+
+    contextMenu->exec(mapToGlobal(point));
+}
+
+void MainWindow::clearMenu()
+{
+    qDebug() << "Disposing menu";
+    QList<QAction*> actions = contextMenu->actions();
+
+    for (auto& action : actions)
+        delete action;
+
+    contextMenu->clear();
 }
 
 void MainWindow::on_actionOpen_triggered()

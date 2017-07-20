@@ -31,3 +31,19 @@ void OnexTreeImage::onExportAll()
     QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
     msgBox.exec();
 }
+
+void OnexTreeImage::onExportSingle()
+{
+    QString fileName = getSaveDirectory("PNG Image (*png)");
+
+    if (fileName.isEmpty())
+        return;
+
+    if (!fileName.endsWith(".png"))
+        fileName += ".png";
+
+    if (this->getImage().save(fileName, "PNG", 100))
+        QMessageBox::information(NULL, "Yeah", "Image exported");
+    else
+        QMessageBox::critical(NULL, "Woops", "Couldn't export that image");
+}

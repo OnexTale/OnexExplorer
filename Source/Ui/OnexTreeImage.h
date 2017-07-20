@@ -22,6 +22,7 @@ public:
 
 private slots:
     virtual void onExportAll();
+    virtual void onExportSingle();
 
 };
 

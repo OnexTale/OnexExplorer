@@ -108,3 +108,8 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
 
     return item;
 }
+
+QByteArray NosZlibOpener::encrypt(OnexTreeItem *item)
+{
+    return QByteArray();
+}

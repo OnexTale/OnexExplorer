@@ -20,6 +20,7 @@ public:
     NosZlibOpener();
     ImageConverter &getImageConverter();
     virtual OnexTreeItem* decrypt(QFile& file);
+    virtual QByteArray encrypt(OnexTreeItem* item);
 };
 
 #endif // NOSZLIBOPENER_H

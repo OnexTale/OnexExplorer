@@ -15,6 +15,7 @@ private:
 public:
     NosTextOpener();
     virtual OnexTreeItem* decrypt(QFile& file);
+    virtual QByteArray encrypt(OnexTreeItem* item);
 
 };
 

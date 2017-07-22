@@ -7,9 +7,7 @@ NosZlibDecryptor::NosZlibDecryptor()
 
 QByteArray NosZlibDecryptor::encrypt(QByteArray &array)
 {
-    //QByteArray compressed = qCompress(array);
-
-    return QByteArray();
+    return qCompress(array);
 }
 
 QByteArray NosZlibDecryptor::decrypt(QByteArray &array)

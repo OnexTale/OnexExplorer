@@ -28,3 +28,8 @@ OnexTreeItem *NosTextOpener::decrypt(QFile &file)
 
     return item;
 }
+
+QByteArray NosTextOpener::encrypt(OnexTreeItem *item)
+{
+    return QByteArray();
+}

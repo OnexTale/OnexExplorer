@@ -125,10 +125,11 @@ QByteArray NosZlibOpener::encrypt(OnexTreeItem *item)
 
     QByteArray contentArray;
 
-    int currentFileOffset = fileHeader.size() + sizeOfOffsetArray;
+    int firstFileOffset = fileHeader.size() + sizeOfOffsetArray;
 
     for(int i = 0; i != item->childCount(); ++i)
     {
+        int currentFileOffset = firstFileOffset + contentArray.size();
         OnexTreeZlibItem* currentItem = static_cast<OnexTreeZlibItem*>(item->child(i));
         contentArray.push_back(writeNextInt(currentItem->getCreationDate()));
         QByteArray content = currentItem->getContent();
@@ -155,8 +156,6 @@ QByteArray NosZlibOpener::encrypt(OnexTreeItem *item)
 
         offsetArray.push_back(writeNextInt(currentItem->getId()));
         offsetArray.push_back(writeNextInt(currentFileOffset));
-
-        currentFileOffset += contentArray.size();
 
     }
 

@@ -93,13 +93,14 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
         int dataSize = readNextInt(file);
         int compressedDataSize = readNextInt(file);
         bool isCompressed = file.read(1).at(0);
-        QByteArray data = file.read(dataSize);
+        QByteArray data = file.read(compressedDataSize);
         if (isCompressed)
         {
-           QByteArray bigEndian = toBigEndian(compressedDataSize);
+           QByteArray bigEndian = toBigEndian(dataSize);
            data.push_front(bigEndian);
            data = decryptor.decrypt(data);
         }
+        else qDebug() << "lool";
 
         item->addChild(createItemFromHeader(ntHeaderNumber, QString::number(id), data, id, creationDate, isCompressed));
         file.seek(previousOffset);
@@ -133,18 +134,15 @@ QByteArray NosZlibOpener::encrypt(OnexTreeItem *item)
         OnexTreeZlibItem* currentItem = static_cast<OnexTreeZlibItem*>(item->child(i));
         contentArray.push_back(writeNextInt(currentItem->getCreationDate()));
         QByteArray content = currentItem->getContent();
+        contentArray.push_back(writeNextInt(content.size()));
+
         if (currentItem->isCompressed())
             content = decryptor.encrypt(content);
 
-        int contentSize = content.size();
-        if (currentItem->isCompressed())
-            contentSize -= 4; //qCompress add the size at the front of array
-
-        contentArray.push_back(writeNextInt(contentSize));
-
         int compressedContentSize = content.size();
         if (currentItem->isCompressed())
-            compressedContentSize = qFromBigEndian<int>(reinterpret_cast<const uchar *>(content.mid(0, 4).data()));
+            compressedContentSize -= 4; //qCompress add the size at the front of array
+
 
         contentArray.push_back(writeNextInt(compressedContentSize));
         contentArray.push_back(currentItem->isCompressed());

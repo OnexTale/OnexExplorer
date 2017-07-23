@@ -36,6 +36,11 @@ short OnexTreeItem::fromLittleEndianToShort(QByteArray array)
     return qFromLittleEndian<qint16>(reinterpret_cast<const uchar *>(array.data()));
 }
 
+int OnexTreeItem::getContentSize()
+{
+    return content.size();
+}
+
 QString OnexTreeItem::getName()
 {
     return name;

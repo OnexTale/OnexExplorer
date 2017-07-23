@@ -22,6 +22,7 @@ public:
     QByteArray getContent();
     bool hasParent();
     short fromLittleEndianToShort(QByteArray array);
+    int getContentSize();
 
     virtual QString getName();
     virtual QMenu* getContextMenu();

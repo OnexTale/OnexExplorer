@@ -15,6 +15,21 @@ QWidget *OnexTreeZlibItem::onClicked()
     return nullptr;
 }
 
+int OnexTreeZlibItem::getId()
+{
+    return id;
+}
+
+int OnexTreeZlibItem::getCreationDate()
+{
+    return creationDate;
+}
+
+bool OnexTreeZlibItem::isCompressed()
+{
+    return compressed;
+}
+
 OnexTreeZlibItem::~OnexTreeZlibItem()
 {
 

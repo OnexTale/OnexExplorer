@@ -106,10 +106,67 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
 
     }
 
+    encrypt(item);
+
     return item;
 }
 
 QByteArray NosZlibOpener::encrypt(OnexTreeItem *item)
 {
+    if (item->hasParent())
+        return QByteArray();
+
+    QByteArray fileHeader = item->getContent();
+    fileHeader.push_back(writeNextInt(item->childCount()));
+    fileHeader.push_back((char)0x0);//separator byte
+
+    QByteArray offsetArray;
+    int sizeOfOffsetArray = item->childCount() * 8;
+
+    QByteArray contentArray;
+
+    int currentFileOffset = fileHeader.size() + sizeOfOffsetArray;
+
+    for(int i = 0; i != item->childCount(); ++i)
+    {
+        OnexTreeZlibItem* currentItem = static_cast<OnexTreeZlibItem*>(item->child(i));
+        contentArray.push_back(writeNextInt(currentItem->getCreationDate()));
+        QByteArray content = currentItem->getContent();
+        if (currentItem->isCompressed())
+            content = decryptor.encrypt(content);
+
+        int contentSize = content.size();
+        if (currentItem->isCompressed())
+            contentSize -= 4; //qCompress add the size at the front of array
+
+        contentArray.push_back(writeNextInt(contentSize));
+
+        int compressedContentSize = content.size();
+        if (currentItem->isCompressed())
+            compressedContentSize = qFromBigEndian<int>(reinterpret_cast<const uchar *>(content.mid(0, 4).data()));
+
+        contentArray.push_back(writeNextInt(compressedContentSize));
+        contentArray.push_back(currentItem->isCompressed());
+
+        if (currentItem->isCompressed())
+            contentArray.push_back(content.mid(4));
+        else
+            contentArray.push_back(content);
+
+        offsetArray.push_back(writeNextInt(currentItem->getId()));
+        offsetArray.push_back(writeNextInt(currentFileOffset));
+
+        currentFileOffset += contentArray.size();
+
+    }
+
+    QFile testFile("lol.NOS");
+    testFile.open(QIODevice::WriteOnly);
+
+    testFile.write(fileHeader);
+    testFile.write(offsetArray);
+    testFile.write(contentArray);
+
+
     return QByteArray();
 }

@@ -8,6 +8,7 @@ class INosFileOpener
 {
 protected:
     int readNextInt(QFile& file);
+    QByteArray writeNextInt(int number);
     QString neatFileName(QString fileName);
 public:
     virtual OnexTreeItem* decrypt(QFile& file) = 0;

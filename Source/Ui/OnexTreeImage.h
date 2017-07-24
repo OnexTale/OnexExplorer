@@ -11,8 +11,9 @@ struct ImageResolution
 
 class OnexTreeImage : public OnexTreeZlibItem
 {
-private:
-
+    Q_OBJECT
+protected:
+    bool hasGoodResolution(int x, int y);
 public:
     OnexTreeImage(QString name, QByteArray content, NosZlibOpener* opener, int id, int creationDate, bool compressed);
 
@@ -23,6 +24,9 @@ public:
 private slots:
     virtual void onExportAll();
     virtual void onExportSingle();
+
+signals:
+    void replaceSignal(QImage newImage);
 
 };
 

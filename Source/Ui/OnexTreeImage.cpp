@@ -6,10 +6,18 @@ OnexTreeImage::OnexTreeImage(QString name, QByteArray content, NosZlibOpener *op
 
 }
 
+bool OnexTreeImage::hasGoodResolution(int x, int y)
+{
+    ImageResolution currentResolution = this->getResolution();
+    return (x == currentResolution.x && y == currentResolution.y);
+}
+
 QWidget *OnexTreeImage::onClicked()
 {
     SingleImagePreview* imagePreview = new SingleImagePreview(this->getImage());
     imagePreview->setWindowTitle(this->getName());
+
+    connect(this, SIGNAL(replaceSignal(QImage)), imagePreview, SLOT(onReplaced(QImage)));
 
     return imagePreview;
 }
@@ -34,7 +42,7 @@ void OnexTreeImage::onExportAll()
 
 void OnexTreeImage::onExportSingle()
 {
-    QString fileName = getSaveDirectory("PNG Image (*png)");
+    QString fileName = getSaveDirectory("PNG Image (*.png)");
 
     if (fileName.isEmpty())
         return;

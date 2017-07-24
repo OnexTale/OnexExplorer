@@ -13,6 +13,7 @@ protected:
 public:
     OnexTreeZlibItem(QString name, QByteArray content, NosZlibOpener* opener, int id, int creationDate, bool compressed);
     virtual QWidget *onClicked() override;
+    virtual void onExporAsOriginal() override;
     int getId();
     int getCreationDate();
     bool isCompressed();

@@ -21,6 +21,29 @@ ImageResolution OnexNSipData::getResolution()
     return ImageResolution{x, y};
 }
 
+void OnexNSipData::onReplace()
+{
+    QString fileName = getOpenDirectory("PNG Image (*.png)");
+    if (fileName.isEmpty())
+        return;
+
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly);
+    QImage image = QImage::fromData(file.readAll());
+    file.close();
+
+    if (!hasGoodResolution(image.width(), image.height()))
+        return;
+
+    QByteArray newContent;
+    newContent.push_back(content.mid(0, 13));
+    newContent.push_back(opener->getImageConverter().toGBAR4444(image));
+
+    content = newContent;
+
+    emit OnexTreeImage::replaceSignal(this->getImage());
+}
+
 OnexNSipData::~OnexNSipData()
 {
 

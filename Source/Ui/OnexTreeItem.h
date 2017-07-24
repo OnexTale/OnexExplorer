@@ -16,6 +16,7 @@ protected:
 
     QString getSelectedDirectory();
     QString getSaveDirectory(QString filter);
+    QString getOpenDirectory(QString filter);
     QMessageBox getMsgBox(QString title, QString message, QMessageBox::Icon icon);
 public:
     OnexTreeItem(QString name, QByteArray content = QByteArray());
@@ -33,6 +34,8 @@ private slots:
     virtual void onExportAll();
     virtual void onExportSingle();
     virtual void onExporSingleRaw();
+    virtual void onExporAsOriginal();
+    virtual void onReplace();
 };
 
 #endif // ONEXTREEITEM_H

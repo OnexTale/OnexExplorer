@@ -141,6 +141,32 @@ QImage ImageConverter::convertBARG4444(QByteArray &array, int width, int height,
     return img;
 }
 
+QByteArray ImageConverter::toGBAR4444(QImage &image)
+{
+    QByteArray data;
+
+    for (int y = 0; y < image.height(); ++y)
+    {
+        for (int x = 0; x < image.width(); ++x)
+        {
+            QRgb currentPixel = image.pixel(x, y);
+
+            uchar green = qGreen(currentPixel) / 0x11;
+            uchar blue = qBlue(currentPixel) / 0x11;
+            uchar alpha = qAlpha(currentPixel) / 0x11;
+            uchar red = qRed(currentPixel) / 0x11;
+
+            uchar gb = (green << 4) + blue;
+            uchar ar = (alpha << 4) + red;
+
+            data.push_back(gb);
+            data.push_back(ar);
+        }
+    }
+
+    return data;
+}
+
 ImageConverter::ImageConverter()
 {
 

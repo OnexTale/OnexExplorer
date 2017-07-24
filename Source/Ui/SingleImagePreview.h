@@ -26,11 +26,11 @@ private:
     Ui::SingleImagePreview *ui;
     ImageConverter converter;
     qint16 byteArrayToShort(QByteArray array);
-    QImage createQImage(int w, int h, qint8 formatType, QByteArray &content);
     void showWarningMessage();
 private slots:
     void showCustomMenu(const QPoint &pos);
     void exportImage();
+    void onReplaced(QImage newImage);
 };
 
 #endif // SINGLEIMAGEPREVIEW_H

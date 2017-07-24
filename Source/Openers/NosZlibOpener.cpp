@@ -107,7 +107,7 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
 
     }
 
-    encrypt(item);
+    //encrypt(item);
 
     return item;
 }
@@ -157,13 +157,11 @@ QByteArray NosZlibOpener::encrypt(OnexTreeItem *item)
 
     }
 
-    QFile testFile("lol.NOS");
-    testFile.open(QIODevice::WriteOnly);
-
-    testFile.write(fileHeader);
-    testFile.write(offsetArray);
-    testFile.write(contentArray);
+    QByteArray result;
+    result.push_back(fileHeader);
+    result.push_back(offsetArray);
+    result.push_back(contentArray);
 
 
-    return QByteArray();
+    return result;
 }

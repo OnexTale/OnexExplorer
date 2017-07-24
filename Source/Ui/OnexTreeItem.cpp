@@ -21,6 +21,11 @@ QString OnexTreeItem::getSaveDirectory(QString filter)
     return QFileDialog::getSaveFileName(0, tr("Save as..."), "", filter);
 }
 
+QString OnexTreeItem::getOpenDirectory(QString filter)
+{
+    return QFileDialog::getOpenFileName(0, tr("Open..."), "", filter);
+}
+
 QByteArray OnexTreeItem::getContent()
 {
     return content;
@@ -54,6 +59,11 @@ QMenu *OnexTreeItem::getContextMenu()
         QAction* exportAllAction = new QAction(QObject::tr("Export all"), contextMenu);
         contextMenu->addAction(exportAllAction);
         QObject::connect(exportAllAction, SIGNAL(triggered(bool)), this, SLOT(onExportAll()));
+
+        QAction* exportOriginalAction = new QAction(QObject::tr("Export as original"), contextMenu);
+        contextMenu->addAction(exportOriginalAction);
+        QObject::connect(exportOriginalAction, SIGNAL(triggered(bool)), this, SLOT(onExporAsOriginal()));
+
     }
     else
     {
@@ -64,6 +74,10 @@ QMenu *OnexTreeItem::getContextMenu()
         QAction* exportSingleToRawAction = new QAction(QObject::tr("Export to raw"), contextMenu);
         contextMenu->addAction(exportSingleToRawAction);
         QObject::connect(exportSingleToRawAction, SIGNAL(triggered(bool)), this, SLOT(onExporSingleRaw()));
+
+        QAction* replaceAction = new QAction(QObject::tr("Replace"), contextMenu);
+        contextMenu->addAction(replaceAction);
+        QObject::connect(replaceAction, SIGNAL(triggered(bool)), this, SLOT(onReplace()));
     }
 
     return contextMenu;
@@ -100,4 +114,14 @@ void OnexTreeItem::onExporSingleRaw()
     else
         QMessageBox::information(NULL, tr("Yeah"), tr("File exported"));
     file.close();
+}
+
+void OnexTreeItem::onExporAsOriginal()
+{
+    QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
+}
+
+void OnexTreeItem::onReplace()
+{
+    QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
 }

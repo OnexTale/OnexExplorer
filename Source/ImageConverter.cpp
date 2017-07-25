@@ -28,22 +28,48 @@ QImage ImageConverter::convertGBAR4444(QByteArray &array, int width, int height,
 
 QImage ImageConverter::convertBGRA8888(QByteArray &array, int width, int height, int startByte)
 {
-//    QByteArray tempArray = array.mid(startByte);
-  //  QImage img(tempArray, width, height, QImage::Format_RGBA8888);
-//
-  //  return img.rgbSwapped();
+    QImage img(width, height, QImage::Format_ARGB32);
 
-    return QImage();
+    img.fill(Qt::transparent);
+
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; ++x)
+        {
+            uchar b = array.at(startByte + y * 4 * height + x * 4);
+            uchar g = array.at(startByte + y * 4 * height + x * 4 + 1);
+            uchar r = array.at(startByte + y * 4 * height + x * 4 + 2);
+            uchar a = array.at(startByte + y * 4 * height + x * 4 + 3);
+
+            img.setPixel(x, y, qRgba(r, g, b, a));
+        }
+    }
+
+    return img;
 }
 
 QImage ImageConverter::convertARGB555(QByteArray& array, int width, int height, int startByte)
 {
-    //QByteArray tempArray = array.mid(startByte);
-    //QImage img(tempArray, width, height, QImage::Format_RGB555);
+    QImage img(width, height, QImage::Format_ARGB32);
 
-    //return img;
+    img.fill(Qt::transparent);
 
-    return QImage();
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; ++x)
+        {
+            ushort bytes = qFromLittleEndian<qint16>(reinterpret_cast<const uchar *>(array.mid(startByte + y * 2 * height + x * 2, 2).data()));
+
+            uchar a = 255*(bytes & 0b1000000000000000) >> 15;
+            uchar r = 8*(bytes &   0b0111110000000000) >> 10;
+            uchar g = 8*(bytes &   0b0000001111100000) >> 5;
+            uchar b = 8*(bytes &   0b0000000000011111);
+
+            img.setPixel(x, y, qRgba(r, g, b, a));
+        }
+    }
+
+    return img;
 }
 
 QImage ImageConverter::convertNSTC(QByteArray &array, int width, int height, int startByte)
@@ -174,7 +200,6 @@ QByteArray ImageConverter::toNSTC(QImage &image)
             }
         }
     }
-    qDebug() << i << j;
     return data;
 }
 

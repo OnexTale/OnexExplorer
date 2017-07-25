@@ -3,7 +3,7 @@
 #include <QImage>
 #include <QMap>
 #include <QColor>
-#include <QDebug>
+#include <QtEndian>
 
 class ImageConverter
 {

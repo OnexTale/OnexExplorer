@@ -23,14 +23,9 @@ ImageResolution OnexNSipData::getResolution()
 
 void OnexNSipData::onReplace()
 {
-    QString fileName = getOpenDirectory("PNG Image (*.png)");
-    if (fileName.isEmpty())
+    QImage image = importQImageFromSelectedUserFile();
+    if (image.isNull())
         return;
-
-    QFile file(fileName);
-    file.open(QIODevice::ReadOnly);
-    QImage image = QImage::fromData(file.readAll());
-    file.close();
 
     if (!hasGoodResolution(image.width(), image.height()))
         return;

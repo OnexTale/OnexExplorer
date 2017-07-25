@@ -12,6 +12,20 @@ bool OnexTreeImage::hasGoodResolution(int x, int y)
     return (x == currentResolution.x && y == currentResolution.y);
 }
 
+QImage OnexTreeImage::importQImageFromSelectedUserFile()
+{
+    QString fileName = getOpenDirectory("PNG Image (*.png)");
+    if (fileName.isEmpty())
+        return QImage();
+
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly);
+    QImage image = QImage::fromData(file.readAll());
+    file.close();
+
+    return image;
+}
+
 QWidget *OnexTreeImage::onClicked()
 {
     SingleImagePreview* imagePreview = new SingleImagePreview(this->getImage());

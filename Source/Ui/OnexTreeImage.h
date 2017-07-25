@@ -14,6 +14,7 @@ class OnexTreeImage : public OnexTreeZlibItem
     Q_OBJECT
 protected:
     bool hasGoodResolution(int x, int y);
+    QImage importQImageFromSelectedUserFile();
 public:
     OnexTreeImage(QString name, QByteArray content, NosZlibOpener* opener, int id, int creationDate, bool compressed);
 

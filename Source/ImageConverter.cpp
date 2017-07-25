@@ -51,22 +51,6 @@ QImage ImageConverter::convertNSTC(QByteArray &array, int width, int height, int
     QImage img(width, height, QImage::Format_ARGB32);
     img.fill(Qt::transparent);
 
-    QMap<int, QColor> colors;
-    colors[-1] = qRgb(150, 0, 255);
-    colors[0x0] = qRgb(255, 255, 255);
-    colors[0x1] = qRgb(100, 100, 100);
-    colors[0x2] = qRgb(100, 150, 100);
-    colors[0x3] = qRgb(0, 0, 0);
-    colors[0x9] = qRgb(100, 100, 150);
-    colors[0x0a] = qRgb(0, 50, 200);
-    colors[0x0b] = qRgb(150, 100, 100);
-    colors[0x0d] = qRgb(150, 150, 100);
-    colors[0x10] = qRgb(150, 100, 150);
-    colors[0x11] = qRgb(0, 200, 50);
-    colors[0x12] = qRgb(200, 50, 0);
-    colors[0x13] = qRgb(250, 230, 10);
-    //move this list somewhere else?
-
     for (int x = 0; x < width; ++x)
     {
         for (int y = 0; y < height; ++y)
@@ -75,7 +59,7 @@ QImage ImageConverter::convertNSTC(QByteArray &array, int width, int height, int
             if (colors.contains(value))
                 img.setPixel(x, y, colors[value].rgb());
             else
-                img.setPixel(x, y, colors[-1].rgb());
+                img.setPixel(x, y, colors[0xFF].rgb());
         }
     }
 
@@ -167,8 +151,47 @@ QByteArray ImageConverter::toGBAR4444(QImage &image)
     return data;
 }
 
+QByteArray ImageConverter::toNSTC(QImage &image)
+{
+    QByteArray data;
+    int i = 0, j = 0;
+
+    for (int y = 0; y < image.height(); ++y)
+    {
+        for (int x = 0; x < image.width(); ++x)
+        {
+            QRgb currentPixel = image.pixel(x, y);
+            QColor pixColor = qRgb(qRed(currentPixel), qGreen(currentPixel), qBlue(currentPixel));
+            if (colors.values().contains(pixColor))
+            {
+                i++;
+                data.push_back(colors.key(pixColor));
+            }
+            else
+            {
+                j++;
+                data.push_back(0xFF);
+            }
+        }
+    }
+    qDebug() << i << j;
+    return data;
+}
+
 ImageConverter::ImageConverter()
 {
-
+    colors[0x0] = qRgb(255, 255, 255);
+    colors[0x1] = qRgb(100, 100, 100);
+    colors[0x2] = qRgb(100, 150, 100);
+    colors[0x3] = qRgb(0, 0, 0);
+    colors[0x9] = qRgb(100, 100, 150);
+    colors[0x0a] = qRgb(0, 50, 200);
+    colors[0x0b] = qRgb(150, 100, 100);
+    colors[0x0d] = qRgb(150, 150, 100);
+    colors[0x10] = qRgb(150, 100, 150);
+    colors[0x11] = qRgb(0, 200, 50);
+    colors[0x12] = qRgb(200, 50, 0);
+    colors[0x13] = qRgb(250, 230, 10);
+    colors[0xFF] = qRgb(150, 0, 255);
 }
 

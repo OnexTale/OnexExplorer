@@ -21,6 +21,29 @@ ImageResolution OnexNStcData::getResolution()
     return ImageResolution{x, y};
 }
 
+void OnexNStcData::onReplace()
+{
+    QImage image = importQImageFromSelectedUserFile();
+    if (image.isNull())
+        return;
+
+    if (!hasGoodResolution(image.width(), image.height()))
+    {
+        qDebug() << "NStc wrong resolution";
+        return;
+    }
+
+    image = image.scaled(image.width()/2, image.height()/2);
+
+    QByteArray newContent;
+    newContent.push_back(content.mid(0, 4));
+    newContent.push_back(opener->getImageConverter().toNSTC(image));
+
+    content = newContent;
+
+    emit OnexTreeImage::replaceSignal(this->getImage());
+}
+
 OnexNStcData::~OnexNStcData()
 {
 

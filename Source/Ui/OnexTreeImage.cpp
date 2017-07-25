@@ -9,7 +9,7 @@ OnexTreeImage::OnexTreeImage(QString name, QByteArray content, NosZlibOpener *op
 bool OnexTreeImage::hasGoodResolution(int x, int y)
 {
     ImageResolution currentResolution = this->getResolution();
-    return (x == currentResolution.x && y == currentResolution.y);
+    return (x == currentResolution.x*2 && y == currentResolution.y*2);
 }
 
 QImage OnexTreeImage::importQImageFromSelectedUserFile()

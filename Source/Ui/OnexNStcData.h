@@ -11,6 +11,9 @@ public:
     virtual ImageResolution getResolution() override;
 
     virtual ~OnexNStcData();
+
+private slots:
+    virtual void onReplace() override;
 };
 
 #endif // ONEXNSTCDATA_H

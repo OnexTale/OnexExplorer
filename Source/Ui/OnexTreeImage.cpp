@@ -56,7 +56,7 @@ void OnexTreeImage::onExportAll()
 
 void OnexTreeImage::onExportSingle()
 {
-    QString fileName = getSaveDirectory("PNG Image (*.png)");
+    QString fileName = QFileDialog::getSaveFileName(0, tr("Save as..."), this->getName(), tr("PNG Image (*.png)"));
 
     if (fileName.isEmpty())
         return;

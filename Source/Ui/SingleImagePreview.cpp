@@ -31,12 +31,19 @@ void SingleImagePreview::showCustomMenu(const QPoint &pos)
 
 void SingleImagePreview::exportImage()
 {
-    QFileDialog dialog(this, tr("Save image as..."));
-    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    QString fileName = QFileDialog::getSaveFileName(0, tr("Save as..."), "", tr("PNG Image (*.png)"));
 
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save image as..."), QString(), tr("PNG image (.*png"));
+    if (fileName.isEmpty())
+        return;
 
-    ui->imgContent->pixmap()->toImage().save(fileName, "PNG", 100);
+    if (!fileName.endsWith(".png"))
+        fileName += ".png";
+
+    if (ui->imgContent->pixmap()->toImage().save(fileName, "PNG", 100))
+        QMessageBox::information(NULL, "Yeah", "Image exported");
+    else
+        QMessageBox::critical(NULL, "Woops", "Couldn't export that image");
+
 }
 
 void SingleImagePreview::onReplaced(QImage newImage)

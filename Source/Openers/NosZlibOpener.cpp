@@ -50,6 +50,14 @@ OnexTreeItem *NosZlibOpener::createItemFromHeader(int header, QString name, QByt
             return new OnexNStpData(name, array, this, fileId, creationDate, compressed);
         break;
 
+        case NStpeData:
+            return new OnexNStpData(name, array, this, fileId, creationDate, compressed);
+        break;
+
+        case NStpuData:
+            return new OnexNStpData(name, array, this, fileId, creationDate, compressed);
+        break;
+
         default:
             return new OnexTreeZlibItem(name, array, this, fileId, creationDate, compressed);
         break;

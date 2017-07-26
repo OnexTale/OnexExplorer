@@ -12,6 +12,9 @@ public:
     virtual ImageResolution getResolution() override;
 
     virtual ~OnexNS4BbData();
+
+private slots:
+    virtual void onReplace() override;
 };
 
 #endif // ONEXNS4BBDATA_H

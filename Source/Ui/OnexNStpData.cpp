@@ -6,11 +6,16 @@ OnexNStpData::OnexNStpData(QString name, QByteArray content, NosZlibOpener *open
 
 }
 
+int OnexNStpData::getFormat()
+{
+    return content.at(4);
+}
+
 QImage OnexNStpData::getImage()
 {
     ImageResolution resolution = this->getResolution();
 
-    int format = content.at(4);
+    int format = this->getFormat();
 
     if (format == 0)
         return opener->getImageConverter().convertGBAR4444(content, resolution.x, resolution.y, 8);
@@ -34,6 +39,34 @@ ImageResolution OnexNStpData::getResolution()
 }
 
 OnexNStpData::~OnexNStpData()
+{
+    QImage image = importQImageFromSelectedUserFile();
+    if (image.isNull())
+        return;
+
+    if (!hasGoodResolution(image.width(), image.height()))
+        return;
+
+    int format = this->getFormat();
+
+    if (format < 0 || format > 2)
+        return;
+
+    QByteArray newContent;
+    newContent.push_back(content.mid(0, 8));
+    if (format == 0)
+        newContent.push_back(opener->getImageConverter().toGBAR4444(image));
+    else if (format == 1)
+        newContent.push_back(opener->getImageConverter().toARGB555(image));
+    else if (format == 2)
+        newContent.push_back(opener->getImageConverter().toBGRA8888(image));
+
+    content = newContent;
+
+    emit OnexTreeImage::replaceSignal(this->getImage());
+}
+
+void OnexNStpData::onReplace()
 {
 
 }

@@ -31,7 +31,7 @@ OnexNS4BbData::~OnexNS4BbData()
         return;
 
     QByteArray newContent;
-    //newContent.push_back(content.mid(0, 13));
+    newContent.push_back(content.mid(0, 4));
     newContent.push_back(opener->getImageConverter().toBGRA8888_INTERLACED(image));
 
     content = newContent;

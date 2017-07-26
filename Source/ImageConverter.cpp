@@ -203,6 +203,26 @@ QByteArray ImageConverter::toNSTC(QImage &image)
     return data;
 }
 
+QByteArray ImageConverter::toBGRA8888(QImage &image)
+{
+    return QByteArray();
+}
+
+QByteArray ImageConverter::toARGB555(QImage &image)
+{
+    return QByteArray();
+}
+
+QByteArray ImageConverter::toBGRA8888_INTERLACED(QImage &image)
+{
+    return QByteArray();
+}
+
+QByteArray ImageConverter::toBARG4444(QImage &image)
+{
+    return QByteArray();
+}
+
 ImageConverter::ImageConverter()
 {
     colors[0x0] = qRgb(255, 255, 255);

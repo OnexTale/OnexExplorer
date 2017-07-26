@@ -42,7 +42,7 @@ void MainWindow::onCustomMenuShow(const QPoint &point)
         return;
     qDebug() << contextMenu->height();
     //QPoint centerPoint(point.x() + contextMenu->width()/2, point.y() + contextMenu->height()/2);
-    contextMenu->exec(mapToGlobal(point));
+    contextMenu->exec(QCursor::pos());
 }
 
 void MainWindow::clearMenu()

@@ -26,7 +26,7 @@ void SingleImagePreview::showCustomMenu(const QPoint &pos)
     connect(&exportAction, SIGNAL(triggered()), this, SLOT(exportImage()));
     contextMenu.addAction(&exportAction);
 
-    contextMenu.exec(mapToGlobal(pos));
+    contextMenu.exec(QCursor::pos());
 }
 
 void SingleImagePreview::exportImage()

@@ -38,7 +38,7 @@ ImageResolution OnexNStpData::getResolution()
     return ImageResolution{x, y};
 }
 
-OnexNStpData::~OnexNStpData()
+void OnexNStpData::onReplace()
 {
     QImage image = importQImageFromSelectedUserFile();
     if (image.isNull())
@@ -66,7 +66,7 @@ OnexNStpData::~OnexNStpData()
     emit OnexTreeImage::replaceSignal(this->getImage());
 }
 
-void OnexNStpData::onReplace()
+OnexNStpData::~OnexNStpData()
 {
 
 }

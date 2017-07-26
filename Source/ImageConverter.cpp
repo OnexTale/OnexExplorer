@@ -60,10 +60,10 @@ QImage ImageConverter::convertARGB555(QByteArray& array, int width, int height, 
         {
             ushort bytes = qFromLittleEndian<qint16>(reinterpret_cast<const uchar *>(array.mid(startByte + y * 2 * height + x * 2, 2).data()));
 
-            uchar a = 255*(bytes & 0b1000000000000000) >> 15;
-            uchar r = 8*(bytes &   0b0111110000000000) >> 10;
-            uchar g = 8*(bytes &   0b0000001111100000) >> 5;
-            uchar b = 8*(bytes &   0b0000000000011111);
+            uchar a = 255*(bytes & 0x8000) >> 15; // 0x8000 = 0b1000000000000000
+            uchar r = 8*(bytes &   0x7C00) >> 10; // 0x7C00 = 0b0111110000000000
+            uchar g = 8*(bytes &   0x3E0) >> 5; //0x3E0 = 0b0000001111100000
+            uchar b = 8*(bytes &   0x1F); // 0x1F = 0b0000000000011111
 
             img.setPixel(x, y, qRgba(r, g, b, a));
         }

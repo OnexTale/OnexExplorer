@@ -23,5 +23,23 @@ ImageResolution OnexNS4BbData::getResolution()
 
 OnexNS4BbData::~OnexNS4BbData()
 {
+    QImage image = importQImageFromSelectedUserFile();
+    if (image.isNull())
+        return;
+
+    if (!hasGoodResolution(image.width(), image.height()))
+        return;
+
+    QByteArray newContent;
+    //newContent.push_back(content.mid(0, 13));
+    newContent.push_back(opener->getImageConverter().toBGRA8888_INTERLACED(image));
+
+    content = newContent;
+
+    emit OnexTreeImage::replaceSignal(this->getImage());
+}
+
+void OnexNS4BbData::onReplace()
+{
 
 }

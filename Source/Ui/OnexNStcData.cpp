@@ -27,13 +27,13 @@ void OnexNStcData::onReplace()
     if (image.isNull())
         return;
 
+    image = image.scaled(image.width()/2, image.height()/2);
+
     if (!hasGoodResolution(image.width(), image.height()))
     {
         qDebug() << "NStc wrong resolution";
         return;
     }
-
-    image = image.scaled(image.width()/2, image.height()/2);
 
     QByteArray newContent;
     newContent.push_back(content.mid(0, 4));

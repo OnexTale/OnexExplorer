@@ -21,7 +21,7 @@ ImageResolution OnexNS4BbData::getResolution()
     return ImageResolution{x, y};
 }
 
-OnexNS4BbData::~OnexNS4BbData()
+void OnexNS4BbData::onReplace()
 {
     QImage image = importQImageFromSelectedUserFile();
     if (image.isNull())
@@ -39,7 +39,9 @@ OnexNS4BbData::~OnexNS4BbData()
     emit OnexTreeImage::replaceSignal(this->getImage());
 }
 
-void OnexNS4BbData::onReplace()
+OnexNS4BbData::~OnexNS4BbData()
 {
 
 }
+
+

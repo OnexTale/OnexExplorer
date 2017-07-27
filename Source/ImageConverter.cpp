@@ -103,31 +103,28 @@ QImage ImageConverter::convertBGRA8888_INTERLACED(QByteArray &array, int width, 
     QImage img(width, height, QImage::Format_RGBA8888);
     img.fill(Qt::transparent);
 
-    short num = 0,
-            x = 0,
-            y = 0;
+    short num = 0, x = 0, y = 0;
     for (int i = 0; i < array.size() - startByte;)
-    {
-        uchar b = array.at(startByte + i++);
-        uchar g = array.at(startByte + i++);
-        uchar r = array.at(startByte + i++);
-        uchar a = array.at(startByte + i++);
-        img.setPixel(x, y, qRgba(r, g, b, a));
+         {
+             uchar b = array.at(startByte + i++);
+             uchar g = array.at(startByte + i++);
+             uchar r = array.at(startByte + i++);
+             uchar a = array.at(startByte + i++);
+             img.setPixel(x, y, qRgba(r, g, b, a));
 
-        x++;
-        if (x == (num + 256) || x == width)
-        {
-            x = num;
-            y++;
-        }
-        if (y == height)
-        {
-            y = 0;
-            num += 256;
-            x = num;
-        }
-    }
-
+             x++;
+             if (x == (num + 256) || x == width)
+             {
+                 x = num;
+                 y++;
+             }
+             if (y == height)
+             {
+                 y = 0;
+                 num += 256;
+                 x = num;
+             }
+         }
     return img;
 }
 
@@ -269,7 +266,36 @@ QByteArray ImageConverter::toARGB555(QImage &image)
 QByteArray ImageConverter::toBGRA8888_INTERLACED(QImage &image)
 {
     qDebug() << "Replaced BGRA8888_INTERLACED image.";
-    return QByteArray();
+    QByteArray data;
+
+    short num = 0, x = 0, y = 0;
+    for (int i = 0; i < image.width()*image.height(); i++)
+    {
+        QRgb currentPixel = image.pixel(x, y);
+        uchar b = qBlue(currentPixel);
+        uchar g = qGreen(currentPixel);
+        uchar r = qRed(currentPixel);
+        uchar a = qAlpha(currentPixel);
+        data.push_back(b);
+        data.push_back(g);
+        data.push_back(r);
+        data.push_back(a);
+
+        x++;
+        if (x == (num + 256) || x == image.width())
+        {
+            x = num;
+            y++;
+        }
+        if (y == image.height())
+        {
+            y = 0;
+            num += 256;
+            x = num;
+        }
+    }
+
+    return data;
 }
 
 QByteArray ImageConverter::toBARG4444(QImage &image)

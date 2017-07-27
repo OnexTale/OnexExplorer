@@ -20,6 +20,8 @@ SingleImagePreview::~SingleImagePreview()
 
 void SingleImagePreview::showCustomMenu(const QPoint &pos)
 {
+    Q_UNUSED(pos);
+
     QMenu contextMenu(this);
 
     QAction exportAction("Export", this);

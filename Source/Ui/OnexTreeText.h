@@ -4,6 +4,9 @@
 
 class OnexTreeText : public OnexTreeItem
 {
+private:
+    int fileNmber;
+    int isDat;
 public:
     OnexTreeText(QString name, int fileNumber = 0, int isDat = 0, QByteArray content = QByteArray());
     virtual QWidget* onClicked() override;

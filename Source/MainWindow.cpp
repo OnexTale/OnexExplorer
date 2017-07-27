@@ -26,6 +26,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::onCustomMenuShow(const QPoint &point)
 {
+    Q_UNUSED(point);
+
     if (contextMenu)
     {
         clearMenu();
@@ -41,7 +43,6 @@ void MainWindow::onCustomMenuShow(const QPoint &point)
     if (contextMenu->isEmpty())
         return;
     qDebug() << contextMenu->height();
-    //QPoint centerPoint(point.x() + contextMenu->width()/2, point.y() + contextMenu->height()/2);
     contextMenu->exec(QCursor::pos());
 }
 
@@ -127,6 +128,8 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *e)
 
 void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int column)
 {
+    Q_UNUSED(column);
+
     OnexTreeItem* item = static_cast<OnexTreeItem*>(treeItem);
 
     if (item->childCount() != 0)

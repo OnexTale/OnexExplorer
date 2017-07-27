@@ -3,7 +3,8 @@
 
 OnexTreeText::OnexTreeText(QString name, int fileNumber, int isDat, QByteArray content) : OnexTreeItem(name, content)
 {
-
+    this->fileNmber = fileNumber;
+    this->isDat = isDat;
 }
 
 QWidget *OnexTreeText::onClicked()

@@ -108,7 +108,6 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
            data.push_front(bigEndian);
            data = decryptor.decrypt(data);
         }
-        else qDebug() << "lool";
 
         item->addChild(createItemFromHeader(ntHeaderNumber, QString::number(id), data, id, creationDate, isCompressed));
         file.seek(previousOffset);

@@ -256,8 +256,8 @@ QByteArray ImageConverter::toARGB555(QImage &image)
 
             ushort bytes = (alpha << 15) | (red << 10) | (green << 5) | (blue);
 
-            uchar first = bytes & 0xFF00;
-            uchar second = bytes & 0x00FF;
+            uchar first = bytes >> 8;
+            uchar second = bytes & 0xFF;
             data.push_back(second);
             data.push_back(first);
         }

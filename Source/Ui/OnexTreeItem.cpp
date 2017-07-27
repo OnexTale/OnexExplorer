@@ -16,9 +16,9 @@ QString OnexTreeItem::getSelectedDirectory()
     return dir + "/";
 }
 
-QString OnexTreeItem::getSaveDirectory(QString filter)
+QString OnexTreeItem::getSaveDirectory(QString name, QString filter)
 {
-    return QFileDialog::getSaveFileName(0, tr("Save as..."), "", filter);
+    return QFileDialog::getSaveFileName(0, tr("Save as..."), name, filter);
 }
 
 QString OnexTreeItem::getOpenDirectory(QString filter)
@@ -100,7 +100,7 @@ void OnexTreeItem::onExportSingle()
 
 void OnexTreeItem::onExporSingleRaw()
 {
-    QString fileName = getSaveDirectory("Raw data (*.rawdata)");
+    QString fileName = getSaveDirectory(this->getName(), "Raw data (*.rawdata)");
     if (fileName.isEmpty())
         return;
 

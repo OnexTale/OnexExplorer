@@ -17,7 +17,7 @@ QWidget *OnexTreeZlibItem::onClicked()
 
 void OnexTreeZlibItem::onExporAsOriginal()
 {
-    QString fileName = getSaveDirectory("NOS Archive (*.NOS)");
+    QString fileName = getSaveDirectory(this->getName(), "NOS Archive (*.NOS)");
 
     if (fileName.isEmpty())
         return;

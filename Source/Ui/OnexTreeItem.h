@@ -15,7 +15,7 @@ protected:
     QString name;
 
     QString getSelectedDirectory();
-    QString getSaveDirectory(QString filter);
+    QString getSaveDirectory(QString name, QString filter);
     QString getOpenDirectory(QString filter);
     QMessageBox getMsgBox(QString title, QString message, QMessageBox::Icon icon);
 public:

@@ -167,6 +167,8 @@ void MainWindow::on_actionReplace_triggered()
         if(item->hasParent()){
 
             item->onReplace();
+        }else{
+            QMessageBox::information(NULL, tr("Info"), tr("Select correct file not *.NOS"));
         }
     }else{
         QMessageBox::information(NULL, tr("Info"), tr("Select file first"));
@@ -180,6 +182,8 @@ void MainWindow::on_actionExport_triggered()
         if(item->hasParent()){
 
             item->onExportSingle();
+        }else{
+            QMessageBox::information(NULL, tr("Info"), tr("Select correct file not *.NOS"));
         }
     }else{
         QMessageBox::information(NULL, tr("Info"), tr("Select file first"));
@@ -205,7 +209,7 @@ void MainWindow::on_actionSave_as_triggered()
         if(!item->hasParent()){
             item->onExporAsOriginal();
         }else{
-            QMessageBox::information(NULL, tr("Info"), tr("Select .NOS file first"));
+            QMessageBox::information(NULL, tr("Info"), tr("Select correct *.NOS file"));
         }
     }else{
         QMessageBox::information(NULL, tr("Info"), tr("Select .NOS file first"));

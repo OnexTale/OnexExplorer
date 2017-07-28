@@ -38,6 +38,16 @@ private slots:
 
     void on_actionOptions_triggered();
 
+    void on_actionReplace_triggered();
+
+    void on_actionImport_triggered();
+
+    void on_actionExport_triggered();
+
+    void on_actionAbout_triggered();
+
+    void on_actionSave_as_triggered();
+
 private:
     Ui::MainWindow *ui;
     NosTextOpener textOpener;

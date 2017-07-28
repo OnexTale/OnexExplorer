@@ -64,6 +64,10 @@ QMenu *OnexTreeItem::getContextMenu()
         contextMenu->addAction(exportOriginalAction);
         QObject::connect(exportOriginalAction, SIGNAL(triggered(bool)), this, SLOT(onExporAsOriginal()));
 
+        QAction* closeThisItem = new QAction(QObject::tr("Close"), contextMenu);
+        contextMenu->addAction(closeThisItem);
+        QObject::connect(closeThisItem, SIGNAL(triggered(bool)), this, SLOT(actionClose()));
+
     }
     else
     {
@@ -124,4 +128,12 @@ void OnexTreeItem::onExporAsOriginal()
 void OnexTreeItem::onReplace()
 {
     QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
+}
+
+void OnexTreeItem::actionClose()
+{
+    QList<QTreeWidgetItem*> selectedItems = this->treeWidget()->selectedItems();
+
+    foreach (auto& item, selectedItems)
+        delete item;
 }

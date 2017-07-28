@@ -43,5 +43,3 @@ OnexNS4BbData::~OnexNS4BbData()
 {
 
 }
-
-

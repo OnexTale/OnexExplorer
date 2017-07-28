@@ -30,12 +30,13 @@ public:
     virtual QWidget *onClicked() = 0;
     virtual ~OnexTreeItem();
 
-private slots:
+public slots:
     virtual void onExportAll();
     virtual void onExportSingle();
     virtual void onExporSingleRaw();
     virtual void onExporAsOriginal();
     virtual void onReplace();
+    virtual void actionClose();
 };
 
 #endif // ONEXTREEITEM_H

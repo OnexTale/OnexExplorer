@@ -159,6 +159,59 @@ void MainWindow::on_actionClose_selected_triggered()
         delete item;
 }
 
+void MainWindow::on_actionReplace_triggered()
+{
+    if(ui->treeWidget->currentItem()){
+
+        OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
+        if(item->hasParent()){
+
+            item->onReplace();
+        }
+    }else{
+        QMessageBox::information(NULL, tr("Info"), tr("Select file first"));
+    }
+}
+void MainWindow::on_actionExport_triggered()
+{
+    if(ui->treeWidget->currentItem()){
+
+        OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
+        if(item->hasParent()){
+
+            item->onExportSingle();
+        }
+    }else{
+        QMessageBox::information(NULL, tr("Info"), tr("Select file first"));
+    }
+}
+void MainWindow::on_actionImport_triggered()
+{
+    QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    QMessageBox::information(NULL, tr("About Project"), tr("OnexExplorer is an open-source tool for unpacking and repacking .NOS data files from game called NosTale. "
+                                                     "<br>It can open almost all .NOS files and show the data stored in them."
+                                                     "<br>GitHub: <a href='https://github.com/OnexTale/OnexExplorer'>https://github.com/OnexTale/OnexExplorer</a>"));
+}
+
+void MainWindow::on_actionSave_as_triggered()
+{
+    if(ui->treeWidget->currentItem()){
+
+        OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
+        if(!item->hasParent()){
+            item->onExporAsOriginal();
+        }else{
+            QMessageBox::information(NULL, tr("Info"), tr("Select .NOS file first"));
+        }
+    }else{
+        QMessageBox::information(NULL, tr("Info"), tr("Select .NOS file first"));
+    }
+}
+
 void MainWindow::on_actionExit_triggered()
 {
     QMessageBox::StandardButton message = QMessageBox::question(this, "",

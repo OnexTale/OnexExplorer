@@ -86,7 +86,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -96,8 +96,9 @@
     <addaction name="actionOpen"/>
     <addaction name="actionSave_as"/>
     <addaction name="separator"/>
-    <addaction name="actionClose_all"/>
     <addaction name="actionClose_selected"/>
+    <addaction name="actionClose_all"/>
+    <addaction name="actionClose_windows"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -147,7 +148,7 @@
   </action>
   <action name="actionClose_selected">
    <property name="text">
-    <string>Close selected</string>
+    <string>Close selected item</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
@@ -207,7 +208,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Close all</string>
+    <string>Close all items</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+W</string>
@@ -224,6 +225,14 @@
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="actionClose_windows">
+   <property name="text">
+    <string>Close all windows</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+W</string>
    </property>
   </action>
  </widget>

@@ -249,3 +249,8 @@ void MainWindow::on_actionOptions_triggered()
     FileInfo dialog(item);
     dialog.exec();
 }
+
+void MainWindow::on_actionClose_windows_triggered()
+{
+    ui->mdiArea->closeAllSubWindows();
+}

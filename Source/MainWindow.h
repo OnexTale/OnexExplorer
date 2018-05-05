@@ -10,6 +10,7 @@
 #include "Ui/FileInfo.h"
 #include "Openers/NosTextOpener.h"
 #include "Openers/NosZlibOpener.h"
+#include "Openers/NosCCInfOpener.h"
 #include "Ui/SingleImagePreview.h"
 namespace Ui {
 class MainWindow;
@@ -54,11 +55,12 @@ private:
     Ui::MainWindow *ui;
     NosTextOpener textOpener;
     NosZlibOpener zlibOpener;
+    NosCCInfOpener ccinfOpener;
     QMenu* contextMenu = nullptr;
 
     void openFile(QString path);
     void handleOpenResults(OnexTreeItem* item);
-    bool hasValidHeader(QFile& file);
+    int hasValidHeader(QFile& file);
 
     virtual void dropEvent(QDropEvent *e) override;
     virtual void dragEnterEvent(QDragEnterEvent *e) override;

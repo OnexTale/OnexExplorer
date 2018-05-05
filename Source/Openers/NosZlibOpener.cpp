@@ -4,6 +4,7 @@
 #include "../Ui/OnexNS4BbData.h"
 #include "../Ui/OnexNStcData.h"
 #include "../Ui/OnexNStpData.h"
+#include "../Ui/OnexNSmpData.h"
 
 
 QByteArray NosZlibOpener::toBigEndian(qint32 value)
@@ -22,8 +23,8 @@ int NosZlibOpener::getNTHeaderNumber(QByteArray &array)
         return array.mid(8, 2).toInt();
     else if (array.mid(0, 10) == "32GBS V1.0")
         return 101;
-    else if (array.mid(0, 11) == "CCINF V1.20")
-        return 102;
+    //else if (array.mid(0, 11) == "CCINF V1.20")
+    //    return 102;
     else if (array.mid(0, 10) == "ITEMS V1.0")
         return 103;
     else
@@ -47,15 +48,14 @@ OnexTreeItem *NosZlibOpener::createItemFromHeader(int header, QString name, QByt
         break;
 
         case NStpData:
-            return new OnexNStpData(name, array, this, fileId, creationDate, compressed);
-        break;
-
         case NStpeData:
-            return new OnexNStpData(name, array, this, fileId, creationDate, compressed);
-        break;
-
         case NStpuData:
             return new OnexNStpData(name, array, this, fileId, creationDate, compressed);
+        break;
+
+        case NSmpData:
+        case NSppData:
+            return new OnexNSmpData(name, array, this, fileId, creationDate, compressed);
         break;
 
         default:
@@ -76,7 +76,6 @@ ImageConverter &NosZlibOpener::getImageConverter()
 
 OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
 {
-
     file.seek(0);
 
     QByteArray header = file.read(NOS_HEADER_SIZE);

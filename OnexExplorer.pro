@@ -43,7 +43,9 @@ SOURCES += \
     Source/Ui/OnexNSipData.cpp \
     Source/Ui/OnexNS4BbData.cpp \
     Source/Ui/OnexNStcData.cpp \
-    Source/Ui/OnexNStpData.cpp
+    Source/Ui/OnexNStpData.cpp \
+    Source/Openers/NosCCInfOpener.cpp \
+    Source/Ui/OnexNSmpData.cpp
 
 HEADERS  += \
     Source/Decryptors/NosTextDatFileDecryptor.h \
@@ -67,7 +69,9 @@ HEADERS  += \
     Source/Ui/OnexNSipData.h \
     Source/Ui/OnexNS4BbData.h \
     Source/Ui/OnexNStcData.h \
-    Source/Ui/OnexNStpData.h
+    Source/Ui/OnexNStpData.h \
+    Source/Openers/NosCCInfOpener.h \
+    Source/Ui/OnexNSmpData.h
 
 FORMS    += \
     Source/mainwindow.ui \

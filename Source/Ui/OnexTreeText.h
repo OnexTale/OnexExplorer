@@ -16,6 +16,9 @@ public:
     virtual ~OnexTreeText();
     int getFileNmber() const;
     int getIsDat() const;
+public slots:
+    virtual void onExportSingle();
+    virtual void onExportAll();
 };
 
 #endif // ONEXTREETEXT_H

@@ -169,8 +169,6 @@ void MainWindow::on_actionReplace_triggered()
 
         OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
         if(item->hasParent()){
-
-            item->onReplace();
         }else{
             QMessageBox::information(NULL, tr("Info"), tr("Select correct file not *.NOS"));
         }
@@ -209,7 +207,7 @@ void MainWindow::on_actionSave_as_triggered()
 {
     if(ui->treeWidget->currentItem()){
 
-        OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
+        OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem()->parent());
         if(!item->hasParent()){
             item->onExporAsOriginal();
         }else{

@@ -131,7 +131,7 @@ void OnexTreeItem::onExporAsOriginal()
 
 void OnexTreeItem::onReplace()
 {
-    QString fileName = getSaveDirectory(this->getName(), "All files (*.*)");
+    QString fileName = getOpenDirectory("All files (*.*)");
     QFile file(fileName);
     if (file.open(QIODevice::ReadOnly))
         this->content = file.readAll();

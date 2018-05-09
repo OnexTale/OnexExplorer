@@ -66,12 +66,12 @@ void OnexTreeText::onExportSingle()
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly))
     {
-        QMessageBox::information(NULL, "Yeah", "Image exported");
+        QMessageBox::information(NULL, "Yeah", "Text file exported");
         file.write(content);
         file.close();
     }
     else
-        QMessageBox::critical(NULL, "Woops", "Couldn't export that image");
+        QMessageBox::critical(NULL, "Woops", "Couldn't export that text file");
 }
 
 void OnexTreeText::onExportAll()

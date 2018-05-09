@@ -6,8 +6,10 @@ SingleTextFilePreview::SingleTextFilePreview(QByteArray &item, QWidget *parent) 
     ui(new Ui::SingleTextFilePreview)
 {
     ui->setupUi(this);
+
     QTextCodec *codec = QTextCodec::codecForName("Windows-1250");
     QString encodeContent = codec->toUnicode(item);
+
     ui->plainTextEdit->appendPlainText(encodeContent);
 }
 

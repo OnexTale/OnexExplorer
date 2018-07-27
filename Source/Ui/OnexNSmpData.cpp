@@ -8,12 +8,12 @@ OnexNSmpData::OnexNSmpData(QString name, QByteArray content, NosZlibOpener *open
 
 QImage OnexNSmpData::getImage()
 {
-
+    return QImage();
 }
 
 ImageResolution OnexNSmpData::getResolution()
 {
-
+    return ImageResolution();
 }
 
 OnexNSmpData::~OnexNSmpData()

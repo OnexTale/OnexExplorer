@@ -1,6 +1,8 @@
 #ifndef NOSTEXTOTHERSFILEDECRYPTOR_H
 #define NOSTEXTOTHERSFILEDECRYPTOR_H
 #include "INosDecryptor.h"
+#include <QtEndian>
+#include <QDebug>
 
 class NosTextOthersFileDecryptor : public INosDecryptor
 {

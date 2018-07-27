@@ -20,8 +20,11 @@ OnexTreeItem *NosTextOpener::decrypt(QFile &file)
         int isDat = readNextInt(file);
         int fileSize = readNextInt(file);
         QByteArray fileContent = file.read(fileSize);
-
-        QByteArray decryptedArray = datDecryptor.decrypt(fileContent);
+        QByteArray decryptedArray;
+        if (isDat)
+            decryptedArray = datDecryptor.decrypt(fileContent);
+        else    //.lst
+            decryptedArray = lstDecryptor.decrypt(fileContent);
 
         item->addChild(new OnexTreeText(stringName, this, fileNumber, isDat, decryptedArray));
     }

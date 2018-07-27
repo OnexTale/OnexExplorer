@@ -16,9 +16,10 @@ OnexTreeItem *NosCCInfOpener::decrypt(QFile &file)
     file.read(1);   //0x00
     int fileAmount = readNextInt(file);
     qDebug() << fileAmount;
+    return NULL;
 }
 
 QByteArray NosCCInfOpener::encrypt(OnexTreeItem *item)
 {
-
+    return QByteArray();
 }

@@ -55,13 +55,20 @@ void OnexTreeText::onExporAsOriginal()
 
 void OnexTreeText::onExportSingle()
 {
-    QString fileName = getSaveDirectory(this->getName(), "Text documents (*.txt)");
+    QString fileExtension;
+    QString fileName = this->getName();
+
+    if (fileName.endsWith(".txt"))
+        fileExtension = "Text documents (*.txt)";
+    if (fileName.endsWith(".dat"))
+        fileExtension = "Text documents (*.dat)";
+    if (fileName.endsWith(".lst"))
+        fileExtension = "Text documents (*.lst)";
+
+    fileName = getSaveDirectory(fileName, fileExtension);
 
     if (fileName.isEmpty())
         return;
-
-    if (!fileName.endsWith(".txt"))
-        fileName += ".txt";
 
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly))
@@ -84,7 +91,7 @@ void OnexTreeText::onExportAll()
     for (int i = 0; i != this->childCount(); ++i)
     {
         OnexTreeText* item = static_cast<OnexTreeText*>(this->child(i));
-        QFile file(directory + item->getName() + ".txt");
+        QFile file(directory + item->getName());
         if (file.open(QIODevice::WriteOnly))
         {
             file.write(item->content);

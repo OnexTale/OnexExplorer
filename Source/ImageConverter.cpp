@@ -13,8 +13,8 @@ QImage ImageConverter::convertGBAR4444(QByteArray &array, int width, int height,
     {
         for (int x = 0; x < width; ++x)
         {
-            uchar gb = array.at(startByte + y * 2 * height + x * 2);
-            uchar ar = array.at(startByte + y * 2 * height + x * 2 + 1);
+            uchar gb = array.at(startByte + y * 2 * width + x * 2);
+            uchar ar = array.at(startByte + y * 2 * width + x * 2 + 1);
 
             uchar g = gb >> 4;
             uchar b = gb & 0xF;
@@ -39,10 +39,10 @@ QImage ImageConverter::convertBGRA8888(QByteArray &array, int width, int height,
     {
         for (int x = 0; x < width; ++x)
         {
-            uchar b = array.at(startByte + y * 4 * height + x * 4);
-            uchar g = array.at(startByte + y * 4 * height + x * 4 + 1);
-            uchar r = array.at(startByte + y * 4 * height + x * 4 + 2);
-            uchar a = array.at(startByte + y * 4 * height + x * 4 + 3);
+            uchar b = array.at(startByte + y * 4 * width + x * 4);
+            uchar g = array.at(startByte + y * 4 * width + x * 4 + 1);
+            uchar r = array.at(startByte + y * 4 * width + x * 4 + 2);
+            uchar a = array.at(startByte + y * 4 * width + x * 4 + 3);
 
             img.setPixel(x, y, qRgba(r, g, b, a));
         }
@@ -62,7 +62,7 @@ QImage ImageConverter::convertARGB555(QByteArray& array, int width, int height, 
     {
         for (int x = 0; x < width; ++x)
         {
-            ushort bytes = qFromLittleEndian<qint16>(reinterpret_cast<const uchar *>(array.mid(startByte + y * 2 * height + x * 2, 2).data()));
+            ushort bytes = qFromLittleEndian<qint16>(reinterpret_cast<const uchar *>(array.mid(startByte + y * 2 * width + x * 2, 2).data()));
 
             uchar a = 255*(bytes & 0x8000) >> 15; // 0x8000 = 0b1000000000000000
             uchar r = 8*(bytes &   0x7C00) >> 10; // 0x7C00 = 0b0111110000000000
@@ -140,8 +140,8 @@ QImage ImageConverter::convertBARG4444(QByteArray &array, int width, int height,
     {
         for (int x = 0; x < width; ++x)
         {
-            uchar ba = array.at(startByte + y * 2 * height + x * 2);
-            uchar rg = array.at(startByte + y * 2 * height + x * 2 + 1);
+            uchar ba = array.at(startByte + y * 2 * width + x * 2);
+            uchar rg = array.at(startByte + y * 2 * width + x * 2 + 1);
 
             uchar b = ba >> 4;
             uchar a = ba & 0xF;

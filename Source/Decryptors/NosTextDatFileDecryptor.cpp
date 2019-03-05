@@ -37,19 +37,17 @@ NosTextDatFileDecryptor::NosTextDatFileDecryptor() :
 
 QByteArray NosTextDatFileDecryptor::encrypt(QByteArray &array)
 {
-    //array.push_back(0x0A);
     std::vector<unsigned char> mask = getMask(array);
     QByteArray string;
 
     int iterator = 0;
     int size = mask.size();
     unsigned char switchByte = 0;
-    //zero na koncu?
 
     while (iterator < size)
     {
         int len = iterator;
-        while (iterator < mask.size() && mask.at(iterator) == 0x30)
+        while ((iterator < mask.size() && mask.at(iterator) == 0x30) || (iterator + 1 == mask.size()) || (iterator + 2 == mask.size()) || (iterator + 1 < mask.size() && mask.at(iterator + 1) == 0x30) || (iterator + 2 < mask.size() && mask.at(iterator + 2) == 0x30))
             ++iterator;
 
         if (iterator > len)
@@ -57,18 +55,16 @@ QByteArray NosTextDatFileDecryptor::encrypt(QByteArray &array)
             for (int j = iterator - len; j > 0; j -= 0x7E)
             {
                 int checker = j;
-                if (checker > 0x7E)
+                if (checker > 0x7E) {
                     checker = 0x7E;
+                }
 
                 string.push_back(checker);
-                //for (string[v15] = checker; checker > 0; --checker)
                 for (; checker > 0; --checker)
                 {
-                    //v15++;
                     unsigned char byteToAdd = array[len] ^ 0x33;
                     len++;
                     string.push_back(byteToAdd);
-                    //string[v15] =
                 }
             }
         }

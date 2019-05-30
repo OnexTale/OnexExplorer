@@ -5,7 +5,7 @@ std::vector<unsigned char> NosTextDatFileDecryptor::getMask(QByteArray &array)
     std::vector<unsigned char> mask(array.size(), 0x30);
     for (std::size_t i = 0; i < mask.size(); i++)
     {
-        unsigned char ch = array[i];
+        unsigned char ch = array.at(i);
         if (!ch)
             break;
 

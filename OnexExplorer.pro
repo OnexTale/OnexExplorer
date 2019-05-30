@@ -24,9 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-    Source/Ui/MultiFileSelection.cpp \
     Source/Ui/OnexNSmpFrame.cpp \
-    Source/Ui/OnexSubFiles.cpp \
     Source/main.cpp \
     Source/Decryptors/NosTextDatFileDecryptor.cpp \
     Source/Openers/NosTextOpener.cpp \
@@ -79,8 +77,6 @@ HEADERS  += \
     Source/Ui/OnexNSmpData.h
 
 FORMS    += \
-    Source/Ui/MultiFileSelection.ui \
-    Source/Ui/multifileselection.ui \
     Source/mainwindow.ui \
     Source/Ui/SingleTextFilePreview.ui \
     Source/Ui/SingleImagePreview.ui \

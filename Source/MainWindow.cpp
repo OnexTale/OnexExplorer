@@ -207,7 +207,12 @@ void MainWindow::on_actionSave_as_triggered()
 {
     if(ui->treeWidget->currentItem()){
         
-        OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem()->parent());
+        OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
+        while(item->hasParent())
+        {
+            item = static_cast<OnexTreeItem*>(item->QTreeWidgetItem::parent());
+        }
+
         if(!item->hasParent()){
             item->onExporAsOriginal();
         }else{

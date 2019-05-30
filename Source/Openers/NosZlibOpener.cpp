@@ -35,31 +35,31 @@ OnexTreeItem *NosZlibOpener::createItemFromHeader(int header, QString name, QByt
 {
     switch (header)
     {
-        case NSipData:
-            return new OnexNSipData(name, array, this, fileId, creationDate, compressed);
+    case NSipData:
+        return new OnexNSipData(name, array, this, fileId, creationDate, compressed);
         break;
 
-        case NS4BbData:
-            return new OnexNS4BbData(name, array, this, fileId, creationDate, compressed);
+    case NS4BbData:
+        return new OnexNS4BbData(name, array, this, fileId, creationDate, compressed);
         break;
 
-        case NStcData:
-            return new OnexNStcData(name, array, this, fileId, creationDate, compressed);
+    case NStcData:
+        return new OnexNStcData(name, array, this, fileId, creationDate, compressed);
         break;
 
-        case NStpData:
-        case NStpeData:
-        case NStpuData:
-            return new OnexNStpData(name, array, this, fileId, creationDate, compressed);
+    case NStpData:
+    case NStpeData:
+    case NStpuData:
+        return new OnexNStpData(name, array, this, fileId, creationDate, compressed);
         break;
 
-        case NSmpData:
-        case NSppData:
-            return new OnexNSmpData(name, array, this, fileId, creationDate, compressed);
+    case NSmpData:
+    case NSppData:
+        return new OnexNSmpData(name, array, this, fileId, creationDate, compressed);
         break;
 
-        default:
-            return new OnexTreeZlibItem(name, array, this, fileId, creationDate, compressed);
+    default:
+        return new OnexTreeZlibItem(name, array, this, fileId, creationDate, compressed);
         break;
     }
 }
@@ -83,7 +83,7 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
     int ntHeaderNumber = getNTHeaderNumber(header);
     int fileAmount = readNextInt(file);
 
-    OnexTreeItem *item = createItemFromHeader(ntHeaderNumber, neatFileName(file.fileName()), header);
+    OnexTreeItem *item = new OnexTreeZlibItem(neatFileName(file.fileName()), header, this, 0, 0,0);
 
     QByteArray separatorByte = file.read(1);
 
@@ -103,9 +103,9 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
         QByteArray data = file.read(compressedDataSize);
         if (isCompressed)
         {
-           QByteArray bigEndian = toBigEndian(dataSize);
-           data.push_front(bigEndian);
-           data = decryptor.decrypt(data);
+            QByteArray bigEndian = toBigEndian(dataSize);
+            data.push_front(bigEndian);
+            data = decryptor.decrypt(data);
         }
 
         item->addChild(createItemFromHeader(ntHeaderNumber, QString::number(id), data, id, creationDate, isCompressed));
@@ -125,7 +125,7 @@ QByteArray NosZlibOpener::encrypt(OnexTreeItem *item)
 
     QByteArray fileHeader = item->getContent();
     fileHeader.push_back(writeNextInt(item->childCount()));
-    fileHeader.push_back((char)0x0);//separator byte
+    fileHeader.push_back((char)0x0); //separator byte
 
     QByteArray offsetArray;
     int sizeOfOffsetArray = item->childCount() * 8;
@@ -160,7 +160,7 @@ QByteArray NosZlibOpener::encrypt(OnexTreeItem *item)
 
         offsetArray.push_back(writeNextInt(currentItem->getId()));
         offsetArray.push_back(writeNextInt(currentFileOffset));
-
+  
     }
 
     QByteArray result;

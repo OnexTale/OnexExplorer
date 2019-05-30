@@ -147,7 +147,7 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int 
 
     if (!previewWindow)
     {
-        QMessageBox::warning(this, "Not supported", "This NosTale file cannot be opened yet.");
+    //    QMessageBox::warning(this, "Not supported", "This NosTale file cannot be opened yet.");
         return;
     }
 
@@ -206,7 +206,7 @@ void MainWindow::on_actionAbout_triggered()
 void MainWindow::on_actionSave_as_triggered()
 {
     if(ui->treeWidget->currentItem()){
-
+        
         OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem()->parent());
         if(!item->hasParent()){
             item->onExporAsOriginal();

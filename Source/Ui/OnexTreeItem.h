@@ -20,7 +20,7 @@ protected:
     QMessageBox getMsgBox(QString title, QString message, QMessageBox::Icon icon);
 public:
     OnexTreeItem(QString name, QByteArray content = QByteArray());
-    QByteArray getContent();
+    virtual QByteArray getContent();
     bool hasParent();
     short fromLittleEndianToShort(QByteArray array);
     int getContentSize();

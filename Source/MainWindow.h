@@ -29,7 +29,7 @@ private slots:
     void clearMenu();
     void on_actionOpen_triggered();
 
-    void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int column);
+    void on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *prev);
 
     void on_actionClose_selected_triggered();
 

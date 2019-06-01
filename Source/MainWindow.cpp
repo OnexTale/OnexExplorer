@@ -130,11 +130,11 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *e)
     e->acceptProposedAction();
 }
 
-void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int column)
+void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *prev)
 {
-    Q_UNUSED(column);
+    Q_UNUSED(prev);
 
-    OnexTreeItem* item = static_cast<OnexTreeItem*>(treeItem);
+    OnexTreeItem* item = static_cast<OnexTreeItem*>(current);
 
     if (item->childCount() != 0)
         return;
@@ -151,7 +151,9 @@ void MainWindow::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *treeItem, int 
         return;
     }
 
-    ui->mdiArea->addSubWindow(previewWindow);
+    QWidget* old = ui->gridLayout->itemAt(ui->gridLayout->count()-1)->widget();
+    ui->gridLayout->replaceWidget(old,previewWindow);
+    delete old;
     previewWindow->setAttribute(Qt::WA_DeleteOnClose);
     previewWindow->show();
 }
@@ -259,5 +261,5 @@ void MainWindow::on_actionOptions_triggered()
 
 void MainWindow::on_actionClose_windows_triggered()
 {
-    ui->mdiArea->closeAllSubWindows();
+//    ui->mdiArea->closeAllSubWindows();
 }

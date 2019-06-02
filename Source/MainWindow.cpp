@@ -146,10 +146,7 @@ void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTre
 
 
     if (!previewWindow)
-    {
-    //    QMessageBox::warning(this, "Not supported", "This NosTale file cannot be opened yet.");
         return;
-    }
 
     QWidget* old = ui->gridLayout->itemAt(ui->gridLayout->count()-1)->widget();
     ui->gridLayout->replaceWidget(old,previewWindow);
@@ -183,11 +180,10 @@ void MainWindow::on_actionExport_triggered()
     if(ui->treeWidget->currentItem()){
 
         OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
-        if(item->hasParent()){
-
+        if(item->childCount() == 0){
             item->onExportSingle();
         }else{
-            QMessageBox::information(NULL, tr("Info"), tr("Select correct file not *.NOS"));
+            QMessageBox::information(NULL, tr("Info"), tr("Select correct file"));
         }
     }else{
         QMessageBox::information(NULL, tr("Info"), tr("Select file first"));
@@ -228,7 +224,7 @@ void MainWindow::on_actionSave_as_triggered()
 void MainWindow::on_actionExit_triggered()
 {
     QMessageBox::StandardButton message = QMessageBox::question(this, "",
-                                                                "Exit program?",
+                                                                "Exit program? All unsaved changes will be lost!",
                                                                 QMessageBox::Yes | QMessageBox::No,
                                                                 QMessageBox::No);
         if (message == QMessageBox::Yes)
@@ -238,7 +234,7 @@ void MainWindow::on_actionExit_triggered()
 void MainWindow::on_actionClose_all_triggered()
 {
     QMessageBox::StandardButton message = QMessageBox::question(this, "",
-                                                                "Close all items?",
+                                                                "Close all items? All unsaved changes will be lost!",
                                                                 QMessageBox::Yes | QMessageBox::No,
                                                                 QMessageBox::No);
 
@@ -257,9 +253,4 @@ void MainWindow::on_actionOptions_triggered()
         return;
     FileInfo dialog(item);
     dialog.exec();
-}
-
-void MainWindow::on_actionClose_windows_triggered()
-{
-//    ui->mdiArea->closeAllSubWindows();
 }

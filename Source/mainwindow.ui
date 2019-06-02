@@ -83,7 +83,6 @@
     <addaction name="separator"/>
     <addaction name="actionClose_selected"/>
     <addaction name="actionClose_all"/>
-    <addaction name="actionClose_windows"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -210,14 +209,6 @@
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
-   </property>
-  </action>
-  <action name="actionClose_windows">
-   <property name="text">
-    <string>Close all windows</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Alt+W</string>
    </property>
   </action>
  </widget>

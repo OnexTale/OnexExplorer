@@ -55,9 +55,7 @@ HEADERS  += \
     Source/Openers/NosTextOpener.h \
     Source/MainWindow.h \
     Source/Decryptors/NosTextOthersFileDecryptor.h \
-    Source/Ui/MultiFileSelection.h \
     Source/Ui/OnexNSmpFrame.h \
-    Source/Ui/OnexSubFiles.h \
     Source/Ui/OnexTreeItem.h \
     Source/Ui/SingleTextFilePreview.h \
     Source/Decryptors/NosZlibDecryptor.h \

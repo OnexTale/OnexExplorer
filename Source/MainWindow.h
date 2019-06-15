@@ -49,8 +49,6 @@ private slots:
 
     void on_actionSave_as_triggered();
 
-    void on_actionClose_windows_triggered();
-
 private:
     Ui::MainWindow *ui;
     NosTextOpener textOpener;

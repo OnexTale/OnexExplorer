@@ -136,8 +136,10 @@ void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTre
 
     OnexTreeItem* item = static_cast<OnexTreeItem*>(current);
 
-    if (item->childCount() != 0)
+    if (item->childCount() != 0){
+        item->setExpanded(!item->isExpanded());
         return;
+    }
 
     if (!item->hasParent())
         return;

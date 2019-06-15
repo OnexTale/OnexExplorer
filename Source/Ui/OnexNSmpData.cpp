@@ -44,10 +44,10 @@ QWidget *OnexNSmpData::onClicked()
     int amount = content.at(0);
     for (int i = 0; i < amount; i++)
     {
-        int width = fromLittleEndianToShort((content.mid(1 + i * 12, 2).data()));
-        int height = fromLittleEndianToShort((content.mid(3 + i * 12, 2).data()));
-        int xOrigin = fromLittleEndianToShort((content.mid(5 + i * 12, 2).data()));
-        int yOrigin = fromLittleEndianToShort((content.mid(7 + i * 12, 2).data()));
+        int width = fromLittleEndianToShort(content.mid(1 + i * 12, 2));
+        int height = fromLittleEndianToShort(content.mid(3 + i * 12, 2));
+        int xOrigin = fromLittleEndianToShort(content.mid(5 + i * 12, 2));
+        int yOrigin = fromLittleEndianToShort(content.mid(7 + i * 12, 2));
         int offset = qFromLittleEndian<int>(reinterpret_cast<const uchar *>((content.mid(9 + i * 12, 4).data())));
 
         QByteArray subContent = content.mid(offset, (height * 2 * width + width * 2 + 1));

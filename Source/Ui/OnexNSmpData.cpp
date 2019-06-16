@@ -14,7 +14,7 @@ OnexNSmpData::OnexNSmpData(QString name, QByteArray content, NosZlibOpener *open
         int yOrigin = fromLittleEndianToShort(content.mid(7 + i * 12, 2));
         int offset = fromLittleEndianToInt(content.mid(9 + i * 12, 4));
 
-        QByteArray subContent = content.mid(offset, (width*2*height));
+        QByteArray subContent = content.mid(offset, (width * 2 * height));
         this->addChild(new OnexNSmpFrame(name + "_" + QString::number(i), subContent, width, height, xOrigin, yOrigin, opener, id, creationDate, compressed));
     }
 }
@@ -22,7 +22,7 @@ OnexNSmpData::OnexNSmpData(QString name, QByteArray content, NosZlibOpener *open
 QByteArray OnexNSmpData::getContent()
 {
     int amount = childCount();
-    if (!hasParent() || amount <= 0 ) 
+    if (!hasParent() || amount <= 0)
         return content;
 
     QByteArray offsetArray;
@@ -52,23 +52,23 @@ QByteArray OnexNSmpData::getContent()
 
 void OnexNSmpData::onExportAll()
 {
-    if(!hasParent())
-    {
-        QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
-        return;
-    }
     QString directory = this->getSelectedDirectory();
     if (directory.isEmpty())
         return;
 
     int count = 0;
-    for (int i = 0; i != this->childCount(); ++i)
+    if (!hasParent())
     {
-        OnexNSmpFrame* item = static_cast<OnexNSmpFrame*>(this->child(i));
-        if (item->getImage().save(directory + item->getName() + ".png", "PNG", 100))
-            count++;
+        for (int i = 0; i != this->childCount(); ++i)
+        {
+            OnexNSmpData *item = static_cast<OnexNSmpData *>(this->child(i));
+            count += exportFrames(item, directory);
+        }
     }
-    QString text = "Saved " + QString::number(count) + " of " + QString::number(this->childCount()) + " files.";
+    else
+        count = exportFrames(this, directory);
+    
+    QString text = "Saved " + QString::number(count) + " files.";
     QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
     msgBox.exec();
 }
@@ -85,4 +85,16 @@ void OnexNSmpData::onReplace()
 
 OnexNSmpData::~OnexNSmpData()
 {
+}
+
+int OnexNSmpData::exportFrames(OnexNSmpData *src, QString directory)
+{
+    int count = 0;
+    for (int i = 0; i != src->childCount(); ++i)
+    {
+        OnexNSmpFrame *item = static_cast<OnexNSmpFrame *>(src->child(i));
+        if (item->getImage().save(directory + item->getName() + ".png", "PNG", 100))
+            count++;
+    }
+    return count;
 }

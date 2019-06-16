@@ -6,6 +6,8 @@
 
 class OnexNSmpData : public OnexTreeZlibItem
 {
+private:
+    int exportFrames(OnexNSmpData *src, QString path);
 public:
     OnexNSmpData(QString name, QByteArray content, NosZlibOpener* opener, int id, int creationDate, bool compressed);
     virtual QByteArray getContent() override;

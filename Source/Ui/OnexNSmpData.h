@@ -11,6 +11,11 @@ public:
     virtual QWidget *onClicked() override;
     virtual QByteArray getContent() override;
     virtual ~OnexNSmpData();
+
+private slots:
+    virtual void onExportAll();
+    virtual void onExportSingle();
+    virtual void onReplace();
 };
 
 #endif // ONEXNSMPDATA_H

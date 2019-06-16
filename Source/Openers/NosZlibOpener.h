@@ -15,7 +15,7 @@ private:
     QByteArray toBigEndian(qint32 value);
     int getNTHeaderNumber(QByteArray& array);
 
-    OnexTreeItem *createItemFromHeader(int header, QString name, QByteArray &array, int fileId = 0, int creationDate = 0, bool compressed = 0);
+    OnexTreeItem *createItemFromHeader(int header, QString name, QByteArray &array, int fileId = -1, int creationDate = 0, bool compressed = 0);
 public:
     NosZlibOpener();
     ImageConverter &getImageConverter();

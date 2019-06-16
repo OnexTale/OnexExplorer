@@ -7,8 +7,8 @@ OnexNSmpData::OnexNSmpData(QString name, QByteArray content, NosZlibOpener *open
 
 QByteArray OnexNSmpData::getContent()
 {
-    int amount = this->childCount();
-    if ( amount <= 0 ) 
+    int amount = childCount();
+    if (!hasParent() || amount <= 0 ) 
         return content;
 
     QByteArray offsetArray;
@@ -47,11 +47,44 @@ QWidget *OnexNSmpData::onClicked()
         int yOrigin = fromLittleEndianToShort(content.mid(7 + i * 12, 2));
         int offset = fromLittleEndianToInt(content.mid(9 + i * 12, 4));
 
-        QByteArray subContent = content.mid(offset, (height * 2 * width + width * 2 + 1));
+        QByteArray subContent = content.mid(offset, (width*2*height));
         this->addChild(new OnexNSmpFrame(name + "_" + QString::number(i), subContent, width, height, xOrigin, yOrigin, opener, id, creationDate, compressed));
     }
     this->setExpanded(true);
     return nullptr;
+}
+
+void OnexNSmpData::onExportAll()
+{
+    if(!hasParent())
+    {
+        QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
+        return;
+    }
+    QString directory = this->getSelectedDirectory();
+    if (directory.isEmpty())
+        return;
+
+    int count = 0;
+    for (int i = 0; i != this->childCount(); ++i)
+    {
+        OnexNSmpFrame* item = static_cast<OnexNSmpFrame*>(this->child(i));
+        if (item->getImage().save(directory + item->getName() + ".png", "PNG", 100))
+            count++;
+    }
+    QString text = "Saved " + QString::number(count) + " of " + QString::number(this->childCount()) + " files.";
+    QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
+    msgBox.exec();
+}
+
+void OnexNSmpData::onExportSingle()
+{
+    onExportAll();
+}
+
+void OnexNSmpData::onReplace()
+{
+    QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
 }
 
 OnexNSmpData::~OnexNSmpData()

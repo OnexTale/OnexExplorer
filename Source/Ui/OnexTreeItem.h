@@ -23,6 +23,9 @@ public:
     virtual QByteArray getContent();
     bool hasParent();
     short fromLittleEndianToShort(QByteArray array);
+    int fromLittleEndianToInt(QByteArray array);
+    QByteArray fromShortToLittleEndian(short number);
+    QByteArray fromIntToLittleEndian(int number);
     int getContentSize();
 
     virtual QString getName();

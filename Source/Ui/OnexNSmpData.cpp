@@ -7,15 +7,12 @@ OnexNSmpData::OnexNSmpData(QString name, QByteArray content, NosZlibOpener *open
 
 QByteArray OnexNSmpData::getContent()
 {
-    int amount = this->childCount();
-
-    if ( amount <= 0 ) 
+    int amount = childCount();
+    if (!hasParent() || amount <= 0 ) 
         return content;
 
     QByteArray offsetArray;
-
     offsetArray.push_back((uint8_t)amount);
-
     int sizeOfOffsetArray = 1 + amount * 12;
 
     QByteArray contentArray;
@@ -24,12 +21,12 @@ QByteArray OnexNSmpData::getContent()
     {
         int currentFileOffset = sizeOfOffsetArray + contentArray.size();
         OnexNSmpFrame *currentItem = static_cast<OnexNSmpFrame *>(this->child(i));
-        offsetArray.push_back(writeShort(currentItem->getWidth()));
-        offsetArray.push_back(writeShort(currentItem->getHeight()));
-        offsetArray.push_back(writeShort(currentItem->getXOrigin()));
-        offsetArray.push_back(writeShort(currentItem->getYOrigin()));
+        offsetArray.push_back(fromShortToLittleEndian(currentItem->getWidth()));
+        offsetArray.push_back(fromShortToLittleEndian(currentItem->getHeight()));
+        offsetArray.push_back(fromShortToLittleEndian(currentItem->getXOrigin()));
+        offsetArray.push_back(fromShortToLittleEndian(currentItem->getYOrigin()));
+        offsetArray.push_back(fromIntToLittleEndian(currentFileOffset));
         contentArray.push_back(currentItem->getContent());
-        offsetArray.push_back(writeInt(currentFileOffset));
     }
 
     this->content = QByteArray();
@@ -48,29 +45,46 @@ QWidget *OnexNSmpData::onClicked()
         int height = fromLittleEndianToShort(content.mid(3 + i * 12, 2));
         int xOrigin = fromLittleEndianToShort(content.mid(5 + i * 12, 2));
         int yOrigin = fromLittleEndianToShort(content.mid(7 + i * 12, 2));
-        int offset = qFromLittleEndian<int>(reinterpret_cast<const uchar *>((content.mid(9 + i * 12, 4).data())));
+        int offset = fromLittleEndianToInt(content.mid(9 + i * 12, 4));
 
-        QByteArray subContent = content.mid(offset, (height * 2 * width + width * 2 + 1));
+        QByteArray subContent = content.mid(offset, (width*2*height));
         this->addChild(new OnexNSmpFrame(name + "_" + QString::number(i), subContent, width, height, xOrigin, yOrigin, opener, id, creationDate, compressed));
     }
     this->setExpanded(true);
     return nullptr;
 }
 
-QByteArray OnexNSmpData::writeShort(short number)
+void OnexNSmpData::onExportAll()
 {
-    QByteArray writeArray;
-    writeArray.resize(2);
-    qToLittleEndian<short>(number, reinterpret_cast<uchar *>(writeArray.data()));
-    return writeArray;
+    if(!hasParent())
+    {
+        QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
+        return;
+    }
+    QString directory = this->getSelectedDirectory();
+    if (directory.isEmpty())
+        return;
+
+    int count = 0;
+    for (int i = 0; i != this->childCount(); ++i)
+    {
+        OnexNSmpFrame* item = static_cast<OnexNSmpFrame*>(this->child(i));
+        if (item->getImage().save(directory + item->getName() + ".png", "PNG", 100))
+            count++;
+    }
+    QString text = "Saved " + QString::number(count) + " of " + QString::number(this->childCount()) + " files.";
+    QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
+    msgBox.exec();
 }
 
-QByteArray OnexNSmpData::writeInt(int number)
+void OnexNSmpData::onExportSingle()
 {
-    QByteArray writeArray;
-    writeArray.resize(4);
-    qToLittleEndian<int>(number, reinterpret_cast<uchar *>(writeArray.data()));
-    return writeArray;
+    onExportAll();
+}
+
+void OnexNSmpData::onReplace()
+{
+    QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
 }
 
 OnexNSmpData::~OnexNSmpData()

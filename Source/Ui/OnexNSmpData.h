@@ -6,15 +6,16 @@
 
 class OnexNSmpData : public OnexTreeZlibItem
 {
-private:
-    QByteArray writeShort(short number);
-    QByteArray writeInt(int number);
 public:
     OnexNSmpData(QString name, QByteArray content, NosZlibOpener* opener, int id, int creationDate, bool compressed);
     virtual QWidget *onClicked() override;
     virtual QByteArray getContent() override;
-
     virtual ~OnexNSmpData();
+
+private slots:
+    virtual void onExportAll();
+    virtual void onExportSingle();
+    virtual void onReplace();
 };
 
 #endif // ONEXNSMPDATA_H

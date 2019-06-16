@@ -41,6 +41,27 @@ short OnexTreeItem::fromLittleEndianToShort(QByteArray array)
     return qFromLittleEndian<qint16>(reinterpret_cast<const uchar *>(array.data()));
 }
 
+int OnexTreeItem::fromLittleEndianToInt(QByteArray array)
+{
+    return qFromLittleEndian<qint32>(reinterpret_cast<const uchar *>(array.data()));
+}
+
+QByteArray OnexTreeItem::fromShortToLittleEndian(short number)
+{
+    QByteArray writeArray;
+    writeArray.resize(2);
+    qToLittleEndian<qint16>(number, reinterpret_cast<uchar *>(writeArray.data()));
+    return writeArray;
+}
+
+QByteArray OnexTreeItem::fromIntToLittleEndian(int number)
+{
+    QByteArray writeArray;
+    writeArray.resize(4);
+    qToLittleEndian<qint32>(number, reinterpret_cast<uchar *>(writeArray.data()));
+    return writeArray;
+}
+
 int OnexTreeItem::getContentSize()
 {
     return content.size();
@@ -71,9 +92,18 @@ QMenu *OnexTreeItem::getContextMenu()
     }
     else
     {
-        QAction* exportSingleAction = new QAction(QObject::tr("Export"), contextMenu);
-        contextMenu->addAction(exportSingleAction);
-        QObject::connect(exportSingleAction, SIGNAL(triggered(bool)), this, SLOT(onExportSingle()));
+        if(childCount() > 0)
+        {
+            QAction* exportAllAction = new QAction(QObject::tr("Export all"), contextMenu);
+            contextMenu->addAction(exportAllAction);
+            QObject::connect(exportAllAction, SIGNAL(triggered(bool)), this, SLOT(onExportAll()));
+        }
+        else
+        {
+            QAction* exportSingleAction = new QAction(QObject::tr("Export"), contextMenu);
+            contextMenu->addAction(exportSingleAction);
+            QObject::connect(exportSingleAction, SIGNAL(triggered(bool)), this, SLOT(onExportSingle()));   
+        }
 
         QAction* exportSingleToRawAction = new QAction(QObject::tr("Export to raw"), contextMenu);
         contextMenu->addAction(exportSingleToRawAction);

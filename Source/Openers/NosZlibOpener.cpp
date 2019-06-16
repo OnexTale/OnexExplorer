@@ -83,7 +83,7 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file)
     int ntHeaderNumber = getNTHeaderNumber(header);
     int fileAmount = readNextInt(file);
 
-    OnexTreeItem *item = new OnexTreeZlibItem(neatFileName(file.fileName()), header, this, 0, 0,0);
+    OnexTreeItem *item = createItemFromHeader(ntHeaderNumber, neatFileName(file.fileName()), header);
 
     QByteArray separatorByte = file.read(1);
 

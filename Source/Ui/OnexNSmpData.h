@@ -8,7 +8,6 @@ class OnexNSmpData : public OnexTreeZlibItem
 {
 public:
     OnexNSmpData(QString name, QByteArray content, NosZlibOpener* opener, int id, int creationDate, bool compressed);
-    virtual QWidget *onClicked() override;
     virtual QByteArray getContent() override;
     virtual ~OnexNSmpData();
 

@@ -3,6 +3,20 @@
 
 OnexNSmpData::OnexNSmpData(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate, bool compressed) : OnexTreeZlibItem(name, content, opener, id, creationDate, compressed)
 {
+    if (id == -1)
+        return;
+    int amount = content.at(0);
+    for (int i = 0; i < amount; i++)
+    {
+        int width = fromLittleEndianToShort(content.mid(1 + i * 12, 2));
+        int height = fromLittleEndianToShort(content.mid(3 + i * 12, 2));
+        int xOrigin = fromLittleEndianToShort(content.mid(5 + i * 12, 2));
+        int yOrigin = fromLittleEndianToShort(content.mid(7 + i * 12, 2));
+        int offset = fromLittleEndianToInt(content.mid(9 + i * 12, 4));
+
+        QByteArray subContent = content.mid(offset, (width*2*height));
+        this->addChild(new OnexNSmpFrame(name + "_" + QString::number(i), subContent, width, height, xOrigin, yOrigin, opener, id, creationDate, compressed));
+    }
 }
 
 QByteArray OnexNSmpData::getContent()
@@ -34,24 +48,6 @@ QByteArray OnexNSmpData::getContent()
     content.push_back(contentArray);
 
     return content;
-}
-
-QWidget *OnexNSmpData::onClicked()
-{
-    int amount = content.at(0);
-    for (int i = 0; i < amount; i++)
-    {
-        int width = fromLittleEndianToShort(content.mid(1 + i * 12, 2));
-        int height = fromLittleEndianToShort(content.mid(3 + i * 12, 2));
-        int xOrigin = fromLittleEndianToShort(content.mid(5 + i * 12, 2));
-        int yOrigin = fromLittleEndianToShort(content.mid(7 + i * 12, 2));
-        int offset = fromLittleEndianToInt(content.mid(9 + i * 12, 4));
-
-        QByteArray subContent = content.mid(offset, (width*2*height));
-        this->addChild(new OnexNSmpFrame(name + "_" + QString::number(i), subContent, width, height, xOrigin, yOrigin, opener, id, creationDate, compressed));
-    }
-    this->setExpanded(true);
-    return nullptr;
 }
 
 void OnexNSmpData::onExportAll()

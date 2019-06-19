@@ -7,7 +7,16 @@ NosTextOthersFileDecryptor::NosTextOthersFileDecryptor()
 
 QByteArray NosTextOthersFileDecryptor::encrypt(QByteArray &array)
 {
-    return QByteArray();
+    QByteArray result;
+    result.resize(4);
+    qToLittleEndian<qint32>(array.size(), reinterpret_cast<uchar*>(result.data()));
+    qDebug() << array;
+    qDebug() << array.size();
+    for (auto &byte : array)
+    {
+        result.push_back(byte ^ 0x1);
+    }
+    return result;
 }
 
 QByteArray NosTextOthersFileDecryptor::decrypt(QByteArray &array)

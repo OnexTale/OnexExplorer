@@ -48,11 +48,22 @@ QByteArray NosTextOpener::encrypt(OnexTreeItem *item)
         result.push_back(currentItem->getName().toLocal8Bit());
         result.push_back(writeNextInt(currentItem->getIsDat()));
 
+        QList<QByteArray> splited;
         QByteArray encrypted;
-        QList<QByteArray> splited = currentItem->getContent().split(0xD);
-        for (int line = 0; line < splited.size(); ++line)
-            encrypted.push_back(datDecryptor.encrypt(splited[line]));
-
+        if (currentItem->getIsDat())
+        {
+            splited  = currentItem->getContent().split(0xD);
+        }else{
+            splited  = currentItem->getContent().split(0xA);
+            encrypted.resize(4);
+            qToLittleEndian<qint32>(splited.size() - 1, reinterpret_cast<uchar*>(encrypted.data()));
+        }
+        for (int line = 0; line < splited.size() - 1; ++line) {
+            if(currentItem->getIsDat())
+                encrypted.push_back(datDecryptor.encrypt(splited[line]));
+            else
+                encrypted.push_back(lstDecryptor.encrypt(splited[line]));
+        }
         result.push_back(writeNextInt(encrypted.size()));
         result.push_back(encrypted);
     }

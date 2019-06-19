@@ -45,7 +45,7 @@ int OnexTreeImage::onExportAll(QString directory) {
 }
 
 int OnexTreeImage::onExportSingle(QString directory) {
-    QString path = directory + this->getName();
+    QString path = directory + this->getName() + ".png";
     if (this->getImage().save(path, "PNG", 100))
         return 1;
     else if (this->getResolution().x == 0 || this->getResolution().y == 0) {

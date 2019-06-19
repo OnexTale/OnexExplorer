@@ -1,35 +1,32 @@
 #ifndef SINGLEIMAGEPREVIEW_H
 #define SINGLEIMAGEPREVIEW_H
 
-#include <QWidget>
-#include <QtEndian>
-#include <QDebug>
-#include <iostream>
-#include <QMessageBox>
-#include <QMenu>
-#include <QFileDialog>
 #include "../ImageConverter.h"
 #include "../NosEnumTypes.h"
+#include <QDebug>
+#include <QFileDialog>
+#include <QMenu>
+#include <QMessageBox>
+#include <QWidget>
+#include <QtEndian>
+#include <iostream>
 
 namespace Ui {
-class SingleImagePreview;
+    class SingleImagePreview;
 }
 
-class SingleImagePreview : public QWidget
-{
+class SingleImagePreview : public QWidget {
     Q_OBJECT
 
-public:
+    public:
     explicit SingleImagePreview(QImage image, QWidget *parent = 0);
     ~SingleImagePreview();
-private:
+
+    private:
     Ui::SingleImagePreview *ui;
     ImageConverter converter;
     qint16 byteArrayToShort(QByteArray array);
-    void showWarningMessage();
-private slots:
-    void showCustomMenu(const QPoint &pos);
-    void exportImage();
+    private slots:
     void onReplaced(QImage newImage);
 };
 

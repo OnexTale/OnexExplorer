@@ -60,9 +60,12 @@ OnexTreeItem *NosZlibOpener::createItemFromHeader(int header, QString name, QByt
     }
 }
 
-NosZlibOpener::NosZlibOpener() {}
+NosZlibOpener::NosZlibOpener() {
+}
 
-ImageConverter &NosZlibOpener::getImageConverter() { return imageConverter; }
+ImageConverter &NosZlibOpener::getImageConverter() { 
+    return imageConverter; 
+}
 
 OnexTreeItem *NosZlibOpener::decrypt(QFile &file) {
     file.seek(0);

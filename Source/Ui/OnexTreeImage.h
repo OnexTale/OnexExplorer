@@ -3,32 +3,30 @@
 #include "OnexTreeZlibItem.h"
 #include "SingleImagePreview.h"
 
-struct ImageResolution
-{
+struct ImageResolution {
     int x;
     int y;
 };
 
-class OnexTreeImage : public OnexTreeZlibItem
-{
+class OnexTreeImage : public OnexTreeZlibItem {
     Q_OBJECT
-protected:
+    protected:
     bool hasGoodResolution(int x, int y);
-    QImage importQImageFromSelectedUserFile();
-public:
-    OnexTreeImage(QString name, QByteArray content, NosZlibOpener* opener, int id, int creationDate, bool compressed);
+    QImage importQImageFromSelectedUserFile(QString filepath);
+
+    public:
+    OnexTreeImage(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate, bool compressed);
 
     virtual QWidget *onClicked() override;
     virtual QImage getImage() = 0;
     virtual ImageResolution getResolution() = 0;
 
-private slots:
-    virtual void onExportAll();
-    virtual void onExportSingle();
+    private slots:
+    virtual int onExportAll(QString directory);
+    virtual int onExportSingle(QString directory);
 
-signals:
+    signals:
     void replaceSignal(QImage newImage);
-
 };
 
 #endif // ONEXTREEIMAGE_H

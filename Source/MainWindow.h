@@ -1,31 +1,30 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QDebug>
-#include <QFileDialog>
-#include <QDropEvent>
-#include <QMimeData>
-#include "Ui/SingleTextFilePreview.h"
-#include "Ui/FileInfo.h"
+#include "Openers/NosCCInfOpener.h"
 #include "Openers/NosTextOpener.h"
 #include "Openers/NosZlibOpener.h"
-#include "Openers/NosCCInfOpener.h"
+#include "Ui/FileInfo.h"
 #include "Ui/SingleImagePreview.h"
+#include "Ui/SingleTextFilePreview.h"
+#include <QDebug>
+#include <QDropEvent>
+#include <QFileDialog>
+#include <QMainWindow>
+#include <QMimeData>
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
-public:
+    public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private slots:
-    void onCustomMenuShow(const QPoint& point);
+    private slots:
+    void onCustomMenuShow(const QPoint &point);
     void clearMenu();
     void on_actionOpen_triggered();
 
@@ -45,20 +44,24 @@ private slots:
 
     void on_actionExport_triggered();
 
+    void actionExportToRaw();
+
     void on_actionAbout_triggered();
 
     void on_actionSave_as_triggered();
 
-private:
+    private:
     Ui::MainWindow *ui;
     NosTextOpener textOpener;
     NosZlibOpener zlibOpener;
     NosCCInfOpener ccinfOpener;
-    QMenu* contextMenu = nullptr;
+    QMenu *contextMenu = nullptr;
 
     void openFile(QString path);
-    void handleOpenResults(OnexTreeItem* item);
-    int hasValidHeader(QFile& file);
+    void handleOpenResults(OnexTreeItem *item);
+    int hasValidHeader(QFile &file);
+
+    QString getSelectedDirectory();
 
     virtual void dropEvent(QDropEvent *e) override;
     virtual void dragEnterEvent(QDragEnterEvent *e) override;

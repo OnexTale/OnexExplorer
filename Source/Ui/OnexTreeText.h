@@ -3,22 +3,23 @@
 #include "OnexTreeItem.h"
 
 class NosTextOpener;
-class OnexTreeText : public OnexTreeItem
-{
-private:
+class OnexTreeText : public OnexTreeItem {
+    private:
     int fileNmber;
     int isDat;
-    NosTextOpener* opener;
-public:
-    OnexTreeText(QString name, NosTextOpener* opener, int fileNumber = 0, int isDat = 0, QByteArray content = QByteArray());
-    virtual QWidget* onClicked() override;
-    virtual void onExporAsOriginal() override;
+    NosTextOpener *opener;
+
+    public:
+    OnexTreeText(QString name, NosTextOpener *opener, int fileNumber = 0, int isDat = 0,
+                 QByteArray content = QByteArray());
+    virtual QWidget *onClicked() override;
+    virtual int onExporAsOriginal() override;
     virtual ~OnexTreeText();
     int getFileNmber() const;
     int getIsDat() const;
-public slots:
-    virtual void onExportSingle();
-    virtual void onExportAll();
+    public slots:
+    virtual int onExportSingle(QString directory);
+    virtual int onExportAll(QString directory);
 };
 
 #endif // ONEXTREETEXT_H

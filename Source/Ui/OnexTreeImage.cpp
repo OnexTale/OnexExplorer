@@ -1,24 +1,16 @@
 #include "OnexTreeImage.h"
 
-OnexTreeImage::OnexTreeImage(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate, bool compressed) :
-    OnexTreeZlibItem(name, content, opener, id, creationDate, compressed)
-{
+OnexTreeImage::OnexTreeImage(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
+                             bool compressed)
+    : OnexTreeZlibItem(name, content, opener, id, creationDate, compressed) {}
 
-}
-
-bool OnexTreeImage::hasGoodResolution(int x, int y)
-{
+bool OnexTreeImage::hasGoodResolution(int x, int y) {
     ImageResolution currentResolution = this->getResolution();
     return (x == currentResolution.x && y == currentResolution.y);
 }
 
-QImage OnexTreeImage::importQImageFromSelectedUserFile()
-{
-    QString fileName = getOpenDirectory("PNG Image (*.png)");
-    if (fileName.isEmpty())
-        return QImage();
-
-    QFile file(fileName);
+QImage OnexTreeImage::importQImageFromSelectedUserFile(QString filepath) {
+    QFile file(filepath);
     file.open(QIODevice::ReadOnly);
     QImage image = QImage::fromData(file.readAll());
     file.close();
@@ -26,9 +18,8 @@ QImage OnexTreeImage::importQImageFromSelectedUserFile()
     return image;
 }
 
-QWidget *OnexTreeImage::onClicked()
-{
-    SingleImagePreview* imagePreview = new SingleImagePreview(this->getImage());
+QWidget *OnexTreeImage::onClicked() {
+    SingleImagePreview *imagePreview = new SingleImagePreview(this->getImage());
     imagePreview->setWindowTitle(this->getName());
 
     connect(this, SIGNAL(replaceSignal(QImage)), imagePreview, SLOT(onReplaced(QImage)));
@@ -36,36 +27,38 @@ QWidget *OnexTreeImage::onClicked()
     return imagePreview;
 }
 
-void OnexTreeImage::onExportAll()
-{
-    QString directory = this->getSelectedDirectory();
-    if (directory.isEmpty())
-        return;
-
+int OnexTreeImage::onExportAll(QString directory) {
     int count = 0;
-    for (int i = 0; i != this->childCount(); ++i)
-    {
-        OnexTreeImage* item = static_cast<OnexTreeImage*>(this->child(i));
+    for (int i = 0; i != this->childCount(); ++i) {
+        OnexTreeImage *item = static_cast<OnexTreeImage *>(this->child(i));
         if (item->getImage().save(directory + item->getName() + ".png", "PNG", 100))
             count++;
+        else if (item->getResolution().x == 0 || item->getResolution().y == 0) {
+            QFile file(directory + item->getName() + ".png");
+            if (file.open(QIODevice::WriteOnly)) {
+                count++;
+                file.close();
+            }
+        }
     }
-    QString text = "Saved " + QString::number(count) + " of " + QString::number(this->childCount()) + " files.";
-    QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
-    msgBox.exec();
+    return count;
 }
 
-void OnexTreeImage::onExportSingle()
-{
-    QString fileName = getSaveDirectory(this->getName(), "PNG Image (*.png)");
-
-    if (fileName.isEmpty())
-        return;
-
-    if (!fileName.endsWith(".png"))
-        fileName += ".png";
-
-    if (this->getImage().save(fileName, "PNG", 100))
-        QMessageBox::information(NULL, "Yeah", "Image exported");
-    else
+int OnexTreeImage::onExportSingle(QString directory) {
+    QString path = directory + this->getName();
+    if (this->getImage().save(path, "PNG", 100))
+        return 1;
+    else if (this->getResolution().x == 0 || this->getResolution().y == 0) {
+        QFile file(path);
+        if (file.open(QIODevice::WriteOnly)) {
+            file.close();
+            return 1;
+        } else {
+            QMessageBox::critical(NULL, "Woops", "Couldn't export that image");
+            return 0;
+        }
+    } else {
         QMessageBox::critical(NULL, "Woops", "Couldn't export that image");
+        return 1;
+    }
 }

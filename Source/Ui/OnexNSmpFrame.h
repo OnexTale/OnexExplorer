@@ -2,15 +2,16 @@
 #define ONEXNSMPFRAME_H
 #include "OnexTreeImage.h"
 
-class OnexNSmpFrame : public OnexTreeImage
-{
-private:
+class OnexNSmpFrame : public OnexTreeImage {
+    private:
     int width;
     int height;
     int xOrigin;
     int yOrigin;
-public:
-    OnexNSmpFrame(QString name, QByteArray content, int width, int height, int xOrigin, int yOrigin, NosZlibOpener* opener, int id, int creationDate, bool compressed);
+
+    public:
+    OnexNSmpFrame(QString name, QByteArray content, int width, int height, int xOrigin, int yOrigin,
+                  NosZlibOpener *opener, int id, int creationDate, bool compressed);
 
     virtual QImage getImage() override;
     virtual ImageResolution getResolution() override;
@@ -23,8 +24,8 @@ public:
 
     virtual ~OnexNSmpFrame();
 
-private slots:
-    virtual void onReplace() override;
+    public slots:
+    virtual int onReplace(QString directory) override;
 };
 
 #endif // ONEXNSMPFRAME_H

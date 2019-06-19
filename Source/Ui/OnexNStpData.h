@@ -2,10 +2,9 @@
 #define ONEXNSTPDATA_H
 #include "OnexTreeImage.h"
 
-class OnexNStpData : public OnexTreeImage
-{
-public:
-    OnexNStpData(QString name, QByteArray content, NosZlibOpener* opener, int id, int creationDate, bool compressed);
+class OnexNStpData : public OnexTreeImage {
+    public:
+    OnexNStpData(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate, bool compressed);
 
     int getFormat();
     virtual QImage getImage() override;
@@ -13,8 +12,8 @@ public:
 
     virtual ~OnexNStpData();
 
-private slots:
-    virtual void onReplace() override;
+    private slots:
+    virtual int onReplace(QString directory) override;
 };
 
 #endif // ONEXNSTPDATA_H

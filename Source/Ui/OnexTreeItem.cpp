@@ -1,14 +1,12 @@
 #include "OnexTreeItem.h"
 
-OnexTreeItem::OnexTreeItem(QString name, QByteArray content)
-{
+OnexTreeItem::OnexTreeItem(QString name, QByteArray content) {
     this->name = name;
     this->content = content;
     this->setText(0, name);
 }
 
-QString OnexTreeItem::getSelectedDirectory()
-{
+QString OnexTreeItem::getSelectedDirectory() {
     QString dir = QFileDialog::getExistingDirectory(0, tr("Select Directory"));
     if (dir.isEmpty())
         return dir;
@@ -16,166 +14,87 @@ QString OnexTreeItem::getSelectedDirectory()
     return dir + "/";
 }
 
-QString OnexTreeItem::getSaveDirectory(QString name, QString filter)
-{
+QString OnexTreeItem::getSaveDirectory(QString name, QString filter) {
     return QFileDialog::getSaveFileName(0, tr("Save as..."), name, filter);
 }
 
-QString OnexTreeItem::getOpenDirectory(QString filter)
-{
+QString OnexTreeItem::getOpenDirectory(QString filter) {
     return QFileDialog::getOpenFileName(0, tr("Open..."), "", filter);
 }
 
-QByteArray OnexTreeItem::getContent()
-{
-    return content;
-}
+QByteArray OnexTreeItem::getContent() { return content; }
 
-bool OnexTreeItem::hasParent()
-{
-    return QTreeWidgetItem::parent();
-}
+bool OnexTreeItem::hasParent() { return QTreeWidgetItem::parent(); }
 
-short OnexTreeItem::fromLittleEndianToShort(QByteArray array)
-{
+short OnexTreeItem::fromLittleEndianToShort(QByteArray array) {
     return qFromLittleEndian<qint16>(reinterpret_cast<const uchar *>(array.data()));
 }
 
-int OnexTreeItem::fromLittleEndianToInt(QByteArray array)
-{
+int OnexTreeItem::fromLittleEndianToInt(QByteArray array) {
     return qFromLittleEndian<qint32>(reinterpret_cast<const uchar *>(array.data()));
 }
 
-QByteArray OnexTreeItem::fromShortToLittleEndian(short number)
-{
+QByteArray OnexTreeItem::fromShortToLittleEndian(short number) {
     QByteArray writeArray;
     writeArray.resize(2);
     qToLittleEndian<qint16>(number, reinterpret_cast<uchar *>(writeArray.data()));
     return writeArray;
 }
 
-QByteArray OnexTreeItem::fromIntToLittleEndian(int number)
-{
+QByteArray OnexTreeItem::fromIntToLittleEndian(int number) {
     QByteArray writeArray;
     writeArray.resize(4);
     qToLittleEndian<qint32>(number, reinterpret_cast<uchar *>(writeArray.data()));
     return writeArray;
 }
 
-int OnexTreeItem::getContentSize()
-{
-    return content.size();
-}
+int OnexTreeItem::getContentSize() { return content.size(); }
 
-QString OnexTreeItem::getName()
-{
-    return name;
-}
+QString OnexTreeItem::getName() { return name; }
 
-QMenu *OnexTreeItem::getContextMenu()
-{
-    QMenu* contextMenu = new QMenu();
-    if (!hasParent())
-    {
-        QAction* exportAllAction = new QAction(QObject::tr("Export all"), contextMenu);
-        contextMenu->addAction(exportAllAction);
-        QObject::connect(exportAllAction, SIGNAL(triggered(bool)), this, SLOT(onExportAll()));
+OnexTreeItem::~OnexTreeItem() {}
 
-        QAction* exportOriginalAction = new QAction(QObject::tr("Export as original"), contextMenu);
-        contextMenu->addAction(exportOriginalAction);
-        QObject::connect(exportOriginalAction, SIGNAL(triggered(bool)), this, SLOT(onExporAsOriginal()));
-
-        QAction* closeThisItem = new QAction(QObject::tr("Close"), contextMenu);
-        contextMenu->addAction(closeThisItem);
-        QObject::connect(closeThisItem, SIGNAL(triggered(bool)), this, SLOT(actionClose()));
-
-    }
-    else
-    {
-        if(childCount() > 0)
-        {
-            QAction* exportAllAction = new QAction(QObject::tr("Export all"), contextMenu);
-            contextMenu->addAction(exportAllAction);
-            QObject::connect(exportAllAction, SIGNAL(triggered(bool)), this, SLOT(onExportAll()));
-        }
-        else
-        {
-            QAction* exportSingleAction = new QAction(QObject::tr("Export"), contextMenu);
-            contextMenu->addAction(exportSingleAction);
-            QObject::connect(exportSingleAction, SIGNAL(triggered(bool)), this, SLOT(onExportSingle()));   
-        }
-
-        QAction* exportSingleToRawAction = new QAction(QObject::tr("Export to raw"), contextMenu);
-        contextMenu->addAction(exportSingleToRawAction);
-        QObject::connect(exportSingleToRawAction, SIGNAL(triggered(bool)), this, SLOT(onExporSingleRaw()));
-
-        QAction* replaceAction = new QAction(QObject::tr("Replace"), contextMenu);
-        contextMenu->addAction(replaceAction);
-        QObject::connect(replaceAction, SIGNAL(triggered(bool)), this, SLOT(onReplace()));
-
-        QAction* deleteAction = new QAction(QObject::tr("Delete"), contextMenu);
-        contextMenu->addAction(deleteAction);
-        QObject::connect(deleteAction, SIGNAL(triggered(bool)), this, SLOT(onDelete()));
-    }
-
-    return contextMenu;
-}
-
-OnexTreeItem::~OnexTreeItem()
-{
-
-}
-
-void OnexTreeItem::onExportAll()
-{
+int OnexTreeItem::onExportAll(QString directory) {
     QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
+    return 0;
 }
 
-void OnexTreeItem::onExportSingle()
-{
+int OnexTreeItem::onExportSingle(QString directory) {
     QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
+    return 0;
 }
 
-void OnexTreeItem::onExporSingleRaw()
-{
-    QString fileName = getSaveDirectory(this->getName(), "Raw data (*.rawdata)");
-    if (fileName.isEmpty())
-        return;
-
-    if (!fileName.endsWith(tr(".rawdata")))
-        fileName += ".rawdata";
+int OnexTreeItem::onExporSingleRaw(QString directory) {
+    QString fileName = directory + this->getName();
 
     QFile file(fileName);
     file.open(QIODevice::WriteOnly);
-    if (file.write(this->getContent()) == -1)
+    if (file.write(this->getContent()) == -1) {
         QMessageBox::critical(NULL, tr("Woops"), tr("Couldn't save that file"));
-    else
-        QMessageBox::information(NULL, tr("Yeah"), tr("File exported"));
+        return 0;
+    }
     file.close();
+    return 1;
 }
 
-void OnexTreeItem::onExporAsOriginal()
-{
+int OnexTreeItem::onExporAsOriginal() {
     QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
+    return 0;
 }
 
-void OnexTreeItem::onReplace()
-{
-    QString fileName = getOpenDirectory("All files (*.*)");
+int OnexTreeItem::onReplace(QString directory) {
+    QString fileName = directory + this->getName();
     QFile file(fileName);
     if (file.open(QIODevice::ReadOnly))
         this->content = file.readAll();
+    return 1;
 }
 
-void OnexTreeItem::onDelete()
-{
-    delete this;
-}
+void OnexTreeItem::onDelete() { delete this; }
 
-void OnexTreeItem::actionClose()
-{
-    QList<QTreeWidgetItem*> selectedItems = this->treeWidget()->selectedItems();
+void OnexTreeItem::actionClose() {
+    QList<QTreeWidgetItem *> selectedItems = this->treeWidget()->selectedItems();
 
-    foreach (auto& item, selectedItems)
+    foreach (auto &item, selectedItems)
         delete item;
 }

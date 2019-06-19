@@ -1,24 +1,19 @@
 #ifndef ONEXTREEITEM_H
 #define ONEXTREEITEM_H
-#include <QTreeWidgetItem>
-#include <QtEndian>
+#include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
 #include <QObject>
-#include <QFileDialog>
+#include <QTreeWidgetItem>
+#include <QtEndian>
 
-class OnexTreeItem : public QObject, public QTreeWidgetItem
-{
+class OnexTreeItem : public QObject, public QTreeWidgetItem {
     Q_OBJECT
-protected:
+    protected:
     QByteArray content;
     QString name;
 
-    QString getSelectedDirectory();
-    QString getSaveDirectory(QString name, QString filter);
-    QString getOpenDirectory(QString filter);
-    QMessageBox getMsgBox(QString title, QString message, QMessageBox::Icon icon);
-public:
+    public:
     OnexTreeItem(QString name, QByteArray content = QByteArray());
     virtual QByteArray getContent();
     bool hasParent();
@@ -29,16 +24,21 @@ public:
     int getContentSize();
 
     virtual QString getName();
-    virtual QMenu* getContextMenu();
     virtual QWidget *onClicked() = 0;
     virtual ~OnexTreeItem();
 
-public slots:
-    virtual void onExportAll();
-    virtual void onExportSingle();
-    virtual void onExporSingleRaw();
-    virtual void onExporAsOriginal();
-    virtual void onReplace();
+    QString getSelectedDirectory();
+    QString getSaveDirectory(QString name, QString filter);
+    QString getOpenDirectory(QString filter);
+    QMessageBox getMsgBox(QString title, QString message, QMessageBox::Icon icon);
+
+    public slots:
+    virtual int onExportAll(QString directory);
+    virtual int onExportSingle(QString directory);
+    virtual int onExporSingleRaw(QString directory);
+    virtual int onExporAsOriginal();
+    virtual int onReplace(QString directory);
+
     virtual void onDelete();
     virtual void actionClose();
 };

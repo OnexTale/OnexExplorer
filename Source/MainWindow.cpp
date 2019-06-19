@@ -1,10 +1,7 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
-{
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     this->setAcceptDrops(true);
 
@@ -13,10 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->treeWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onCustomMenuShow(QPoint)));
 }
 
-MainWindow::~MainWindow()
-{
-    if (contextMenu)
-    {
+MainWindow::~MainWindow() {
+    if (contextMenu) {
         clearMenu();
         delete contextMenu;
     }
@@ -24,21 +19,48 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::onCustomMenuShow(const QPoint &point)
-{
+void MainWindow::onCustomMenuShow(const QPoint &point) {
     Q_UNUSED(point);
 
-    if (contextMenu)
-    {
+    if (contextMenu) {
         clearMenu();
         delete contextMenu;
         contextMenu = nullptr;
     }
-    OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
+    OnexTreeItem *item = static_cast<OnexTreeItem *>(ui->treeWidget->currentItem());
     if (item == nullptr)
         return;
 
-    contextMenu = item->getContextMenu();
+    contextMenu = new QMenu();
+    if (!item->hasParent()) {
+        QAction *exportAllAction = new QAction(QObject::tr("Export"), contextMenu);
+        contextMenu->addAction(exportAllAction);
+        QObject::connect(exportAllAction, SIGNAL(triggered(bool)), this, SLOT(on_actionExport_triggered()));
+
+        QAction *exportOriginalAction = new QAction(QObject::tr("Export as .NOS"), contextMenu);
+        contextMenu->addAction(exportOriginalAction);
+        QObject::connect(exportOriginalAction, SIGNAL(triggered(bool)), this, SLOT(on_actionSave_as_triggered()));
+
+        QAction *closeThisItem = new QAction(QObject::tr("Close"), contextMenu);
+        contextMenu->addAction(closeThisItem);
+        QObject::connect(closeThisItem, SIGNAL(triggered(bool)), this, SLOT(on_actionClose_selected_triggered()));
+    } else {
+        QAction *exportSingleAction = new QAction(QObject::tr("Export"), contextMenu);
+        contextMenu->addAction(exportSingleAction);
+        QObject::connect(exportSingleAction, SIGNAL(triggered(bool)), this, SLOT(on_actionExport_triggered()));
+
+        QAction *exportSingleToRawAction = new QAction(QObject::tr("Export to raw"), contextMenu);
+        contextMenu->addAction(exportSingleToRawAction);
+        QObject::connect(exportSingleToRawAction, SIGNAL(triggered(bool)), this, SLOT(actionExportToRaw()));
+
+        QAction *replaceAction = new QAction(QObject::tr("Replace"), contextMenu);
+        contextMenu->addAction(replaceAction);
+        QObject::connect(replaceAction, SIGNAL(triggered(bool)), this, SLOT(on_actionReplace_triggered()));
+
+        QAction *deleteAction = new QAction(QObject::tr("Delete"), contextMenu);
+        contextMenu->addAction(deleteAction);
+        QObject::connect(deleteAction, SIGNAL(triggered(bool)), this, SLOT(on_actionClose_selected_triggered()));
+    }
 
     if (contextMenu->isEmpty())
         return;
@@ -46,19 +68,17 @@ void MainWindow::onCustomMenuShow(const QPoint &point)
     contextMenu->exec(QCursor::pos());
 }
 
-void MainWindow::clearMenu()
-{
+void MainWindow::clearMenu() {
     qDebug() << "Disposing menu";
-    QList<QAction*> actions = contextMenu->actions();
+    QList<QAction *> actions = contextMenu->actions();
 
-    for (auto& action : actions)
+    for (auto &action : actions)
         delete action;
 
     contextMenu->clear();
 }
 
-void MainWindow::on_actionOpen_triggered()
-{
+void MainWindow::on_actionOpen_triggered() {
     QFileDialog openDialog(this);
 
     openDialog.setFileMode(QFileDialog::ExistingFiles);
@@ -69,15 +89,13 @@ void MainWindow::on_actionOpen_triggered()
     if (openDialog.exec())
         selectedFiles = openDialog.selectedFiles();
 
-    if (!selectedFiles.empty())
-    {
-        for (auto& file : selectedFiles)
-                openFile(file);
+    if (!selectedFiles.empty()) {
+        for (auto &file : selectedFiles)
+            openFile(file);
     }
 }
 
-void MainWindow::openFile(QString path)
-{
+void MainWindow::openFile(QString path) {
     QFile file(path);
 
     if (!file.open(QIODevice::ReadOnly))
@@ -93,14 +111,12 @@ void MainWindow::openFile(QString path)
     file.close();
 }
 
-void MainWindow::handleOpenResults(OnexTreeItem *item)
-{
+void MainWindow::handleOpenResults(OnexTreeItem *item) {
     ui->treeWidget->addTopLevelItem(item);
     item->setExpanded(true);
 }
 
-int MainWindow::hasValidHeader(QFile &file)
-{
+int MainWindow::hasValidHeader(QFile &file) {
     file.seek(0);
     QByteArray header = file.read(0x0B);
     if (header.mid(0, 7) == "NT Data" || header.mid(0, 10) == "32GBS V1.0" || header.mid(0, 10) == "ITEMS V1.0")
@@ -110,19 +126,23 @@ int MainWindow::hasValidHeader(QFile &file)
     return 0;
 }
 
-void MainWindow::dropEvent(QDropEvent *e)
-{
-    for (auto& url : e->mimeData()->urls())
-    {
+QString MainWindow::getSelectedDirectory() {
+    QString dir = QFileDialog::getExistingDirectory(0, tr("Select Directory"));
+    if (dir.isEmpty())
+        return dir;
+
+    return dir + "/";
+}
+
+void MainWindow::dropEvent(QDropEvent *e) {
+    for (auto &url : e->mimeData()->urls()) {
         QString fileName = url.toLocalFile();
         openFile(fileName);
     }
 }
 
-void MainWindow::dragEnterEvent(QDragEnterEvent *e)
-{
-    for (auto& url : e->mimeData()->urls())
-    {
+void MainWindow::dragEnterEvent(QDragEnterEvent *e) {
+    for (auto &url : e->mimeData()->urls()) {
         QString fileName = url.toLocalFile();
         if (QFileInfo(fileName).suffix() != "NOS")
             return;
@@ -130,123 +150,174 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *e)
     e->acceptProposedAction();
 }
 
-void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *prev)
-{
+void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *prev) {
     Q_UNUSED(prev);
 
-    OnexTreeItem* item = static_cast<OnexTreeItem*>(current);
+    OnexTreeItem *item = static_cast<OnexTreeItem *>(current);
 
-    if (item->childCount() != 0)
+    if (item == nullptr || item->childCount() != 0)
         return;
 
-    if (!item->hasParent())
-        return;
-
-    QWidget* previewWindow = item->onClicked();
-
+    QWidget *previewWindow = item->onClicked();
 
     if (!previewWindow)
         return;
 
-    QWidget* old = ui->gridLayout->itemAt(ui->gridLayout->count()-1)->widget();
-    ui->gridLayout->replaceWidget(old,previewWindow);
+    QWidget *old = ui->gridLayout->itemAt(ui->gridLayout->count() - 1)->widget();
+    ui->gridLayout->replaceWidget(old, previewWindow);
     delete old;
     previewWindow->setAttribute(Qt::WA_DeleteOnClose);
     previewWindow->show();
 }
 
-void MainWindow::on_actionClose_selected_triggered()
-{
-    QList<QTreeWidgetItem*> selectedItems = ui->treeWidget->selectedItems();
-    foreach (auto& item, selectedItems)
-        delete item;
-}
-
-void MainWindow::on_actionReplace_triggered()
-{
-    if(ui->treeWidget->currentItem()){
-
-        OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
-        if(item->hasParent()){
-        }else{
-            QMessageBox::information(NULL, tr("Info"), tr("Select correct file not *.NOS"));
-        }
-    }else{
-        QMessageBox::information(NULL, tr("Info"), tr("Select file first"));
+void MainWindow::on_actionClose_selected_triggered() {
+    QList<QTreeWidgetItem *> selectedItems = ui->treeWidget->selectedItems();
+    foreach (auto &item, selectedItems) {
+        if (item->parent() && item->parent()->childCount() == 1) {
+            delete item->parent();
+        } else
+            delete item;
     }
 }
-void MainWindow::on_actionExport_triggered()
-{
-    if(ui->treeWidget->currentItem()){
 
-        OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
-        if(item->childCount() == 0){
-            item->onExportSingle();
-        }else{
-            QMessageBox::information(NULL, tr("Info"), tr("Select correct file"));
-        }
-    }else{
+void MainWindow::on_actionReplace_triggered() {
+    QList<QTreeWidgetItem *> selectedItems = ui->treeWidget->selectedItems();
+    if (selectedItems.size() == 0) {
         QMessageBox::information(NULL, tr("Info"), tr("Select file first"));
+        return;
     }
-}
-void MainWindow::on_actionImport_triggered()
-{
-    QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
+
+    QString directory = getSelectedDirectory();
+    if (directory.isEmpty())
+        return;
+
+    int count = 0;
+    foreach (auto &s, selectedItems) {
+        OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
+        if (!item->hasParent())
+            on_actionImport_triggered();
+        else
+            count += item->onReplace(directory);
+    }
+
+    QString text = "Replaced " + QString::number(count) + " file(s).";
+    QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
+    msgBox.exec();
 }
 
-void MainWindow::on_actionAbout_triggered()
-{
-    QMessageBox::information(NULL, tr("About Project"), tr("OnexExplorer is an open-source tool for unpacking and repacking .NOS data files from game called NosTale. "
-                                                     "<br>It can open almost all .NOS files and show the data stored in them."
-                                                     "<br>GitHub: <a href='https://github.com/OnexTale/OnexExplorer'>https://github.com/OnexTale/OnexExplorer</a>"));
+void MainWindow::on_actionExport_triggered() {
+    QList<QTreeWidgetItem *> selectedItems = ui->treeWidget->selectedItems();
+    if (selectedItems.size() == 0) {
+        QMessageBox::information(NULL, tr("Info"), tr("Select file first"));
+        return;
+    }
+
+    QString directory = getSelectedDirectory();
+    if (directory.isEmpty())
+        return;
+
+    int count = 0;
+    foreach (auto &s, selectedItems) {
+        OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
+        if (item->childCount() == 0) {
+            item->onExportSingle(directory);
+            count++;
+        } else
+            count += item->onExportAll(directory);
+    }
+
+    QString text = "Saved " + QString::number(count) + " file(s).";
+    QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
+    msgBox.exec();
 }
 
-void MainWindow::on_actionSave_as_triggered()
-{
-    if(ui->treeWidget->currentItem()){
-        
-        OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
-        while(item->hasParent())
-        {
-            item = static_cast<OnexTreeItem*>(item->QTreeWidgetItem::parent());
+void MainWindow::actionExportToRaw() {
+    QList<QTreeWidgetItem *> selectedItems = ui->treeWidget->selectedItems();
+    if (selectedItems.size() == 0) {
+        QMessageBox::information(NULL, tr("Info"), tr("Select file first"));
+        return;
+    }
+
+    QString directory = getSelectedDirectory();
+    if (directory.isEmpty())
+        return;
+
+    int count = 0;
+    foreach (auto &s, selectedItems) {
+        OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
+        item->onExportSingle(directory);
+        count++;
+    }
+    QString text = "Saved " + QString::number(count) + " file(s).";
+    QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
+    msgBox.exec();
+}
+
+void MainWindow::on_actionImport_triggered() {
+    OnexTreeItem *item = static_cast<OnexTreeItem *>(ui->treeWidget->currentItem());
+    while (item->hasParent()) {
+        item = static_cast<OnexTreeItem *>(item->QTreeWidgetItem::parent());
+    }
+
+    QString directory = getSelectedDirectory();
+    if (directory.isEmpty())
+        return;
+
+    int count = item->onReplace(directory);
+    QString text = "Imported " + QString::number(count) + " file(s).";
+    QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
+    msgBox.exec();
+}
+
+void MainWindow::on_actionAbout_triggered() {
+    QMessageBox::information(NULL, tr("About Project"),
+                             tr("OnexExplorer is an open-source tool for unpacking and repacking .NOS "
+                                "data files from game called NosTale. "
+                                "<br>It can open almost all .NOS files and show the data stored in "
+                                "them."
+                                "<br>GitHub: <a "
+                                "href='https://github.com/OnexTale/OnexExplorer'>https://github.com/"
+                                "OnexTale/OnexExplorer</a>"));
+}
+
+void MainWindow::on_actionSave_as_triggered() {
+    if (ui->treeWidget->currentItem()) {
+
+        OnexTreeItem *item = static_cast<OnexTreeItem *>(ui->treeWidget->currentItem());
+        while (item->hasParent()) {
+            item = static_cast<OnexTreeItem *>(item->QTreeWidgetItem::parent());
         }
 
-        if(!item->hasParent()){
+        if (!item->hasParent()) {
             item->onExporAsOriginal();
-        }else{
+        } else {
             QMessageBox::information(NULL, tr("Info"), tr("Select correct *.NOS file"));
         }
-    }else{
+    } else {
         QMessageBox::information(NULL, tr("Info"), tr("Select .NOS file first"));
     }
 }
 
-void MainWindow::on_actionExit_triggered()
-{
-    QMessageBox::StandardButton message = QMessageBox::question(this, "",
-                                                                "Exit program? All unsaved changes will be lost!",
-                                                                QMessageBox::Yes | QMessageBox::No,
-                                                                QMessageBox::No);
-        if (message == QMessageBox::Yes)
-            QApplication::quit();
+void MainWindow::on_actionExit_triggered() {
+    QMessageBox::StandardButton message =
+        QMessageBox::question(this, "", "Exit program? All unsaved changes will be lost!",
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+    if (message == QMessageBox::Yes)
+        QApplication::quit();
 }
 
-void MainWindow::on_actionClose_all_triggered()
-{
-    QMessageBox::StandardButton message = QMessageBox::question(this, "",
-                                                                "Close all items? All unsaved changes will be lost!",
-                                                                QMessageBox::Yes | QMessageBox::No,
-                                                                QMessageBox::No);
+void MainWindow::on_actionClose_all_triggered() {
+    QMessageBox::StandardButton message =
+        QMessageBox::question(this, "", "Close all items? All unsaved changes will be lost!",
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
-    if (message == QMessageBox::Yes)
-    {
+    if (message == QMessageBox::Yes) {
         ui->treeWidget->clear();
     }
 }
 
-void MainWindow::on_actionOptions_triggered()
-{
-    OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
+void MainWindow::on_actionOptions_triggered() {
+    OnexTreeItem *item = static_cast<OnexTreeItem *>(ui->treeWidget->currentItem());
     if (item == nullptr)
         return;
     if (item->childCount() != 0)

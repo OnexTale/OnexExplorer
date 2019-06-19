@@ -153,17 +153,23 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *e) {
 void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *prev) {
     Q_UNUSED(prev);
 
+    QWidget *old = ui->gridLayout->itemAt(ui->gridLayout->count() - 1)->widget();
+
     OnexTreeItem *item = static_cast<OnexTreeItem *>(current);
 
-    if (item == nullptr || item->childCount() != 0)
+    if (item == nullptr) {
+        ui->gridLayout->replaceWidget(old, new QWidget());
+        delete old;
         return;
+    }
 
     QWidget *previewWindow = item->onClicked();
 
-    if (!previewWindow)
+    if (!previewWindow || item->childCount() != 0) {
+        ui->gridLayout->replaceWidget(old, new QWidget());
+        delete old;
         return;
-
-    QWidget *old = ui->gridLayout->itemAt(ui->gridLayout->count() - 1)->widget();
+    }
     ui->gridLayout->replaceWidget(old, previewWindow);
     delete old;
     previewWindow->setAttribute(Qt::WA_DeleteOnClose);

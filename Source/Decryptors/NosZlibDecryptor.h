@@ -3,12 +3,11 @@
 #include "INosDecryptor.h"
 #include <QByteArray>
 
-class NosZlibDecryptor
-{
-public:
+class NosZlibDecryptor {
+    public:
     NosZlibDecryptor();
-    virtual QByteArray encrypt(QByteArray& array);
-    virtual QByteArray decrypt(QByteArray& array);
+    virtual QByteArray encrypt(QByteArray &array);
+    virtual QByteArray decrypt(QByteArray &array);
 };
 
 #endif // NOSZLIBDECRYPTOR_H

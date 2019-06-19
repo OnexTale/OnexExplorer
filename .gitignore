@@ -42,7 +42,7 @@ CMakeLists.txt.user*
 
 #VS Code
 .vscode/*
-
+.clang-format
 
 OnexExplorer
 *.NOS

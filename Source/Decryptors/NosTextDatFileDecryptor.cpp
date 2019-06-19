@@ -1,20 +1,16 @@
 #include "NosTextDatFileDecryptor.h"
 
-std::vector<unsigned char> NosTextDatFileDecryptor::getMask(QByteArray &array)
-{
+std::vector<unsigned char> NosTextDatFileDecryptor::getMask(QByteArray &array) {
     std::vector<unsigned char> mask(array.size(), 0x30);
-    for (std::size_t i = 0; i < mask.size(); i++)
-    {
+    for (std::size_t i = 0; i < mask.size(); i++) {
         unsigned char ch = array.at(i);
         if (!ch)
             break;
 
-        if (ch -= 0x20)
-        {
+        if (ch -= 0x20) {
             ch -= 0xD;
 
-            if (!(ch < 2))
-            {
+            if (!(ch < 2)) {
                 ch -= 0x3;
                 bool test1 = ch < 0xA;
                 ch -= 0xA;
@@ -29,14 +25,10 @@ std::vector<unsigned char> NosTextDatFileDecryptor::getMask(QByteArray &array)
     return mask;
 }
 
-NosTextDatFileDecryptor::NosTextDatFileDecryptor() :
-    cryptoArray({ 0x00, 0x20, 0x2D, 0x2E, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x0A, 0x00 })
-{
+NosTextDatFileDecryptor::NosTextDatFileDecryptor()
+    : cryptoArray({0x00, 0x20, 0x2D, 0x2E, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x0A, 0x00}) {}
 
-}
-
-QByteArray NosTextDatFileDecryptor::encrypt(QByteArray &array)
-{
+QByteArray NosTextDatFileDecryptor::encrypt(QByteArray &array) {
     std::vector<unsigned char> mask = getMask(array);
     QByteArray string;
 
@@ -44,24 +36,22 @@ QByteArray NosTextDatFileDecryptor::encrypt(QByteArray &array)
     int size = mask.size();
     unsigned char switchByte = 0;
 
-    while (iterator < size)
-    {
+    while (iterator < size) {
         int len = iterator;
-        while ((iterator < mask.size() && mask.at(iterator) == 0x30) || (iterator + 1 == mask.size()) || (iterator + 2 == mask.size()) || (iterator + 1 < mask.size() && mask.at(iterator + 1) == 0x30) || (iterator + 2 < mask.size() && mask.at(iterator + 2) == 0x30))
+        while ((iterator < mask.size() && mask.at(iterator) == 0x30) || (iterator + 1 == mask.size()) ||
+               (iterator + 2 == mask.size()) || (iterator + 1 < mask.size() && mask.at(iterator + 1) == 0x30) ||
+               (iterator + 2 < mask.size() && mask.at(iterator + 2) == 0x30))
             ++iterator;
 
-        if (iterator > len)
-        {
-            for (int j = iterator - len; j > 0; j -= 0x7E)
-            {
+        if (iterator > len) {
+            for (int j = iterator - len; j > 0; j -= 0x7E) {
                 int checker = j;
                 if (checker > 0x7E) {
                     checker = 0x7E;
                 }
 
                 string.push_back(checker);
-                for (; checker > 0; --checker)
-                {
+                for (; checker > 0; --checker) {
                     unsigned char byteToAdd = array[len] ^ 0x33;
                     len++;
                     string.push_back(byteToAdd);
@@ -78,22 +68,18 @@ QByteArray NosTextDatFileDecryptor::encrypt(QByteArray &array)
         while (iterator < mask.size() && mask.at(iterator) == 0x31)
             ++iterator;
 
-        if (iterator > len)
-        {
-            for (int j = iterator - len; j > 0; j -= 0x7E)
-            {
+        if (iterator > len) {
+            for (int j = iterator - len; j > 0; j -= 0x7E) {
                 int checker = j;
                 if (j > 0x7E)
                     checker = 0x7E;
 
                 string.push_back(checker | 0x80);
-                for (; checker > 0; --checker)
-                {
+                for (; checker > 0; --checker) {
                     unsigned char byteToAdd = array[len];
                     len++;
 
-                    switch (byteToAdd)
-                    {
+                    switch (byteToAdd) {
                     case 32:
                         switchByte = 1;
                         break;
@@ -111,13 +97,10 @@ QByteArray NosTextDatFileDecryptor::encrypt(QByteArray &array)
                         break;
                     }
 
-                    if (v25)
-                    {
+                    if (v25) {
                         string.push_back(0x10 * switchByte);
                         v25 = 0;
-                    }
-                    else
-                    {
+                    } else {
                         string[string.size() - 1] = string[string.size() - 1] | switchByte;
                         v25 = 1;
                     }
@@ -131,26 +114,21 @@ QByteArray NosTextDatFileDecryptor::encrypt(QByteArray &array)
     return string;
 }
 
-QByteArray NosTextDatFileDecryptor::decrypt(QByteArray &array)
-{
+QByteArray NosTextDatFileDecryptor::decrypt(QByteArray &array) {
     QByteArray decryptedFile;
     int currIndex = 0;
-    while (currIndex < array.size())
-    {
+    while (currIndex < array.size()) {
         unsigned char currentByte = array.at(currIndex);
         currIndex++;
-        if (currentByte == 0xFF)
-        {
+        if (currentByte == 0xFF) {
             decryptedFile.push_back(0xD);
             continue;
         }
 
         int validate = currentByte & 0x7F;
 
-        if (currentByte & 0x80)
-        {
-            for (; validate > 0; validate -= 2)
-            {
+        if (currentByte & 0x80) {
+            for (; validate > 0; validate -= 2) {
                 if (currIndex >= array.size())
                     break;
 
@@ -169,11 +147,8 @@ QByteArray NosTextDatFileDecryptor::decrypt(QByteArray &array)
 
                 decryptedFile.push_back(secondByte);
             }
-        }
-        else
-        {
-            for (; validate > 0; --validate)
-            {
+        } else {
+            for (; validate > 0; --validate) {
                 if (currIndex >= array.size())
                     break;
 
@@ -188,7 +163,4 @@ QByteArray NosTextDatFileDecryptor::decrypt(QByteArray &array)
     return decryptedFile;
 }
 
-NosTextDatFileDecryptor::~NosTextDatFileDecryptor()
-{
-
-}
+NosTextDatFileDecryptor::~NosTextDatFileDecryptor() {}

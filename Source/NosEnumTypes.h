@@ -23,7 +23,7 @@
 #define NSipData 24
 #define NSgrdData 26
 
-#define NS4BbData 101   //temporary
+#define NS4BbData 101 // temporary
 #define NSipData2006 103
 
 /*
@@ -37,6 +37,5 @@
 #define NSlangData
 #define NSgtdData
 */
-
 
 #endif // NOSENUMTYPES_H

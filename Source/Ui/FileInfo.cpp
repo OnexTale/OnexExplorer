@@ -1,10 +1,8 @@
 #include "FileInfo.h"
 #include "ui_FileInfo.h"
 
-FileInfo::FileInfo(OnexTreeItem *item, QWidget *parent) :
-    QDialog(parent, Qt::WindowCloseButtonHint),
-    ui(new Ui::FileInfo)
-{    
+FileInfo::FileInfo(OnexTreeItem *item, QWidget *parent)
+    : QDialog(parent, Qt::WindowCloseButtonHint), ui(new Ui::FileInfo) {
     ui->setupUi(this);
 
     /*
@@ -16,12 +14,9 @@ FileInfo::FileInfo(OnexTreeItem *item, QWidget *parent) :
     int month = (timestamp & 0xFF00) >> 0x08;
     int day = timestamp & 0xFF;
 
-    QString date = QString("%1/%2/%3").arg(day, 2, 16, QChar('0')).arg(month, 2, 16, QChar('0')).arg(year, 4, 16, QChar('0'));
-    ui->date->setText(date);
+    QString date = QString("%1/%2/%3").arg(day, 2, 16, QChar('0')).arg(month, 2, 16, QChar('0')).arg(year, 4, 16,
+    QChar('0')); ui->date->setText(date);
     */
 }
 
-FileInfo::~FileInfo()
-{
-    delete ui;
-}
+FileInfo::~FileInfo() { delete ui; }

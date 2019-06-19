@@ -1,18 +1,16 @@
 #ifndef NOSCCINFOPENER_H
 #define NOSCCINFOPENER_H
 
-#include <QObject>
-#include <QDebug>
 #include "INosFileOpener.h"
+#include <QDebug>
+#include <QObject>
 
-class NosCCInfOpener : public QObject, INosFileOpener
-{
+class NosCCInfOpener : public QObject, INosFileOpener {
     Q_OBJECT
-public:
+    public:
     NosCCInfOpener();
-    virtual OnexTreeItem* decrypt(QFile& file);
-    virtual QByteArray encrypt(OnexTreeItem* item);
-
+    virtual OnexTreeItem *decrypt(QFile &file);
+    virtual QByteArray encrypt(OnexTreeItem *item);
 };
 
 #endif // NOSCCINFOPENER_H

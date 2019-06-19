@@ -1,24 +1,23 @@
 #ifndef SINGLETEXTFILEPREVIEW_H
 #define SINGLETEXTFILEPREVIEW_H
 
-#include <QWidget>
-#include <QTextCodec>
-#include <iostream>
 #include "OnexTreeText.h"
+#include <QTextCodec>
+#include <QWidget>
+#include <iostream>
 
 namespace Ui {
-class SingleTextFilePreview;
+    class SingleTextFilePreview;
 }
 
-class SingleTextFilePreview : public QWidget
-{
+class SingleTextFilePreview : public QWidget {
     Q_OBJECT
 
-public:
+    public:
     explicit SingleTextFilePreview(QByteArray &item, QWidget *parent = 0);
     ~SingleTextFilePreview();
 
-private:
+    private:
     Ui::SingleTextFilePreview *ui;
 };
 

@@ -34,7 +34,7 @@ int OnexNS4BbData::onReplace(QString directory) {
         }
 
         QImage image = importQImageFromSelectedUserFile(path);
-        if (image.isNull())
+        if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0)
             return 0;
 
         if (!hasGoodResolution(image.width(), image.height()))

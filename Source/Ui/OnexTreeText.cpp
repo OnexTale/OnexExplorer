@@ -14,6 +14,8 @@ OnexTreeText::OnexTreeText(QString name, NosTextOpener *opener, int fileNumber, 
 }
 
 QWidget *OnexTreeText::onClicked() {
+    if (childCount() != 0)
+        return nullptr;
     SingleTextFilePreview *textPreview = new SingleTextFilePreview(content);
     textPreview->setWindowTitle(this->getName());
 

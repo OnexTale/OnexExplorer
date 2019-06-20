@@ -6,20 +6,8 @@ OnexTreeItem::OnexTreeItem(QString name, QByteArray content) {
     this->setText(0, name);
 }
 
-QString OnexTreeItem::getSelectedDirectory() {
-    QString dir = QFileDialog::getExistingDirectory(0, tr("Select Directory"));
-    if (dir.isEmpty())
-        return dir;
-
-    return dir + "/";
-}
-
 QString OnexTreeItem::getSaveDirectory(QString name, QString filter) {
     return QFileDialog::getSaveFileName(0, tr("Save as..."), name, filter);
-}
-
-QString OnexTreeItem::getOpenDirectory(QString filter) {
-    return QFileDialog::getOpenFileName(0, tr("Open..."), "", filter);
 }
 
 QByteArray OnexTreeItem::getContent() {

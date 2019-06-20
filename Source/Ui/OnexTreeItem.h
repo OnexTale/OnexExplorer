@@ -27,9 +27,7 @@ class OnexTreeItem : public QObject, public QTreeWidgetItem {
     virtual QWidget *onClicked() = 0;
     virtual ~OnexTreeItem();
 
-    QString getSelectedDirectory();
     QString getSaveDirectory(QString name, QString filter);
-    QString getOpenDirectory(QString filter);
     QMessageBox getMsgBox(QString title, QString message, QMessageBox::Icon icon);
 
     public slots:

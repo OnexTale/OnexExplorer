@@ -14,10 +14,12 @@ OnexTreeText::OnexTreeText(QString name, NosTextOpener *opener, int fileNumber, 
 }
 
 QWidget *OnexTreeText::onClicked() {
-    SingleTextFilePreview *window = new SingleTextFilePreview(content);
-    window->setWindowTitle(this->getName());
+    SingleTextFilePreview *textPreview = new SingleTextFilePreview(content);
+    textPreview->setWindowTitle(this->getName());
 
-    return window;
+    connect(this, SIGNAL(replaceSignal(QByteArray)), textPreview, SLOT(onReplaced(QByteArray)));
+
+    return textPreview;
 }
 
 int OnexTreeText::onExporAsOriginal() {
@@ -69,6 +71,13 @@ int OnexTreeText::onExportAll(QString directory) {
             count++;
         }
     }
+    return count;
+}
+
+int OnexTreeText::onReplace(QString directory)
+{
+    int count = OnexTreeItem::onReplace(directory);
+    emit replaceSignal(this->getContent());
     return count;
 }
 

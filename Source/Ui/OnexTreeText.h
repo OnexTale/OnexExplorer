@@ -4,6 +4,7 @@
 
 class NosTextOpener;
 class OnexTreeText : public OnexTreeItem {
+    Q_OBJECT
     private:
     int fileNmber;
     int isDat;
@@ -20,6 +21,9 @@ class OnexTreeText : public OnexTreeItem {
     public slots:
     virtual int onExportSingle(QString directory);
     virtual int onExportAll(QString directory);
+    virtual int onReplace(QString directory);
+signals:
+    void replaceSignal(QByteArray text);
 };
 
 #endif // ONEXTREETEXT_H

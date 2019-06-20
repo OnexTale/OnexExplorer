@@ -7,8 +7,18 @@ SingleTextFilePreview::SingleTextFilePreview(QByteArray &item, QWidget *parent)
 
     QTextCodec *codec = QTextCodec::codecForName("Windows-1250");
     QString encodeContent = codec->toUnicode(item);
-
     ui->plainTextEdit->appendPlainText(encodeContent);
+    ui->plainTextEdit->moveCursor(QTextCursor::Start);
 }
 
-SingleTextFilePreview::~SingleTextFilePreview() { delete ui; }
+void SingleTextFilePreview::onReplaced(QByteArray text) {
+    ui->plainTextEdit->clear();
+    QTextCodec *codec = QTextCodec::codecForName("Windows-1250");
+    QString encodeContent = codec->toUnicode(text);
+    ui->plainTextEdit->appendPlainText(encodeContent);
+    ui->plainTextEdit->moveCursor(QTextCursor::Start);
+}
+
+SingleTextFilePreview::~SingleTextFilePreview() {
+    delete ui;
+}

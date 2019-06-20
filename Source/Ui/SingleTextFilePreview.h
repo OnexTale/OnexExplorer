@@ -13,12 +13,15 @@ namespace Ui {
 class SingleTextFilePreview : public QWidget {
     Q_OBJECT
 
-    public:
+public:
     explicit SingleTextFilePreview(QByteArray &item, QWidget *parent = 0);
     ~SingleTextFilePreview();
 
-    private:
+private:
     Ui::SingleTextFilePreview *ui;
+
+private slots:
+    void onReplaced(QByteArray text);
 };
 
 #endif // SINGLETEXTFILEPREVIEW_H

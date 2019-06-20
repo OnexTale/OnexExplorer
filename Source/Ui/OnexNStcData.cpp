@@ -22,7 +22,7 @@ int OnexNStcData::onReplace(QString directory) {
         int count = 0;
         for (int i = 0; i < this->childCount(); i++) {
             OnexNStcData *item = static_cast<OnexNStcData *>(this->child(i));
-            QString path = directory + item->getName();
+            QString path = directory + item->getName() + ".png";
             if (!QFile(path).exists()) {
                 QMessageBox::critical(NULL, "Woops", "Missing " + path);
                 continue;
@@ -51,7 +51,7 @@ int OnexNStcData::onReplace(QString directory) {
         }
         return count;
     } else {
-        QString path = directory + this->getName();
+        QString path = directory + this->getName() + ".png";
         if (!QFile(path).exists()) {
             QMessageBox::critical(NULL, "Woops", "Missing " + path);
             return 0;

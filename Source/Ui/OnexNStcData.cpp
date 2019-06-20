@@ -22,32 +22,7 @@ int OnexNStcData::onReplace(QString directory) {
         int count = 0;
         for (int i = 0; i < this->childCount(); i++) {
             OnexNStcData *item = static_cast<OnexNStcData *>(this->child(i));
-            QString path = directory + item->getName() + ".png";
-            if (!QFile(path).exists()) {
-                QMessageBox::critical(NULL, "Woops", "Missing " + path);
-                continue;
-            }
-
-            QImage image = importQImageFromSelectedUserFile(path);
-            if (image.isNull() && item->getResolution().x != 0 && item->getResolution().y != 0)
-                continue;
-
-            image = image.scaled(image.width() / 2, image.height() / 2);
-
-            if (!hasGoodResolution(image.width(), image.height())) {
-                qDebug() << "NStc wrong resolution";
-                continue;
-            }
-
-            QByteArray newContent;
-            newContent.push_back(item->getContent().mid(0, 4));
-            newContent.push_back(opener->getImageConverter().toNSTC(image));
-
-            item->content = newContent;
-
-            emit OnexTreeImage::replaceSignal(item->getImage());
-
-            count++;
+            count += item->onReplace(directory);
         }
         return count;
     } else {

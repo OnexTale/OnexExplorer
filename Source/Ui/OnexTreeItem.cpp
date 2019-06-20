@@ -22,9 +22,13 @@ QString OnexTreeItem::getOpenDirectory(QString filter) {
     return QFileDialog::getOpenFileName(0, tr("Open..."), "", filter);
 }
 
-QByteArray OnexTreeItem::getContent() { return content; }
+QByteArray OnexTreeItem::getContent() {
+    return content;
+}
 
-bool OnexTreeItem::hasParent() { return QTreeWidgetItem::parent(); }
+bool OnexTreeItem::hasParent() {
+    return QTreeWidgetItem::parent();
+}
 
 short OnexTreeItem::fromLittleEndianToShort(QByteArray array) {
     return qFromLittleEndian<qint16>(reinterpret_cast<const uchar *>(array.data()));
@@ -48,11 +52,16 @@ QByteArray OnexTreeItem::fromIntToLittleEndian(int number) {
     return writeArray;
 }
 
-int OnexTreeItem::getContentSize() { return content.size(); }
+int OnexTreeItem::getContentSize() {
+    return content.size();
+}
 
-QString OnexTreeItem::getName() { return name; }
+QString OnexTreeItem::getName() {
+    return name;
+}
 
-OnexTreeItem::~OnexTreeItem() {}
+OnexTreeItem::~OnexTreeItem() {
+}
 
 int OnexTreeItem::onExportAll(QString directory) {
     QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
@@ -83,14 +92,27 @@ int OnexTreeItem::onExporAsOriginal() {
 }
 
 int OnexTreeItem::onReplace(QString directory) {
-    QString fileName = directory + this->getName();
-    QFile file(fileName);
-    if (file.open(QIODevice::ReadOnly))
-        this->content = file.readAll();
-    return 1;
+    if (this->childCount() > 0) {
+        int count = 0;
+        for (int i = 0; i < this->childCount(); i++) {
+            OnexTreeItem *item = static_cast<OnexTreeItem *>(this->child(i));
+            count += item->onReplace(directory);
+        }
+        return count;
+    } else {
+        QString fileName = directory + this->getName();
+        QFile file(fileName);
+        if (file.open(QIODevice::ReadOnly))
+            this->content = file.readAll();
+        else
+            return 0;
+        return 1;
+    }
 }
 
-void OnexTreeItem::onDelete() { delete this; }
+void OnexTreeItem::onDelete() {
+    delete this;
+}
 
 void OnexTreeItem::actionClose() {
     QList<QTreeWidgetItem *> selectedItems = this->treeWidget()->selectedItems();

@@ -2,7 +2,8 @@
 
 OnexNS4BbData::OnexNS4BbData(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
                              bool compressed)
-    : OnexTreeImage(name, content, opener, id, creationDate, compressed) {}
+    : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
+}
 
 QImage OnexNS4BbData::getImage() {
     ImageResolution resolution = this->getResolution();
@@ -22,28 +23,7 @@ int OnexNS4BbData::onReplace(QString directory) {
         int count = 0;
         for (int i = 0; i < this->childCount(); i++) {
             OnexNS4BbData *item = static_cast<OnexNS4BbData *>(this->child(i));
-            QString path = directory + item->getName() + ".png";
-            if (!QFile(path).exists()) {
-                QMessageBox::critical(NULL, "Woops", "Missing " + path);
-                continue;
-            }
-
-            QImage image = importQImageFromSelectedUserFile(path);
-            if (image.isNull())
-                continue;
-
-            if (!hasGoodResolution(image.width(), image.height()))
-                continue;
-
-            QByteArray newContent;
-            newContent.push_back(item->getContent().mid(0, 4));
-            newContent.push_back(opener->getImageConverter().toBGRA8888_INTERLACED(image));
-
-            item->content = newContent;
-
-            emit OnexTreeImage::replaceSignal(item->getImage());
-
-            count++;
+            count += item->onReplace(directory);
         }
         return count;
     } else {
@@ -72,4 +52,5 @@ int OnexNS4BbData::onReplace(QString directory) {
     }
 }
 
-OnexNS4BbData::~OnexNS4BbData() {}
+OnexNS4BbData::~OnexNS4BbData() {
+}

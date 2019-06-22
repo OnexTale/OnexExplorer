@@ -260,19 +260,23 @@ void MainWindow::actionExportToRaw() {
 }
 
 void MainWindow::on_actionImport_triggered() {
-    OnexTreeItem *item = static_cast<OnexTreeItem *>(ui->treeWidget->currentItem());
-    while (item->hasParent()) {
-        item = static_cast<OnexTreeItem *>(item->QTreeWidgetItem::parent());
+    if (ui->treeWidget->currentItem()) {
+        OnexTreeItem *item = static_cast<OnexTreeItem *>(ui->treeWidget->currentItem());
+        while (item->hasParent()) {
+            item = static_cast<OnexTreeItem *>(item->QTreeWidgetItem::parent());
+        }
+
+        QString directory = getSelectedDirectory();
+        if (directory.isEmpty())
+            return;
+
+        int count = item->onReplace(directory);
+        QString text = "Imported " + QString::number(count) + " file(s).";
+        QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
+        msgBox.exec();
+    } else {
+        QMessageBox::information(NULL, tr("Info"), tr("Select file first"));
     }
-
-    QString directory = getSelectedDirectory();
-    if (directory.isEmpty())
-        return;
-
-    int count = item->onReplace(directory);
-    QString text = "Imported " + QString::number(count) + " file(s).";
-    QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
-    msgBox.exec();
 }
 
 void MainWindow::on_actionAbout_triggered() {

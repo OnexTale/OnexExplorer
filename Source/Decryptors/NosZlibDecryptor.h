@@ -6,7 +6,7 @@
 class NosZlibDecryptor {
     public:
     NosZlibDecryptor();
-    virtual QByteArray encrypt(QByteArray &array);
+    virtual QByteArray encrypt(QByteArray &array, int level = 1);
     virtual QByteArray decrypt(QByteArray &array);
 };
 

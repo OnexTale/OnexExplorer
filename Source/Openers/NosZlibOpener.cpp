@@ -130,8 +130,14 @@ QByteArray NosZlibOpener::encrypt(OnexTreeItem *item) {
         contentArray.push_back(writeNextInt(content.size()));
 
         if (currentItem->isCompressed())
-            content = decryptor.encrypt(content);
-
+        {
+            int headerNumber = getNTHeaderNumber(fileHeader);
+            if (headerNumber == NS4BbData || headerNumber == NStcData || headerNumber == NStuData)
+                content = decryptor.encrypt(content, 9);
+            else
+                content = decryptor.encrypt(content);
+        }
+        
         int compressedContentSize = content.size();
         if (currentItem->isCompressed())
             compressedContentSize -= 4; // qCompress add the size at the front of array

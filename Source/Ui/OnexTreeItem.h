@@ -33,7 +33,7 @@ class OnexTreeItem : public QObject, public QTreeWidgetItem {
     public slots:
     virtual int onExportAll(QString directory);
     virtual int onExportSingle(QString directory);
-    virtual int onExporSingleRaw(QString directory);
+    virtual int onExportSingleRaw(QString directory);
     virtual int onExporAsOriginal();
     virtual int onReplace(QString directory);
 

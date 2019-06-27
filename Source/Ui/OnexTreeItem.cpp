@@ -61,8 +61,8 @@ int OnexTreeItem::onExportSingle(QString directory) {
     return 0;
 }
 
-int OnexTreeItem::onExporSingleRaw(QString directory) {
-    QString fileName = directory + this->getName();
+int OnexTreeItem::onExportSingleRaw(QString directory) {
+    QString fileName = directory + this->getName() + ".bin";
 
     QFile file(fileName);
     file.open(QIODevice::WriteOnly);

@@ -251,7 +251,7 @@ void MainWindow::actionExportToRaw() {
     int count = 0;
     foreach (auto &s, selectedItems) {
         OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
-        item->onExportSingle(directory);
+        item->onExportSingleRaw(directory);
         count++;
     }
     QString text = "Saved " + QString::number(count) + " file(s).";

@@ -165,7 +165,7 @@ void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTre
 
     QWidget *previewWindow = item->onClicked();
 
-    if (!previewWindow || item->childCount() != 0) {
+    if (!previewWindow ) {
         ui->gridLayout->replaceWidget(old, new QWidget());
         delete old;
         return;

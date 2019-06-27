@@ -1,5 +1,6 @@
 #include "OnexNSmpData.h"
 #include "OnexNSmpFrame.h"
+#include "MultiImagePreview.h"
 
 OnexNSmpData::OnexNSmpData(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
                            bool compressed)
@@ -18,6 +19,22 @@ OnexNSmpData::OnexNSmpData(QString name, QByteArray content, NosZlibOpener *open
         this->addChild(new OnexNSmpFrame(name + "_" + QString::number(i), subContent, width, height, xOrigin, yOrigin,
                                          opener, id, creationDate, compressed));
     }
+}
+
+QWidget *OnexNSmpData::onClicked() {
+    if (!hasParent())
+        return nullptr;
+
+    QList<QImage> *images = new QList<QImage>();
+    for (int i = 0; i != this->childCount(); ++i) {
+        OnexNSmpFrame *item = static_cast<OnexNSmpFrame *>(this->child(i));
+        images->append(item->getImage());
+    }
+
+    MultiImagePreview *imagePreview = new MultiImagePreview(images);
+    imagePreview->setWindowTitle(this->getName());
+
+    return imagePreview;
 }
 
 QByteArray OnexNSmpData::getContent() {
@@ -62,7 +79,9 @@ int OnexNSmpData::onExportAll(QString directory) {
     return count;
 }
 
-int OnexNSmpData::onExportSingle(QString directory) { return onExportAll(directory); }
+int OnexNSmpData::onExportSingle(QString directory) {
+    return onExportAll(directory);
+}
 
 int OnexNSmpData::onReplace(QString directory) {
     int count = 0;
@@ -77,7 +96,8 @@ int OnexNSmpData::onReplace(QString directory) {
     return count;
 }
 
-OnexNSmpData::~OnexNSmpData() {}
+OnexNSmpData::~OnexNSmpData() {
+}
 
 int OnexNSmpData::exportFrames(OnexNSmpData *src, QString directory) {
     int count = 0;

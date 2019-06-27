@@ -36,6 +36,7 @@ SOURCES += \
     Source/Decryptors/NosZlibDecryptor.cpp \
     Source/Openers/NosZlibOpener.cpp \
     Source/Ui/SingleImagePreview.cpp \
+    Source/Ui/MultiImagePreview.cpp \
     Source/ImageConverter.cpp \
     Source/Ui/FileInfo.cpp \
     Source/Ui/OnexTreeImage.cpp \
@@ -62,6 +63,7 @@ HEADERS  += \
     Source/Openers/NosZlibOpener.h \
     Source/NosEnumTypes.h \
     Source/Ui/SingleImagePreview.h \
+    Source/Ui/MultiImagePreview.h \
     Source/ImageConverter.h \
     Source/Ui/FileInfo.h \
     Source/Ui/OnexTreeImage.h \
@@ -78,6 +80,7 @@ FORMS    += \
     Source/mainwindow.ui \
     Source/Ui/SingleTextFilePreview.ui \
     Source/Ui/SingleImagePreview.ui \
+    Source/Ui/MultiImagePreview.ui \
     Source/Ui/FileInfo.ui
 
 DISTFILES +=

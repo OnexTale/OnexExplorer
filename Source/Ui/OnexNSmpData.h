@@ -1,7 +1,6 @@
 #ifndef ONEXNSMPDATA_H
 #define ONEXNSMPDATA_H
 #include "../Openers/NosZlibOpener.h"
-#include "OnexTreeItem.h"
 #include "OnexTreeZlibItem.h"
 
 class OnexNSmpData : public OnexTreeZlibItem {
@@ -13,6 +12,7 @@ class OnexNSmpData : public OnexTreeZlibItem {
     OnexNSmpData(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate, bool compressed);
     virtual QByteArray getContent() override;
     virtual ~OnexNSmpData();
+    virtual QWidget *onClicked() override;
 
     private slots:
     virtual int onExportAll(QString directory);

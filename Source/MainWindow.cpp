@@ -200,10 +200,7 @@ void MainWindow::on_actionReplace_triggered() {
     int count = 0;
     foreach (auto &s, selectedItems) {
         OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
-        if (!item->hasParent())
-            on_actionImport_triggered();
-        else
-            count += item->onReplace(directory);
+        count += item->onReplace(directory);
     }
 
     QString text = "Replaced " + QString::number(count) + " file(s).";

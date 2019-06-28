@@ -19,7 +19,7 @@ QImage OnexTreeImage::importQImageFromSelectedUserFile(QString filepath) {
 }
 
 QWidget *OnexTreeImage::onClicked() {
-    if (childCount() != 0)
+    if (!hasParent())
         return nullptr;
     SingleImagePreview *imagePreview = new SingleImagePreview(this->getImage());
     imagePreview->setWindowTitle(this->getName());

@@ -46,6 +46,7 @@ SOURCES += \
     Source/Ui/OnexNS4BbData.cpp \
     Source/Ui/OnexNStcData.cpp \
     Source/Ui/OnexNStpData.cpp \
+    Source/Ui/OnexNStpMipMap.cpp \
     Source/Openers/NosCCInfOpener.cpp \
     Source/Ui/OnexNSmpData.cpp
 
@@ -73,6 +74,7 @@ HEADERS  += \
     Source/Ui/OnexNS4BbData.h \
     Source/Ui/OnexNStcData.h \
     Source/Ui/OnexNStpData.h \
+    Source/Ui/OnexNStpMipMap.h \
     Source/Openers/NosCCInfOpener.h \
     Source/Ui/OnexNSmpData.h
 

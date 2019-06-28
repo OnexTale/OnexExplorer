@@ -138,6 +138,25 @@ QImage ImageConverter::convertBARG4444(QByteArray &array, int width, int height,
 
     return img;
 }
+
+QImage ImageConverter::convertGrayscale(QByteArray& array, int width, int height, int startByte)
+{
+	//qDebug() << "Opened Grayscale image.";
+	QImage img(width, height, QImage::Format_ARGB32);
+
+	img.fill(Qt::transparent);
+
+	for (int y = 0; y < height; ++y)
+	{
+		for (int x = 0; x < width; ++x)
+		{
+			uchar gray = array.at(startByte + y * width + x);
+			img.setPixel(x, y, qRgba(gray, gray, gray, gray));
+		}
+	}
+
+	return img;
+}
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////
 QByteArray ImageConverter::toGBAR4444(QImage &image) {
     qDebug() << "Replaced GBAR4444 image.";
@@ -286,6 +305,24 @@ QByteArray ImageConverter::toBARG4444(QImage &image) {
     }
 
     return data;
+}
+
+QByteArray ImageConverter::toGrayscale(QImage &image)
+{
+	//qDebug() << "Replaced Grayscale image.";
+	QByteArray data;
+
+	for (int y = 0; y < image.height(); ++y)
+	{
+		for (int x = 0; x < image.width(); ++x)
+		{
+			QRgb currentPixel = image.pixel(x, y);
+			uchar gray = qGreen(currentPixel);
+			data.push_back(gray);
+		}
+	}
+
+	return data;
 }
 
 ImageConverter::ImageConverter() {

@@ -1,8 +1,8 @@
 #ifndef ONEXNSTPMAPMAP_H
 #define ONEXNSTPMAPMAP_H
-#include "OnexNStpData.h"
+#include "OnexTreeImage.h"
 
-class OnexNStpMipMap : public OnexNStpData {
+class OnexNStpMipMap : public OnexTreeImage {
 private:
     int width;
     int height;

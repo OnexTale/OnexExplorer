@@ -21,7 +21,7 @@ class OnexTreeImage : public OnexTreeZlibItem {
     virtual QImage getImage() = 0;
     virtual ImageResolution getResolution() = 0;
 
-    private slots:
+    public slots:
     virtual int onExportAll(QString directory);
     virtual int onExportSingle(QString directory);
 

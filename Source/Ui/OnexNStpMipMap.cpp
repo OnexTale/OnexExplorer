@@ -2,7 +2,7 @@
 
 OnexNStpMipMap::OnexNStpMipMap(QString name, QByteArray content, int width, int height, int format,
                                NosZlibOpener *opener, int id, int creationDate, bool compressed)
-    : OnexNStpData(name, content, opener, id, creationDate, compressed) {
+    : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
     this->width = width;
     this->height = height;
     this->format = format;

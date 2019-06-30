@@ -6,11 +6,12 @@ OnexNStpData::OnexNStpData(QString name, QByteArray content, NosZlibOpener *open
     : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
     if (id == -1)
         return;
+
+    int amount = getFileAmount();
+    ImageResolution res = getResolution();
     int format = getFormat();
     if (format > 2)
         return;
-    int amount = getFileAmount();
-    ImageResolution res = getResolution();
     int offset = 8;
     for (int i = 0; i < amount; i++) {
         int nextOffset = offset;
@@ -49,8 +50,8 @@ QImage OnexNStpData::getImage() {
         return opener->getImageConverter().convertARGB555(content, resolution.x, resolution.y, 8);
     else if (format == 2)
         return opener->getImageConverter().convertBGRA8888(content, resolution.x, resolution.y, 8);
-     else if (format == 3 || format == 4)
-         return opener->getImageConverter().convertGrayscale(content, resolution.x, resolution.y, 8);
+    else if (format == 3 || format == 4)
+        return opener->getImageConverter().convertGrayscale(content, resolution.x, resolution.y, 8);
     else {
         qDebug().noquote().nospace() << "Unknown format! (" << format << ")";
         return QImage(resolution.x, resolution.y, QImage::Format_Invalid);
@@ -115,8 +116,12 @@ int OnexNStpData::onExportAll(QString directory) {
     int count = 0;
     if (childCount() > 0) {
         for (int i = 0; i != this->childCount(); ++i) {
-            OnexNStpData *item = static_cast<OnexNStpData *>(this->child(i));
-            count += item->onExportAll(directory);
+            OnexTreeImage *item = static_cast<OnexTreeImage *>(this->child(i));
+            if (item->childCount() > 0)
+                count += item->onExportAll(directory);
+            else
+                count += item->onExportSingle(directory);
+            
         }
     } else
         count = onExportSingle(directory);

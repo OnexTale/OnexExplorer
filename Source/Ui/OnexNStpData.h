@@ -5,7 +5,7 @@
 class OnexNStpData : public OnexTreeImage {
 public:
     OnexNStpData(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate, bool compressed);
-
+    virtual QByteArray getContent() override;
     int getFormat();
     int getFileAmount();
     virtual QImage getImage() override;
@@ -15,8 +15,7 @@ public:
 
 private slots:
     virtual int onReplace(QString directory) override;
-    virtual int onExportAll(QString directory) override;
-    virtual int onExportSingle(QString directory) override;
+    virtual int onExport(QString directory) override;
 };
 
 #endif // ONEXNSTPDATA_H

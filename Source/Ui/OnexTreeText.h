@@ -19,8 +19,7 @@ class OnexTreeText : public OnexTreeItem {
     int getFileNmber() const;
     int getIsDat() const;
     public slots:
-    virtual int onExportSingle(QString directory);
-    virtual int onExportAll(QString directory);
+    virtual int onExport(QString directory);
     virtual int onReplace(QString directory);
 signals:
     void replaceSignal(QByteArray text);

@@ -51,19 +51,13 @@ QString OnexTreeItem::getName() {
 OnexTreeItem::~OnexTreeItem() {
 }
 
-int OnexTreeItem::onExportAll(QString directory) {
+int OnexTreeItem::onExport(QString directory) {
     QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
     return 0;
 }
 
-int OnexTreeItem::onExportSingle(QString directory) {
-    QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
-    return 0;
-}
-
-int OnexTreeItem::onExportSingleRaw(QString directory) {
+int OnexTreeItem::onExportRaw(QString directory) {
     QString fileName = directory + this->getName() + ".bin";
-
     QFile file(fileName);
     file.open(QIODevice::WriteOnly);
     if (file.write(this->getContent()) == -1) {

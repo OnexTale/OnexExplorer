@@ -1,6 +1,6 @@
 #include "OnexNSmpData.h"
-#include "OnexNSmpFrame.h"
 #include "MultiImagePreview.h"
+#include "OnexNSmpFrame.h"
 
 OnexNSmpData::OnexNSmpData(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
                            bool compressed)
@@ -32,7 +32,6 @@ QWidget *OnexNSmpData::onClicked() {
     }
 
     MultiImagePreview *imagePreview = new MultiImagePreview(images);
-    imagePreview->setWindowTitle(this->getName());
 
     return imagePreview;
 }
@@ -66,61 +65,23 @@ QByteArray OnexNSmpData::getContent() {
     return content;
 }
 
-int OnexNSmpData::onExportAll(QString directory) {
+int OnexNSmpData::onExport(QString directory) {
     int count = 0;
-    if (!hasParent()) {
-        for (int i = 0; i != this->childCount(); ++i) {
-            OnexNSmpData *item = static_cast<OnexNSmpData *>(this->child(i));
-            count += exportFrames(item, directory);
-        }
-    } else
-        count = exportFrames(this, directory);
-
+    for (int i = 0; i != this->childCount(); ++i) {
+        OnexTreeItem *item = static_cast<OnexTreeItem *>(this->child(i));
+        count += item->onExport(directory);
+    }
     return count;
-}
-
-int OnexNSmpData::onExportSingle(QString directory) {
-    return onExportAll(directory);
 }
 
 int OnexNSmpData::onReplace(QString directory) {
     int count = 0;
-    if (!hasParent()) {
-        for (int i = 0; i != this->childCount(); ++i) {
-            OnexNSmpData *item = static_cast<OnexNSmpData *>(this->child(i));
-            count += replaceFrames(item, directory);
-        }
-    } else
-        count = replaceFrames(this, directory);
-
+    for (int i = 0; i != this->childCount(); ++i) {
+        OnexTreeItem *item = static_cast<OnexTreeItem *>(this->child(i));
+        count += item->onReplace(directory);
+    }
     return count;
 }
 
 OnexNSmpData::~OnexNSmpData() {
-}
-
-int OnexNSmpData::exportFrames(OnexNSmpData *src, QString directory) {
-    int count = 0;
-    for (int i = 0; i != src->childCount(); ++i) {
-        OnexNSmpFrame *item = static_cast<OnexNSmpFrame *>(src->child(i));
-        if (item->getImage().save(directory + item->getName() + ".png", "PNG", 100))
-            count++;
-        else if (item->getResolution().x == 0 || item->getResolution().y == 0) {
-            QFile file(directory + item->getName() + ".png");
-            if (file.open(QIODevice::WriteOnly)) {
-                count++;
-                file.close();
-            }
-        }
-    }
-    return count;
-}
-
-int OnexNSmpData::replaceFrames(OnexNSmpData *src, QString directory) {
-    int count = 0;
-    for (int i = 0; i != src->childCount(); ++i) {
-        OnexNSmpFrame *item = static_cast<OnexNSmpFrame *>(src->child(i));
-        count += item->onReplace(directory);
-    }
-    return count;
 }

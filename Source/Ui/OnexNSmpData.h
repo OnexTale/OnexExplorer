@@ -4,19 +4,14 @@
 #include "OnexTreeZlibItem.h"
 
 class OnexNSmpData : public OnexTreeZlibItem {
-    private:
-    int exportFrames(OnexNSmpData *src, QString path);
-    int replaceFrames(OnexNSmpData *src, QString path);
-
-    public:
+public:
     OnexNSmpData(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate, bool compressed);
     virtual QByteArray getContent() override;
     virtual ~OnexNSmpData();
     virtual QWidget *onClicked() override;
 
-    private slots:
-    virtual int onExportAll(QString directory);
-    virtual int onExportSingle(QString directory);
+private slots:
+    virtual int onExport(QString directory);
     virtual int onReplace(QString directory);
 };
 

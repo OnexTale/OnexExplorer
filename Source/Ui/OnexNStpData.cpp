@@ -39,6 +39,22 @@ int OnexNStpData::getFileAmount() {
     return content.at(7);
 }
 
+QByteArray OnexNStpData::getContent() {
+    int amount = childCount();
+    if (!hasParent() || amount <= 0)
+        return content;
+
+    QByteArray contentArray = content.mid(0,8);
+
+    for (int i = 0; i < amount; i++) {
+        OnexNStpMipMap *currentItem = static_cast<OnexNStpMipMap *>(this->child(i));
+        contentArray.push_back(currentItem->getContent());
+    }
+
+    this->content = contentArray;
+    return content;
+}
+
 QImage OnexNStpData::getImage() {
     ImageResolution resolution = this->getResolution();
 
@@ -112,28 +128,18 @@ int OnexNStpData::onReplace(QString directory) {
     }
 }
 
-int OnexNStpData::onExportAll(QString directory) {
-    int count = 0;
+int OnexNStpData::onExport(QString directory) {
     if (childCount() > 0) {
+        int count = 0;
         for (int i = 0; i != this->childCount(); ++i) {
             OnexTreeImage *item = static_cast<OnexTreeImage *>(this->child(i));
-            if (item->childCount() > 0)
-                count += item->onExportAll(directory);
-            else
-                count += item->onExportSingle(directory);
-            
+            count += item->onExport(directory);
         }
-    } else
-        count = onExportSingle(directory);
-
-    return count;
-}
-
-int OnexNStpData::onExportSingle(QString directory) {
-    if (childCount() > 0)
-        return onExportAll(directory);
-    if (this->getImage().save(directory + getName() + ".png", "PNG", 100))
-        return 1;
+        return count;
+    } else {
+        if (this->getImage().save(directory + getName() + ".png", "PNG", 100))
+            return 1;
+    }
     return 0;
 }
 

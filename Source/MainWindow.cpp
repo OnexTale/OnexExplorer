@@ -41,6 +41,10 @@ void MainWindow::onCustomMenuShow(const QPoint &point) {
         contextMenu->addAction(exportOriginalAction);
         QObject::connect(exportOriginalAction, SIGNAL(triggered(bool)), this, SLOT(on_actionSave_as_triggered()));
 
+        QAction *replaceAction = new QAction(QObject::tr("Replace"), contextMenu);
+        contextMenu->addAction(replaceAction);
+        QObject::connect(replaceAction, SIGNAL(triggered(bool)), this, SLOT(on_actionReplace_triggered()));
+
         QAction *closeThisItem = new QAction(QObject::tr("Close"), contextMenu);
         contextMenu->addAction(closeThisItem);
         QObject::connect(closeThisItem, SIGNAL(triggered(bool)), this, SLOT(on_actionClose_selected_triggered()));
@@ -222,11 +226,7 @@ void MainWindow::on_actionExport_triggered() {
     int count = 0;
     foreach (auto &s, selectedItems) {
         OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
-        if (item->childCount() == 0) {
-            item->onExportSingle(directory);
-            count++;
-        } else
-            count += item->onExportAll(directory);
+        count += item->onExport(directory);
     }
 
     QString text = "Saved " + QString::number(count) + " file(s).";
@@ -248,8 +248,7 @@ void MainWindow::actionExportToRaw() {
     int count = 0;
     foreach (auto &s, selectedItems) {
         OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
-        item->onExportSingleRaw(directory);
-        count++;
+        count += item->onExportRaw(directory);
     }
     QString text = "Saved " + QString::number(count) + " file(s).";
     QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
@@ -257,23 +256,7 @@ void MainWindow::actionExportToRaw() {
 }
 
 void MainWindow::on_actionImport_triggered() {
-    if (ui->treeWidget->currentItem()) {
-        OnexTreeItem *item = static_cast<OnexTreeItem *>(ui->treeWidget->currentItem());
-        while (item->hasParent()) {
-            item = static_cast<OnexTreeItem *>(item->QTreeWidgetItem::parent());
-        }
-
-        QString directory = getSelectedDirectory();
-        if (directory.isEmpty())
-            return;
-
-        int count = item->onReplace(directory);
-        QString text = "Imported " + QString::number(count) + " file(s).";
-        QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
-        msgBox.exec();
-    } else {
-        QMessageBox::information(NULL, tr("Info"), tr("Select file first"));
-    }
+    on_actionReplace_triggered();
 }
 
 void MainWindow::on_actionAbout_triggered() {

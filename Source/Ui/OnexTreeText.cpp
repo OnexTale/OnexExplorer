@@ -2,9 +2,13 @@
 #include "../Openers/NosTextOpener.h"
 #include "SingleTextFilePreview.h"
 
-int OnexTreeText::getFileNmber() const { return fileNmber; }
+int OnexTreeText::getFileNmber() const {
+    return fileNmber;
+}
 
-int OnexTreeText::getIsDat() const { return isDat; }
+int OnexTreeText::getIsDat() const {
+    return isDat;
+}
 
 OnexTreeText::OnexTreeText(QString name, NosTextOpener *opener, int fileNumber, int isDat, QByteArray content)
     : OnexTreeItem(name, content) {
@@ -17,7 +21,6 @@ QWidget *OnexTreeText::onClicked() {
     if (childCount() != 0)
         return nullptr;
     SingleTextFilePreview *textPreview = new SingleTextFilePreview(content);
-    textPreview->setWindowTitle(this->getName());
 
     connect(this, SIGNAL(replaceSignal(QByteArray)), textPreview, SLOT(onReplaced(QByteArray)));
 
@@ -48,39 +51,31 @@ int OnexTreeText::onExporAsOriginal() {
     return 1;
 }
 
-int OnexTreeText::onExportSingle(QString directory) {
-    QString fileName = directory + this->getName();
-
-    QFile file(fileName);
-    if (file.open(QIODevice::WriteOnly)) {
-        file.write(content);
-        file.close();
-        return 1;
+int OnexTreeText::onExport(QString directory) {
+    if (childCount() > 0) {
+        int count = 0;
+        for (int i = 0; i != this->childCount(); ++i) {
+            OnexTreeText *item = static_cast<OnexTreeText *>(this->child(i));
+            count += item->onExport(directory);
+        }
+        return count;
     } else {
-        QMessageBox::critical(NULL, "Woops", "Couldn't export that text file");
-        return 0;
-    }
-}
-
-int OnexTreeText::onExportAll(QString directory) {
-    int count = 0;
-    for (int i = 0; i != this->childCount(); ++i) {
-        OnexTreeText *item = static_cast<OnexTreeText *>(this->child(i));
-        QFile file(directory + item->getName());
+        QString fileName = directory + this->getName();
+        QFile file(fileName);
         if (file.open(QIODevice::WriteOnly)) {
-            file.write(item->content);
+            file.write(content);
             file.close();
-            count++;
+            return 1;
         }
     }
-    return count;
+    return 0;
 }
 
-int OnexTreeText::onReplace(QString directory)
-{
+int OnexTreeText::onReplace(QString directory) {
     int count = OnexTreeItem::onReplace(directory);
     emit replaceSignal(this->getContent());
     return count;
 }
 
-OnexTreeText::~OnexTreeText() {}
+OnexTreeText::~OnexTreeText() {
+}

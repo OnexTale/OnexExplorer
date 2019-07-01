@@ -31,9 +31,8 @@ class OnexTreeItem : public QObject, public QTreeWidgetItem {
     QMessageBox getMsgBox(QString title, QString message, QMessageBox::Icon icon);
 
     public slots:
-    virtual int onExportAll(QString directory);
-    virtual int onExportSingle(QString directory);
-    virtual int onExportSingleRaw(QString directory);
+    virtual int onExport(QString directory);
+    virtual int onExportRaw(QString directory);
     virtual int onExporAsOriginal();
     virtual int onReplace(QString directory);
 

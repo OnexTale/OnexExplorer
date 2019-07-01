@@ -23,7 +23,7 @@ QImage ImageConverter::convertGBAR4444(QByteArray &array, int width, int height,
         }
     }
 
-    return img;
+    return img.convertToFormat(QImage::Format_ARGB4444_Premultiplied);
 }
 
 QImage ImageConverter::convertBGRA8888(QByteArray &array, int width, int height, int startByte) {
@@ -66,7 +66,7 @@ QImage ImageConverter::convertARGB555(QByteArray &array, int width, int height, 
         }
     }
 
-    return img;
+    return img.convertToFormat(QImage::Format_RGB555);
 }
 
 QImage ImageConverter::convertNSTC(QByteArray &array, int width, int height, int startByte) {
@@ -136,7 +136,7 @@ QImage ImageConverter::convertBARG4444(QByteArray &array, int width, int height,
         }
     }
 
-    return img;
+    return img.convertToFormat(QImage::Format_ARGB4444_Premultiplied);
 }
 
 QImage ImageConverter::convertGrayscale(QByteArray& array, int width, int height, int startByte)
@@ -155,7 +155,7 @@ QImage ImageConverter::convertGrayscale(QByteArray& array, int width, int height
 		}
 	}
 
-	return img;
+	return img.convertToFormat(QImage::Format_Grayscale8);
 }
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////
 QByteArray ImageConverter::toGBAR4444(QImage &image) {

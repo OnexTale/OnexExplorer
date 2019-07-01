@@ -55,11 +55,15 @@ void MainWindow::onCustomMenuShow(const QPoint &point) {
 
         QAction *exportSingleToRawAction = new QAction(QObject::tr("Export to raw"), contextMenu);
         contextMenu->addAction(exportSingleToRawAction);
-        QObject::connect(exportSingleToRawAction, SIGNAL(triggered(bool)), this, SLOT(actionExportToRaw()));
+        QObject::connect(exportSingleToRawAction, SIGNAL(triggered(bool)), this, SLOT(on_actionExport_to_raw_triggered()));
 
         QAction *replaceAction = new QAction(QObject::tr("Replace"), contextMenu);
         contextMenu->addAction(replaceAction);
         QObject::connect(replaceAction, SIGNAL(triggered(bool)), this, SLOT(on_actionReplace_triggered()));
+
+        QAction *replaceRawAction = new QAction(QObject::tr("Replace with raw"), contextMenu);
+        contextMenu->addAction(replaceRawAction);
+        QObject::connect(replaceRawAction, SIGNAL(triggered(bool)), this, SLOT(on_actionReplace_with_raw_triggered()));
 
         QAction *deleteAction = new QAction(QObject::tr("Delete"), contextMenu);
         contextMenu->addAction(deleteAction);
@@ -169,7 +173,7 @@ void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTre
 
     QWidget *previewWindow = item->onClicked();
 
-    if (!previewWindow ) {
+    if (!previewWindow) {
         ui->gridLayout->replaceWidget(old, new QWidget());
         delete old;
         return;
@@ -212,6 +216,28 @@ void MainWindow::on_actionReplace_triggered() {
     msgBox.exec();
 }
 
+void MainWindow::on_actionReplace_with_raw_triggered() {
+    QList<QTreeWidgetItem *> selectedItems = ui->treeWidget->selectedItems();
+    if (selectedItems.size() == 0) {
+        QMessageBox::information(NULL, tr("Info"), tr("Select file first"));
+        return;
+    }
+
+    QString directory = getSelectedDirectory();
+    if (directory.isEmpty())
+        return;
+
+    int count = 0;
+    foreach (auto &s, selectedItems) {
+        OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
+        count += item->onReplaceRaw(directory);
+    }
+
+    QString text = "Replaced " + QString::number(count) + " file(s).";
+    QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
+    msgBox.exec();
+}
+
 void MainWindow::on_actionExport_triggered() {
     QList<QTreeWidgetItem *> selectedItems = ui->treeWidget->selectedItems();
     if (selectedItems.size() == 0) {
@@ -234,7 +260,7 @@ void MainWindow::on_actionExport_triggered() {
     msgBox.exec();
 }
 
-void MainWindow::actionExportToRaw() {
+void MainWindow::on_actionExport_to_raw_triggered() {
     QList<QTreeWidgetItem *> selectedItems = ui->treeWidget->selectedItems();
     if (selectedItems.size() == 0) {
         QMessageBox::information(NULL, tr("Info"), tr("Select file first"));
@@ -253,10 +279,6 @@ void MainWindow::actionExportToRaw() {
     QString text = "Saved " + QString::number(count) + " file(s).";
     QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
     msgBox.exec();
-}
-
-void MainWindow::on_actionImport_triggered() {
-    on_actionReplace_triggered();
 }
 
 void MainWindow::on_actionAbout_triggered() {
@@ -286,6 +308,10 @@ void MainWindow::on_actionSave_as_triggered() {
     } else {
         QMessageBox::information(NULL, tr("Info"), tr("Select .NOS file first"));
     }
+}
+
+void MainWindow::on_actionExport_as_NOS_triggered() {
+    on_actionSave_as_triggered();
 }
 
 void MainWindow::on_actionExit_triggered() {

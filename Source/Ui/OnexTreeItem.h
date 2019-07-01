@@ -35,6 +35,7 @@ class OnexTreeItem : public QObject, public QTreeWidgetItem {
     virtual int onExportRaw(QString directory);
     virtual int onExporAsOriginal();
     virtual int onReplace(QString directory);
+    virtual int onReplaceRaw(QString directory);
 
     virtual void onDelete();
     virtual void actionClose();

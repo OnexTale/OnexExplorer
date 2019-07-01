@@ -61,7 +61,6 @@ int OnexTreeItem::onExportRaw(QString directory) {
     QFile file(fileName);
     file.open(QIODevice::WriteOnly);
     if (file.write(this->getContent()) == -1) {
-        QMessageBox::critical(NULL, tr("Woops"), tr("Couldn't save that file"));
         return 0;
     }
     file.close();
@@ -90,6 +89,18 @@ int OnexTreeItem::onReplace(QString directory) {
             return 0;
         return 1;
     }
+}
+
+int OnexTreeItem::onReplaceRaw(QString directory) {
+    QString fileName = directory + this->getName() + ".bin";
+    QFile file(fileName);
+    
+    if (file.open(QIODevice::ReadOnly)) {
+        content = file.readAll();
+        file.close();
+        return 1;
+    }
+    return 0;
 }
 
 void OnexTreeItem::onDelete() {

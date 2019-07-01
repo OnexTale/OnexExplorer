@@ -40,15 +40,17 @@ class MainWindow : public QMainWindow {
 
     void on_actionReplace_triggered();
 
-    void on_actionImport_triggered();
-
     void on_actionExport_triggered();
 
-    void actionExportToRaw();
+    void on_actionExport_to_raw_triggered();
+
+    void on_actionReplace_with_raw_triggered();
 
     void on_actionAbout_triggered();
 
     void on_actionSave_as_triggered();
+
+    void on_actionExport_as_NOS_triggered();
 
     private:
     Ui::MainWindow *ui;

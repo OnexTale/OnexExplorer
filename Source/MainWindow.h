@@ -24,6 +24,7 @@ class MainWindow : public QMainWindow {
     ~MainWindow();
 
     private slots:
+    void filterItems(QString searched);
     void onCustomMenuShow(const QPoint &point);
     void clearMenu();
     void on_actionOpen_triggered();

@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
 
+    connect(ui->filterInput, SIGNAL(textChanged(QString)), this, SLOT(filterItems(QString)));
     connect(ui->treeWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onCustomMenuShow(QPoint)));
 }
 
@@ -17,6 +18,25 @@ MainWindow::~MainWindow() {
     }
 
     delete ui;
+}
+
+void MainWindow::filterItems(QString searched) {
+    for (int i = 0; i < ui->treeWidget->topLevelItemCount(); i++) {
+        for (int j = 0; j < ui->treeWidget->topLevelItem(i)->childCount(); j++)
+            ui->treeWidget->topLevelItem(i)->child(j)->setHidden(true);
+    }
+
+    QList<QTreeWidgetItem *> matches = ui->treeWidget->findItems(searched, Qt::MatchStartsWith | Qt::MatchRecursive);
+    for (QTreeWidgetItem *m : matches) {
+        if (m->parent()) {
+            m->parent()->setHidden(false);
+            if (m->parent()->parent()) {
+                for (int i = 0; i < m->parent()->childCount(); i++)
+                    m->parent()->child(i)->setHidden(true);
+            }
+        }
+        m->setHidden(false);
+    }
 }
 
 void MainWindow::onCustomMenuShow(const QPoint &point) {
@@ -55,7 +75,8 @@ void MainWindow::onCustomMenuShow(const QPoint &point) {
 
         QAction *exportSingleToRawAction = new QAction(QObject::tr("Export to raw"), contextMenu);
         contextMenu->addAction(exportSingleToRawAction);
-        QObject::connect(exportSingleToRawAction, SIGNAL(triggered(bool)), this, SLOT(on_actionExport_to_raw_triggered()));
+        QObject::connect(exportSingleToRawAction, SIGNAL(triggered(bool)), this,
+                         SLOT(on_actionExport_to_raw_triggered()));
 
         QAction *replaceAction = new QAction(QObject::tr("Replace"), contextMenu);
         contextMenu->addAction(replaceAction);

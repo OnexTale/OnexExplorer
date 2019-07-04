@@ -12,6 +12,7 @@
 #include <QFileDialog>
 #include <QMainWindow>
 #include <QMimeData>
+
 namespace Ui {
     class MainWindow;
 }
@@ -19,11 +20,13 @@ namespace Ui {
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
-    public:
+public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    const QString VERSION = "v0.5";
 
-    private slots:
+
+private slots:
     void filterItems(QString searched);
     void onCustomMenuShow(const QPoint &point);
     void clearMenu();

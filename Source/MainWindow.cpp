@@ -4,6 +4,7 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     this->setAcceptDrops(true);
+    this->setWindowTitle(QString("OnexExplorer %1 [Beta]").arg(VERSION));
 
     ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -303,15 +304,16 @@ void MainWindow::on_actionExport_to_raw_triggered() {
 }
 
 void MainWindow::on_actionAbout_triggered() {
-    QMessageBox::information(NULL, tr("About OnexExplorer"),
-                             tr("OnexExplorer is an open-source tool for unpacking and repacking .NOS "
+    QMessageBox::information(NULL, tr(qPrintable(QString("About OnexExplorer %1").arg(VERSION))),
+                             tr(qPrintable(QString("<center><b>OnexExplorer %1</b></center>"
+                                "<br>OnexExplorer is an open-source tool for unpacking and repacking .NOS "
                                 "data files from game called NosTale. "
                                 "<br>It can open almost all .NOS files and show and replace the data stored in "
                                 "them."
                                 "<br>This fork is Maintained by @Pumba98"
                                 "<br>GitHub: <a "
                                 "href='https://github.com/Pumbaa98/OnexExplorer'>"
-                                "https://github.com/Pumbaa98/OnexExplorer</a>"));
+                                "https://github.com/Pumbaa98/OnexExplorer</a>").arg(VERSION))));
 }
 
 void MainWindow::on_actionHelp_triggered() {

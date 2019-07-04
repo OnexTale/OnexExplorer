@@ -68,7 +68,7 @@
        </size>
       </property>
       <property name="placeholderText">
-       <string>search...</string>
+       <string>Search...</string>
       </property>
      </widget>
     </item>
@@ -112,7 +112,7 @@
     <property name="title">
      <string>?</string>
     </property>
-    <addaction name="actionInformation"/>
+    <addaction name="actionHelp"/>
     <addaction name="separator"/>
     <addaction name="actionAbout"/>
    </widget>
@@ -170,9 +170,9 @@
     <string>Ctrl+E</string>
    </property>
   </action>
-  <action name="actionInformation">
+  <action name="actionHelp">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Help</string>
@@ -228,6 +228,9 @@
    <property name="toolTip">
     <string>Export as raw data</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+E</string>
+   </property>
   </action>
   <action name="actionReplace_with_raw">
    <property name="text">
@@ -236,6 +239,9 @@
    <property name="toolTip">
     <string>Replace with raw data</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+R</string>
+   </property>
   </action>
   <action name="actionExport_as_NOS">
    <property name="text">
@@ -243,6 +249,9 @@
    </property>
    <property name="toolTip">
     <string>Export as .NOS archiv</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
  </widget>

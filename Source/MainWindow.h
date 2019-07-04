@@ -49,6 +49,8 @@ class MainWindow : public QMainWindow {
 
     void on_actionAbout_triggered();
 
+    void on_actionHelp_triggered();
+
     void on_actionSave_as_triggered();
 
     void on_actionExport_as_NOS_triggered();

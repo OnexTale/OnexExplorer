@@ -303,14 +303,26 @@ void MainWindow::on_actionExport_to_raw_triggered() {
 }
 
 void MainWindow::on_actionAbout_triggered() {
-    QMessageBox::information(NULL, tr("About Project"),
+    QMessageBox::information(NULL, tr("About OnexExplorer"),
                              tr("OnexExplorer is an open-source tool for unpacking and repacking .NOS "
                                 "data files from game called NosTale. "
-                                "<br>It can open almost all .NOS files and show the data stored in "
+                                "<br>It can open almost all .NOS files and show and replace the data stored in "
                                 "them."
+                                "<br>This fork is Maintained by @Pumba98"
                                 "<br>GitHub: <a "
-                                "href='https://github.com/OnexTale/OnexExplorer'>https://github.com/"
-                                "OnexTale/OnexExplorer</a>"));
+                                "href='https://github.com/Pumbaa98/OnexExplorer'>"
+                                "https://github.com/Pumbaa98/OnexExplorer</a>"));
+}
+
+void MainWindow::on_actionHelp_triggered() {
+    QMessageBox::information(NULL, tr("Get Help"),
+                             tr("If you have problems with OnexExplorer you can: "
+                                "<br> <a href='https://github.com/Pumbaa98/OnexExplorer/issues'>"
+                                "Open an issue on Github</a>"
+                                "<br><a href='https://www.elitepvpers.com/forum/nostale-hacks-bots-cheats-exploits/"
+                                "4632151-onexexplorer-client-modding-tool.html'>"
+                                "Contact me on Elitepvpers </a>"
+                                "<br>Or add me on Discord: Pumbaa98#6817"));
 }
 
 void MainWindow::on_actionSave_as_triggered() {

@@ -29,7 +29,7 @@ void MainWindow::filterItems(QString searched) {
 
     QList<QTreeWidgetItem *> matches = ui->treeWidget->findItems(searched, Qt::MatchStartsWith | Qt::MatchRecursive);
     for (QTreeWidgetItem *m : matches) {
-        if (m->parent()) {
+        if (m->parent() && m->parent()->isHidden()) {
             m->parent()->setHidden(false);
             if (m->parent()->parent()) {
                 for (int i = 0; i < m->parent()->childCount(); i++)

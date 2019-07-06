@@ -26,6 +26,11 @@ int OnexTreeItem::fromLittleEndianToInt(QByteArray array) {
     return qFromLittleEndian<qint32>(reinterpret_cast<const uchar *>(array.data()));
 }
 
+float OnexTreeItem::fromLittleEndianToFloat(QByteArray array) {
+    return qFromLittleEndian<float>(reinterpret_cast<const uchar *>(array.data()));
+}
+
+
 QByteArray OnexTreeItem::fromShortToLittleEndian(short number) {
     QByteArray writeArray;
     writeArray.resize(2);
@@ -37,6 +42,13 @@ QByteArray OnexTreeItem::fromIntToLittleEndian(int number) {
     QByteArray writeArray;
     writeArray.resize(4);
     qToLittleEndian<qint32>(number, reinterpret_cast<uchar *>(writeArray.data()));
+    return writeArray;
+}
+
+QByteArray OnexTreeItem::fromFloatToLittleEndian(float number) {
+    QByteArray writeArray;
+    writeArray.resize(2);
+    qToLittleEndian<float>(number, reinterpret_cast<uchar *>(writeArray.data()));
     return writeArray;
 }
 

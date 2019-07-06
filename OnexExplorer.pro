@@ -4,9 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT       += core gui widgets 3dcore 3dextras
 
 TARGET = OnexExplorer
 TEMPLATE = app
@@ -48,7 +46,10 @@ SOURCES += \
     Source/Ui/OnexNStpData.cpp \
     Source/Ui/OnexNStpMipMap.cpp \
     Source/Openers/NosCCInfOpener.cpp \
-    Source/Ui/OnexNSmpData.cpp
+    Source/Ui/OnexNSmpData.cpp \
+    Source/Ui/OnexNStgData.cpp \
+    Source/Ui/SingleModelPreview.cpp
+
 
 HEADERS  += \
     Source/Decryptors/NosTextDatFileDecryptor.h \
@@ -76,7 +77,9 @@ HEADERS  += \
     Source/Ui/OnexNStpData.h \
     Source/Ui/OnexNStpMipMap.h \
     Source/Openers/NosCCInfOpener.h \
-    Source/Ui/OnexNSmpData.h
+    Source/Ui/OnexNSmpData.h \
+    Source/Ui/OnexNStgData.h \
+    Source/Ui/SingleModelPreview.h
 
 FORMS    += \
     Source/mainwindow.ui \

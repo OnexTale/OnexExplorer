@@ -10,8 +10,6 @@ QByteArray NosTextOthersFileDecryptor::encrypt(QByteArray &array)
     QByteArray result;
     result.resize(4);
     qToLittleEndian<qint32>(array.size(), reinterpret_cast<uchar*>(result.data()));
-    qDebug() << array;
-    qDebug() << array.size();
     for (auto &byte : array)
     {
         result.push_back(byte ^ 0x1);
@@ -35,6 +33,5 @@ QByteArray NosTextOthersFileDecryptor::decrypt(QByteArray &array)
             result.push_back(byte ^ 0x1);
         result.push_back('\n');
     }
-    qDebug() << result;
     return result;
 }

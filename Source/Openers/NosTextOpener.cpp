@@ -21,7 +21,7 @@ OnexTreeItem *NosTextOpener::decrypt(QFile &file)
         int fileSize = readNextInt(file);
         QByteArray fileContent = file.read(fileSize);
         QByteArray decryptedArray;
-        if (isDat)
+        if (isDat || stringName.endsWith(".dat"))
             decryptedArray = datDecryptor.decrypt(fileContent);
         else    //.lst
             decryptedArray = lstDecryptor.decrypt(fileContent);
@@ -50,7 +50,7 @@ QByteArray NosTextOpener::encrypt(OnexTreeItem *item)
 
         QList<QByteArray> splited;
         QByteArray encrypted;
-        if (currentItem->getIsDat())
+        if (currentItem->getIsDat() || currentItem->getName().endsWith(".dat"))
         {
             splited  = currentItem->getContent().split(0xD);
         }else{
@@ -59,7 +59,7 @@ QByteArray NosTextOpener::encrypt(OnexTreeItem *item)
             qToLittleEndian<qint32>(splited.size() - 1, reinterpret_cast<uchar*>(encrypted.data()));
         }
         for (int line = 0; line < splited.size() - 1; ++line) {
-            if(currentItem->getIsDat())
+            if(currentItem->getIsDat() || currentItem->getName().endsWith(".dat"))
                 encrypted.push_back(datDecryptor.encrypt(splited[line]));
             else
                 encrypted.push_back(lstDecryptor.encrypt(splited[line]));

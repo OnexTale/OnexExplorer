@@ -43,7 +43,6 @@ QVector<QVector3D> OnexNStgData::getFaces() {
     offset += 2;
 
     for (int g = 0; g < groups; g++) {
-        // std::cout << std::endl << "g " + QString::number(g).toStdString() << std::endl << std::endl;
         int points = fromLittleEndianToShort(content.mid(offset, 2));
         offset += 2;
         for (int i = 0; i < points / 3; i++) {
@@ -120,7 +119,50 @@ QVector<int> OnexNStgData::getTextures() {
     offset += 2;
 
     for (int p = 0; p < parts; p++) {
-        offset += 38; //skip
+        float x = fromLittleEndianToFloat(content.mid(offset, 4));
+        float y = fromLittleEndianToFloat(content.mid(offset + 4, 4));
+        float z = fromLittleEndianToFloat(content.mid(offset + 8, 4));
+        offset += 12;
+
+        float rotation_x = fromLittleEndianToFloat(content.mid(offset, 2)) / 0x7FFF;
+        float rotation_y = fromLittleEndianToFloat(content.mid(offset + 2, 2)) / 0x7FFF;
+        float rotation_z = fromLittleEndianToFloat(content.mid(offset + 4, 2)) / 0x7FFF;
+        float rotation_w = fromLittleEndianToFloat(content.mid(offset + 6, 2)) / 0x7FFF;
+        offset += 8;
+
+        float scale_x = fromLittleEndianToFloat(content.mid(offset, 4));
+        float scale_y = fromLittleEndianToFloat(content.mid(offset + 4, 4));
+        float scale_z = fromLittleEndianToFloat(content.mid(offset + 8, 4));
+        offset += 12;
+
+        int translationFrameCount = fromLittleEndianToShort(content.mid(offset, 2));
+        offset += 2;
+        for (int i = 0; i < translationFrameCount; i++) {
+            short time = fromLittleEndianToShort(content.mid(offset, 2));
+            float frame_x = fromLittleEndianToFloat(content.mid(offset + 2, 4));
+            float frame_y = fromLittleEndianToFloat(content.mid(offset + 6, 4));
+            float frame_z = fromLittleEndianToFloat(content.mid(offset + 10, 4));
+            offset += 14;
+        }
+        int rotationFrameCount = fromLittleEndianToShort(content.mid(offset, 2));
+        offset += 2;
+        for (int i = 0; i < rotationFrameCount; i++) {
+            short time = fromLittleEndianToShort(content.mid(offset, 2));
+            float frame_rotation_x = (float)fromLittleEndianToShort(content.mid(offset + 2, 2)) / 0x7FFF;
+            float frame_rotation_y = (float)fromLittleEndianToShort(content.mid(offset + 4, 2)) / 0x7FFF;
+            float frame_rotation_z = (float)fromLittleEndianToShort(content.mid(offset + 6, 2)) / 0x7FFF;
+            float frame_rotation_w = (float)fromLittleEndianToShort(content.mid(offset + 8, 2)) / 0x7FFF;
+            offset += 10;
+        }
+        int scaleFrameCount = fromLittleEndianToShort(content.mid(offset, 2));
+        offset += 2;
+        for (int i = 0; i < scaleFrameCount; i++) {
+            short time = fromLittleEndianToShort(content.mid(offset, 2));
+            float frame_scale_x = fromLittleEndianToFloat(content.mid(offset + 2, 4));
+            float frame_scale_y = fromLittleEndianToFloat(content.mid(offset + 6, 4));
+            float frame_scale_z = fromLittleEndianToFloat(content.mid(offset + 10, 4));
+            offset += 14;
+        }
 
         int c = fromLittleEndianToShort(content.mid(offset, 2));
         offset += 2;
@@ -128,13 +170,14 @@ QVector<int> OnexNStgData::getTextures() {
         for (int i = 0; i < c; i++) {
             int img = fromLittleEndianToInt(content.mid(offset, 4));
             offset += 4;
-            bool smooth = content.at(offset);
+            bool smooth = content.at(offset); // maybe means something else
             offset++;
             int grp = fromLittleEndianToShort(content.mid(offset, 2));
             textures.append(img); // TODO!!!
             offset += 2;
         }
-        offset += 2; //nullbytes
+        qDebug() << fromLittleEndianToShort(content.mid(offset,2)); //seems to be always 0?
+        offset += 2;
     }
 
     return textures;
@@ -182,6 +225,7 @@ int OnexNStgData::onExport(QString directory) {
 }
 
 int OnexNStgData::onReplace(QString directory) {
+    return 0;
 }
 
 OnexNStgData::~OnexNStgData() {

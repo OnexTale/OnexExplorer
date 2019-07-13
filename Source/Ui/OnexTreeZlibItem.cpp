@@ -26,6 +26,7 @@ int OnexTreeZlibItem::onExporAsOriginal() {
         return 0;
     }
 
+    file.close();
     QMessageBox::information(NULL, "Yeah", "File exported into .NOS");
 
     return 1;

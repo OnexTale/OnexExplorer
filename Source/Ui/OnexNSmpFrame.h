@@ -30,6 +30,8 @@ public slots:
     virtual void setHeight(int height);
     virtual void setXOrigin(int xOrigin);
     virtual void setYOrigin(int yOrigin);
+    virtual void setXOrigin(QString xOrigin);
+    virtual void setYOrigin(QString yOrigin);
 };
 
 #endif // ONEXNSMPFRAME_H

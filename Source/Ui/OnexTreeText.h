@@ -24,6 +24,7 @@ public slots:
     virtual int onExport(QString directory);
     virtual int onReplace(QString directory);
     void setFileNumber(int number);
+    void setFileNumber(QString fileNumber);
     void setIsDat(bool isDat);
 
 signals:

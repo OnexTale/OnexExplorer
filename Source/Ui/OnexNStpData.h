@@ -20,6 +20,7 @@ public slots:
     virtual void setWidth(int width);
     virtual void setHeight(int height);
     virtual void setFormat(uint8_t format);
+    virtual void setFormat(QString format);
 };
 
 #endif // ONEXNSTPDATA_H

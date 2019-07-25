@@ -40,13 +40,13 @@ QWidget *OnexTreeImage::getInfos() {
     QLabel *widthLabel = new QLabel("Width");
     infoLayout->addWidget(widthLabel, 5, 0);
     QLineEdit *widthIn = new QLineEdit(QString::number(ir.x));
-    //    connect(nameIn, SIGNAL(textChanged(QString)), this, SLOT(test(QString)));
+    connect(widthIn, SIGNAL(textChanged(QString)), this, SLOT(setWidth(QString)));
     infoLayout->addWidget(widthIn, 5, 1);
 
     QLabel *heightLabel = new QLabel("Height");
     infoLayout->addWidget(heightLabel, 6, 0);
     QLineEdit *heightIn = new QLineEdit(QString::number(ir.y));
-    //    connect(nameIn, SIGNAL(textChanged(QString)), this, SLOT(test(QString)));
+    connect(heightIn, SIGNAL(textChanged(QString)), this, SLOT(setHeight(QString)));
     infoLayout->addWidget(heightIn, 6, 1);
 
     return w;
@@ -73,4 +73,12 @@ int OnexTreeImage::onExport(QString directory) {
         }
     }
     return 0;
+}
+
+void OnexTreeImage::setWidth(QString width) {
+    setWidth(width.toInt());
+}
+
+void OnexTreeImage::setHeight(QString height) {
+    setHeight(height.toInt());
 }

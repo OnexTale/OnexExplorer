@@ -25,13 +25,13 @@ QWidget *OnexNSmpFrame::getInfos() {
     QLabel *xLabel = new QLabel("x-Origin");
     infoLayout->addWidget(xLabel, 7, 0);
     QLineEdit *xIn = new QLineEdit(QString::number(getXOrigin()));
-    connect(xIn, SIGNAL(textChanged(QString)), this, SLOT(test(QString::toInt)));
+    connect(xIn, SIGNAL(textChanged(QString)), this, SLOT(setXOrigin(QString)));
     infoLayout->addWidget(xIn, 7, 1);
 
     QLabel *yLabel = new QLabel("y-Origin");
     infoLayout->addWidget(yLabel, 8, 0);
     QLineEdit *yIn = new QLineEdit(QString::number(getYOrigin()));
-    //    connect(nameIn, SIGNAL(textChanged(QString)), this, SLOT(test(QString)));
+    connect(yIn, SIGNAL(textChanged(QString)), this, SLOT(setYOrigin(QString)));
     infoLayout->addWidget(yIn, 8, 1);
 
     return w;
@@ -86,6 +86,14 @@ void OnexNSmpFrame::setXOrigin(int xOrigin) {
 
 void OnexNSmpFrame::setYOrigin(int yOrigin) {
     this->yOrigin = yOrigin;
+}
+
+void OnexNSmpFrame::setXOrigin(QString xOrigin) {
+    setXOrigin(xOrigin.toInt());
+}
+
+void OnexNSmpFrame::setYOrigin(QString yOrigin) {
+    setYOrigin(yOrigin.toInt());
 }
 
 OnexNSmpFrame::~OnexNSmpFrame() {

@@ -2,9 +2,9 @@
 #include "MultiImagePreview.h"
 #include "OnexNSmpFrame.h"
 
-OnexNSmpData::OnexNSmpData(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
+OnexNSmpData::OnexNSmpData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
                            bool compressed)
-    : OnexTreeZlibItem(name, content, opener, id, creationDate, compressed) {
+    : OnexTreeZlibItem(header, name, content, opener, id, creationDate, compressed) {
     if (id == -1)
         return;
     int amount = content.at(0);
@@ -16,12 +16,12 @@ OnexNSmpData::OnexNSmpData(QString name, QByteArray content, NosZlibOpener *open
         int offset = fromLittleEndianToInt(content.mid(9 + i * 12, 4));
 
         QByteArray subContent = content.mid(offset, (width * 2 * height));
-        this->addChild(new OnexNSmpFrame(name + "_" + QString::number(i), subContent, width, height, xOrigin, yOrigin,
+        this->addChild(new OnexNSmpFrame(header, name + "_" + QString::number(i), subContent, width, height, xOrigin, yOrigin,
                                          opener, id, creationDate, compressed));
     }
 }
 
-QWidget *OnexNSmpData::onClicked() {
+QWidget *OnexNSmpData::getPreview() {
     if (!hasParent())
         return nullptr;
 

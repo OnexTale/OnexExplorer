@@ -1,8 +1,8 @@
 #include "OnexNSmpFrame.h"
 
-OnexNSmpFrame::OnexNSmpFrame(QString name, QByteArray content, int width, int height, int xOrigin, int yOrigin,
-                             NosZlibOpener *opener, int id, int creationDate, bool compressed)
-    : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
+OnexNSmpFrame::OnexNSmpFrame(QByteArray header, QString name, QByteArray content, int width, int height, int xOrigin,
+                             int yOrigin, NosZlibOpener *opener, int id, int creationDate, bool compressed)
+    : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {
     this->width = width;
     this->height = height;
     this->xOrigin = xOrigin;
@@ -14,7 +14,28 @@ QImage OnexNSmpFrame::getImage() {
     return opener->getImageConverter().convertGBAR4444(content, resolution.x, resolution.y);
 }
 
-ImageResolution OnexNSmpFrame::getResolution() { return ImageResolution{this->width, this->height}; }
+ImageResolution OnexNSmpFrame::getResolution() {
+    return ImageResolution{this->width, this->height};
+}
+
+QWidget *OnexNSmpFrame::getInfos() {
+    QWidget *w = OnexTreeImage::getInfos();
+    QGridLayout *infoLayout = static_cast<QGridLayout *>(w->layout());
+
+    QLabel *xLabel = new QLabel("x-Origin");
+    infoLayout->addWidget(xLabel, 7, 0);
+    QLineEdit *xIn = new QLineEdit(QString::number(getXOrigin()));
+    connect(xIn, SIGNAL(textChanged(QString)), this, SLOT(test(QString::toInt)));
+    infoLayout->addWidget(xIn, 7, 1);
+
+    QLabel *yLabel = new QLabel("y-Origin");
+    infoLayout->addWidget(yLabel, 8, 0);
+    QLineEdit *yIn = new QLineEdit(QString::number(getYOrigin()));
+    //    connect(nameIn, SIGNAL(textChanged(QString)), this, SLOT(test(QString)));
+    infoLayout->addWidget(yIn, 8, 1);
+
+    return w;
+}
 
 int OnexNSmpFrame::onReplace(QString directory) {
     QString path = directory + this->getName() + ".png";
@@ -36,10 +57,36 @@ int OnexNSmpFrame::onReplace(QString directory) {
     return 1;
 }
 
-int OnexNSmpFrame::getWidth() { return width; }
-int OnexNSmpFrame::getHeight() { return height; }
-int OnexNSmpFrame::getXOrigin() { return xOrigin; }
-int OnexNSmpFrame::getYOrigin() { return yOrigin; }
-QByteArray OnexNSmpFrame::getContent() { return content; }
+int OnexNSmpFrame::getWidth() {
+    return width;
+}
+int OnexNSmpFrame::getHeight() {
+    return height;
+}
+int OnexNSmpFrame::getXOrigin() {
+    return xOrigin;
+}
+int OnexNSmpFrame::getYOrigin() {
+    return yOrigin;
+}
+QByteArray OnexNSmpFrame::getContent() {
+    return content;
+}
 
-OnexNSmpFrame::~OnexNSmpFrame() {}
+void OnexNSmpFrame::setWidth(int width) {
+    this->width = width;
+}
+void OnexNSmpFrame::setHeight(int height) {
+    this->height = height;
+}
+
+void OnexNSmpFrame::setXOrigin(int xOrigin) {
+    this->xOrigin = xOrigin;
+}
+
+void OnexNSmpFrame::setYOrigin(int yOrigin) {
+    this->yOrigin = yOrigin;
+}
+
+OnexNSmpFrame::~OnexNSmpFrame() {
+}

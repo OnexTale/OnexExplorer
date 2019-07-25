@@ -8,7 +8,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(ui->filterInput, SIGNAL(textChanged(QString)), this, SLOT(filterItems(QString)));
+    connect(ui->filterInput, SIGNAL(textChanged(QString)), this, SLOT(filterItems()));
+    connect(ui->filterInput, SIGNAL(returnPressed()), this, SLOT(filterItems()));
     connect(ui->treeWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onCustomMenuShow(QPoint)));
 }
 
@@ -21,7 +22,9 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::filterItems(QString searched) {
+void MainWindow::filterItems() {
+    QString searched = ui->filterInput->text();
+
     for (int i = 0; i < ui->treeWidget->topLevelItemCount(); i++) {
         for (int j = 0; j < ui->treeWidget->topLevelItem(i)->childCount(); j++)
             ui->treeWidget->topLevelItem(i)->child(j)->setHidden(true);
@@ -123,6 +126,7 @@ void MainWindow::on_actionOpen_triggered() {
         for (auto &file : selectedFiles)
             openFile(file);
     }
+    filterItems();
 }
 
 void MainWindow::openFile(QString path) {
@@ -182,28 +186,32 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *e) {
 
 void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *prev) {
     Q_UNUSED(prev);
+    delete ui->previewLayout->takeAt(1)->widget();
+    delete ui->previewLayout->takeAt(0)->widget();
 
-    QWidget *old = ui->gridLayout->itemAt(ui->gridLayout->count() - 1)->widget();
+    QWidget *previewWindow;
+    QWidget *infoWindow;
 
     OnexTreeItem *item = static_cast<OnexTreeItem *>(current);
-
     if (item == nullptr) {
-        ui->gridLayout->replaceWidget(old, new QWidget());
-        delete old;
-        return;
+        previewWindow = nullptr;
+        infoWindow = nullptr;
+    } else {
+        previewWindow = item->getPreview();
+        infoWindow = item->getInfos();
     }
-
-    QWidget *previewWindow = item->onClicked();
 
     if (!previewWindow) {
-        ui->gridLayout->replaceWidget(old, new QWidget());
-        delete old;
-        return;
+        previewWindow = new QWidget();
+        previewWindow->setMaximumSize(0,0);
     }
-    ui->gridLayout->replaceWidget(old, previewWindow);
-    delete old;
-    previewWindow->setAttribute(Qt::WA_DeleteOnClose);
-    previewWindow->show();
+    if (!infoWindow) {
+        infoWindow = new QWidget();
+        infoWindow->setMaximumSize(0,0);
+    }
+
+    ui->previewLayout->addWidget(previewWindow, 0, 0);
+    ui->previewLayout->addWidget(infoWindow, 0, 1, Qt::AlignTop);
 }
 
 void MainWindow::on_actionClose_selected_triggered() {
@@ -304,16 +312,18 @@ void MainWindow::on_actionExport_to_raw_triggered() {
 }
 
 void MainWindow::on_actionAbout_triggered() {
-    QMessageBox::information(NULL, tr(qPrintable(QString("About OnexExplorer %1").arg(VERSION))),
-                             tr(qPrintable(QString("<center><b>OnexExplorer %1</b></center>"
-                                "<br>OnexExplorer is an open-source tool for unpacking and repacking .NOS "
-                                "data files from game called NosTale. "
-                                "<br>It can open almost all .NOS files and show and replace the data stored in "
-                                "them."
-                                "<br>This fork is Maintained by @Pumba98"
-                                "<br>GitHub: <a "
-                                "href='https://github.com/Pumbaa98/OnexExplorer'>"
-                                "https://github.com/Pumbaa98/OnexExplorer</a>").arg(VERSION))));
+    QMessageBox::information(
+        NULL, tr(qPrintable(QString("About OnexExplorer %1").arg(VERSION))),
+        tr(qPrintable(QString("<center><b>OnexExplorer %1</b></center>"
+                              "<br>OnexExplorer is an open-source tool for unpacking and repacking .NOS "
+                              "data files from game called NosTale. "
+                              "<br>It can open almost all .NOS files and show and replace the data stored in "
+                              "them."
+                              "<br>This fork is Maintained by @Pumba98"
+                              "<br>GitHub: <a "
+                              "href='https://github.com/Pumbaa98/OnexExplorer'>"
+                              "https://github.com/Pumbaa98/OnexExplorer</a>")
+                          .arg(VERSION))));
 }
 
 void MainWindow::on_actionHelp_triggered() {

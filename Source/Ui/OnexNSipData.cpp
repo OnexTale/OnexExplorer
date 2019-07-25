@@ -1,8 +1,8 @@
 #include "OnexNSipData.h"
 
-OnexNSipData::OnexNSipData(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
+OnexNSipData::OnexNSipData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
                            bool compressed)
-    : OnexTreeImage(name, content, opener, id, creationDate, compressed) {}
+    : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {}
 
 QImage OnexNSipData::getImage() {
     ImageResolution resolution = this->getResolution();
@@ -52,3 +52,10 @@ int OnexNSipData::onReplace(QString directory) {
 }
 
 OnexNSipData::~OnexNSipData() {}
+
+void OnexNSipData::setWidth(int width) {
+    content.replace(1, 2, fromShortToLittleEndian(width));
+}
+void OnexNSipData::setHeight(int height) {
+    content.replace(3, 2, fromShortToLittleEndian(height));
+}

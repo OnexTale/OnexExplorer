@@ -4,7 +4,6 @@
 #include "Openers/NosCCInfOpener.h"
 #include "Openers/NosTextOpener.h"
 #include "Openers/NosZlibOpener.h"
-#include "Ui/FileInfo.h"
 #include "Ui/SingleImagePreview.h"
 #include "Ui/SingleTextFilePreview.h"
 #include <QDebug>
@@ -26,37 +25,25 @@ public:
     const QString VERSION = "v0.5";
 
 
-private slots:
-    void filterItems(QString searched);
+public slots:
+    void filterItems();
     void onCustomMenuShow(const QPoint &point);
     void clearMenu();
     void on_actionOpen_triggered();
-
     void on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *prev);
-
     void on_actionClose_selected_triggered();
-
     void on_actionExit_triggered();
-
     void on_actionClose_all_triggered();
-
     void on_actionReplace_triggered();
-
     void on_actionExport_triggered();
-
     void on_actionExport_to_raw_triggered();
-
     void on_actionReplace_with_raw_triggered();
-
     void on_actionAbout_triggered();
-
     void on_actionHelp_triggered();
-
     void on_actionSave_as_triggered();
-
     void on_actionExport_as_NOS_triggered();
 
-    private:
+private:
     Ui::MainWindow *ui;
     NosTextOpener textOpener;
     NosZlibOpener zlibOpener;

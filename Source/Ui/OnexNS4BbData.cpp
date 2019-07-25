@@ -1,8 +1,8 @@
 #include "OnexNS4BbData.h"
 
-OnexNS4BbData::OnexNS4BbData(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
+OnexNS4BbData::OnexNS4BbData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
                              bool compressed)
-    : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
+    : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {
 }
 
 QImage OnexNS4BbData::getImage() {
@@ -50,6 +50,13 @@ int OnexNS4BbData::onReplace(QString directory) {
 
         return 1;
     }
+}
+
+void OnexNS4BbData::setWidth(int width) {
+    content.replace(0, 2, fromShortToLittleEndian(width));
+}
+void OnexNS4BbData::setHeight(int height) {
+    content.replace(2, 2, fromShortToLittleEndian(height));
 }
 
 OnexNS4BbData::~OnexNS4BbData() {

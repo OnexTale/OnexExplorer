@@ -1,11 +1,9 @@
 #include "OnexNStpMipMap.h"
 
-OnexNStpMipMap::OnexNStpMipMap(QString name, QByteArray content, int width, int height, int format,
+OnexNStpMipMap::OnexNStpMipMap(QByteArray header, QString name, QByteArray content, int width, int height, int format,
                                NosZlibOpener *opener, int id, int creationDate, bool compressed)
-    : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
-    this->width = width;
-    this->height = height;
-    this->format = format;
+    : OnexTreeImage(header, name, content, opener, id, creationDate, compressed), width(width), height(height),
+      format(format) {
 }
 
 QImage OnexNStpMipMap::getImage() {
@@ -18,8 +16,8 @@ QImage OnexNStpMipMap::getImage() {
         return opener->getImageConverter().convertARGB555(content, resolution.x, resolution.y);
     else if (format == 2)
         return opener->getImageConverter().convertBGRA8888(content, resolution.x, resolution.y);
-     else if (format == 3 || format == 4)
-         return opener->getImageConverter().convertGrayscale(content, resolution.x, resolution.y);
+    else if (format == 3 || format == 4)
+        return opener->getImageConverter().convertGrayscale(content, resolution.x, resolution.y);
     else {
         qDebug().noquote().nospace() << "Unknown format! (" << format << ")";
         return QImage(resolution.x, resolution.y, QImage::Format_Invalid);
@@ -30,40 +28,53 @@ ImageResolution OnexNStpMipMap::getResolution() {
     return ImageResolution{this->width, this->height};
 }
 
+QWidget *OnexNStpMipMap::getInfos() {
+    QWidget *w = OnexTreeImage::getInfos();
+    QGridLayout *infoLayout = static_cast<QGridLayout *>(w->layout());
+
+    QLabel *formatLabel = new QLabel("Format");
+    infoLayout->addWidget(formatLabel, 7, 0);
+    QLineEdit *formatIn = new QLineEdit(QString::number(getFormat()));
+    //    connect(nameIn, SIGNAL(textChanged(QString)), this, SLOT(test(QString)));
+    infoLayout->addWidget(formatIn, 7, 1);
+
+    return w;
+}
+
 int OnexNStpMipMap::onReplace(QString directory) {
-        QString path = directory + this->getName() + ".png";
-        if (!QFile(path).exists()) {
-            QMessageBox::critical(NULL, "Woops", "Missing " + path);
-            return 0;
-        }
+    QString path = directory + this->getName() + ".png";
+    if (!QFile(path).exists()) {
+        QMessageBox::critical(NULL, "Woops", "Missing " + path);
+        return 0;
+    }
 
-        QImage image = importQImageFromSelectedUserFile(path);
-        if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0)
-            return 0;
+    QImage image = importQImageFromSelectedUserFile(path);
+    if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0)
+        return 0;
 
-        if (!hasGoodResolution(image.width(), image.height()))
-            return 0;
+    if (!hasGoodResolution(image.width(), image.height()))
+        return 0;
 
-        int format = this->getFormat();
+    int format = this->getFormat();
 
-        if (format < 0 || format > 2)
-            return 0;
+    if (format < 0 || format > 2)
+        return 0;
 
-        QByteArray newContent;
-        if (format == 0)
-            newContent.push_back(opener->getImageConverter().toGBAR4444(image));
-        else if (format == 1)
-            newContent.push_back(opener->getImageConverter().toARGB555(image));
-        else if (format == 2)
-            newContent.push_back(opener->getImageConverter().toBGRA8888(image));
-        else if (format == 3 || format == 4)
-            newContent.push_back(opener->getImageConverter().toGrayscale(image));
+    QByteArray newContent;
+    if (format == 0)
+        newContent.push_back(opener->getImageConverter().toGBAR4444(image));
+    else if (format == 1)
+        newContent.push_back(opener->getImageConverter().toARGB555(image));
+    else if (format == 2)
+        newContent.push_back(opener->getImageConverter().toBGRA8888(image));
+    else if (format == 3 || format == 4)
+        newContent.push_back(opener->getImageConverter().toGrayscale(image));
 
-        content = newContent;
+    content = newContent;
 
-        emit OnexTreeImage::replaceSignal(this->getImage());
+    emit OnexTreeImage::replaceSignal(this->getImage());
 
-        return 1;
+    return 1;
 }
 
 int OnexNStpMipMap::getWidth() {
@@ -77,6 +88,18 @@ int OnexNStpMipMap::getFormat() {
 }
 QByteArray OnexNStpMipMap::getContent() {
     return content;
+}
+
+void OnexNStpMipMap::setWidth(int width) {
+    this->width = width;
+}
+
+void OnexNStpMipMap::setHeight(int height) {
+    this->height = height;
+}
+
+void OnexNStpMipMap::setFormat(uint8_t format) {
+    this->format = format;
 }
 
 OnexNStpMipMap::~OnexNStpMipMap() {

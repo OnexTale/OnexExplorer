@@ -1,8 +1,6 @@
 #include "OnexTreeItem.h"
 
-OnexTreeItem::OnexTreeItem(QString name, QByteArray content) {
-    this->name = name;
-    this->content = content;
+OnexTreeItem::OnexTreeItem(QString name, QByteArray content) : name(name), content(content) {
     this->setText(0, name);
 }
 
@@ -58,6 +56,14 @@ int OnexTreeItem::getContentSize() {
 
 QString OnexTreeItem::getName() {
     return name;
+}
+
+void OnexTreeItem::setName(QString name) {
+    this->name = name;
+}
+
+void OnexTreeItem::setContent(QByteArray content) {
+    this->content = content;
 }
 
 OnexTreeItem::~OnexTreeItem() {

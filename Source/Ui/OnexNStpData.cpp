@@ -23,7 +23,7 @@ OnexNStpData::OnexNStpData(QString name, QByteArray content, NosZlibOpener *open
             nextOffset += res.x * res.y;
 
         this->addChild(new OnexNStpMipMap(name + "_" + QString::number(res.x) + "x" + QString::number(res.y),
-                                          content.mid(offset, nextOffset), res.x, res.y, format, opener, id,
+                                          content.mid(offset, nextOffset - offset), res.x, res.y, format, opener, id,
                                           creationDate, compressed));
         offset = nextOffset;
         res.x /= 2;

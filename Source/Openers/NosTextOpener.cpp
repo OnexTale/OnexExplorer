@@ -43,7 +43,7 @@ QByteArray NosTextOpener::encrypt(OnexTreeItem *item)
     for (int i = 0; i < item->childCount(); ++i)
     {
         OnexTreeText* currentItem = static_cast<OnexTreeText*>(item->child(i));
-        result.push_back(writeNextInt(currentItem->getFileNmber()));
+        result.push_back(writeNextInt(currentItem->getFileNumber()));
         result.push_back(writeNextInt(currentItem->getName().size()));
         result.push_back(currentItem->getName().toLocal8Bit());
         result.push_back(writeNextInt(currentItem->getIsDat()));

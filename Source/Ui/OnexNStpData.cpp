@@ -1,9 +1,9 @@
 #include "OnexNStpData.h"
 #include "OnexNStpMipMap.h"
 
-OnexNStpData::OnexNStpData(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
+OnexNStpData::OnexNStpData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
                            bool compressed)
-    : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
+    : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {
     if (id == -1)
         return;
 
@@ -22,7 +22,7 @@ OnexNStpData::OnexNStpData(QString name, QByteArray content, NosZlibOpener *open
         else
             nextOffset += res.x * res.y;
 
-        this->addChild(new OnexNStpMipMap(name + "_" + QString::number(res.x) + "x" + QString::number(res.y),
+        this->addChild(new OnexNStpMipMap(header, name + "_" + QString::number(res.x) + "x" + QString::number(res.y),
                                           content.mid(offset, nextOffset - offset), res.x, res.y, format, opener, id,
                                           creationDate, compressed));
         offset = nextOffset;
@@ -79,6 +79,22 @@ ImageResolution OnexNStpData::getResolution() {
     int y = fromLittleEndianToShort(content.mid(2, 2));
 
     return ImageResolution{x, y};
+}
+
+QWidget *OnexNStpData::getInfos() {
+    if (!hasParent())
+        return nullptr;
+
+    QWidget *w = OnexTreeImage::getInfos();
+    QGridLayout *infoLayout = static_cast<QGridLayout *>(w->layout());
+
+    QLabel *formatLabel = new QLabel("Format");
+    infoLayout->addWidget(formatLabel, 7, 0);
+    QLineEdit *formatIn = new QLineEdit(QString::number(getFormat()));
+    //    connect(nameIn, SIGNAL(textChanged(QString)), this, SLOT(test(QString)));
+    infoLayout->addWidget(formatIn, 7, 1);
+
+    return w;
 }
 
 int OnexNStpData::onReplace(QString directory) {
@@ -141,6 +157,17 @@ int OnexNStpData::onExport(QString directory) {
             return 1;
     }
     return 0;
+}
+
+void OnexNStpData::setWidth(int width) {
+    content.replace(0, 2, fromShortToLittleEndian(width));
+}
+void OnexNStpData::setHeight(int height) {
+    content.replace(2, 2, fromShortToLittleEndian(height));
+}
+
+void OnexNStpData::setFormat(uint8_t format) {
+    content[4] = format;
 }
 
 OnexNStpData::~OnexNStpData() {

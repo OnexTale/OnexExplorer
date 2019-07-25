@@ -1,8 +1,8 @@
 #include "OnexTreeImage.h"
 
-OnexTreeImage::OnexTreeImage(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
-                             bool compressed)
-    : OnexTreeZlibItem(name, content, opener, id, creationDate, compressed) {
+OnexTreeImage::OnexTreeImage(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
+                             int creationDate, bool compressed)
+    : OnexTreeZlibItem(header, name, content, opener, id, creationDate, compressed) {
 }
 
 bool OnexTreeImage::hasGoodResolution(int x, int y) {
@@ -19,7 +19,7 @@ QImage OnexTreeImage::importQImageFromSelectedUserFile(QString filepath) {
     return image;
 }
 
-QWidget *OnexTreeImage::onClicked() {
+QWidget *OnexTreeImage::getPreview() {
     if (!hasParent())
         return nullptr;
     SingleImagePreview *imagePreview = new SingleImagePreview(this->getImage());
@@ -27,6 +27,29 @@ QWidget *OnexTreeImage::onClicked() {
     connect(this, SIGNAL(replaceSignal(QImage)), imagePreview, SLOT(onReplaced(QImage)));
 
     return imagePreview;
+}
+
+QWidget *OnexTreeImage::getInfos() {
+    if (!hasParent())
+        return nullptr;
+    QWidget *w = OnexTreeZlibItem::getInfos();
+    QGridLayout *infoLayout = static_cast<QGridLayout *>(w->layout());
+
+    ImageResolution ir = getResolution();
+
+    QLabel *widthLabel = new QLabel("Width");
+    infoLayout->addWidget(widthLabel, 5, 0);
+    QLineEdit *widthIn = new QLineEdit(QString::number(ir.x));
+    //    connect(nameIn, SIGNAL(textChanged(QString)), this, SLOT(test(QString)));
+    infoLayout->addWidget(widthIn, 5, 1);
+
+    QLabel *heightLabel = new QLabel("Height");
+    infoLayout->addWidget(heightLabel, 6, 0);
+    QLineEdit *heightIn = new QLineEdit(QString::number(ir.y));
+    //    connect(nameIn, SIGNAL(textChanged(QString)), this, SLOT(test(QString)));
+    infoLayout->addWidget(heightIn, 6, 1);
+
+    return w;
 }
 
 int OnexTreeImage::onExport(QString directory) {

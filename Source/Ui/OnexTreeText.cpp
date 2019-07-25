@@ -2,22 +2,27 @@
 #include "../Openers/NosTextOpener.h"
 #include "SingleTextFilePreview.h"
 
-int OnexTreeText::getFileNmber() const {
-    return fileNmber;
+OnexTreeText::OnexTreeText(QString name, NosTextOpener *opener, int fileNumber, int isDat, QByteArray content)
+    : OnexTreeItem(name, content), opener(opener), fileNumber(fileNumber), isDat(isDat) {
+}
+
+int OnexTreeText::getFileNumber() const {
+    return fileNumber;
 }
 
 int OnexTreeText::getIsDat() const {
     return isDat;
 }
 
-OnexTreeText::OnexTreeText(QString name, NosTextOpener *opener, int fileNumber, int isDat, QByteArray content)
-    : OnexTreeItem(name, content) {
-    this->opener = opener;
-    this->fileNmber = fileNumber;
+void OnexTreeText::setFileNumber(int fileNumber) {
+    this->fileNumber = fileNumber;
+}
+
+void OnexTreeText::setIsDat(bool isDat) {
     this->isDat = isDat;
 }
 
-QWidget *OnexTreeText::onClicked() {
+QWidget *OnexTreeText::getPreview() {
     if (childCount() != 0)
         return nullptr;
     SingleTextFilePreview *textPreview = new SingleTextFilePreview(content);
@@ -25,6 +30,10 @@ QWidget *OnexTreeText::onClicked() {
     connect(this, SIGNAL(replaceSignal(QByteArray)), textPreview, SLOT(onReplaced(QByteArray)));
 
     return textPreview;
+}
+
+QWidget *OnexTreeText::getInfos() {
+    return nullptr;
 }
 
 int OnexTreeText::onExporAsOriginal() {

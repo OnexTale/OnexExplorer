@@ -3,16 +3,18 @@
 #include "OnexTreeImage.h"
 
 class OnexNSipData : public OnexTreeImage {
-    private:
-    public:
-    OnexNSipData(QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate, bool compressed);
+    Q_OBJECT
+public:
+    OnexNSipData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate, bool compressed);
 
     virtual QImage getImage() override;
     virtual ImageResolution getResolution() override;
     virtual ~OnexNSipData();
 
-    private slots:
+public slots:
     virtual int onReplace(QString directory) override;
+    virtual void setWidth(int width);
+    virtual void setHeight(int height);
 };
 
 #endif // ONEXNSIPDATA_H

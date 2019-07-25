@@ -3,18 +3,19 @@
 #include "OnexTreeImage.h"
 
 class OnexNStpMipMap : public OnexTreeImage {
+    Q_OBJECT
 private:
     int width;
     int height;
     int format;
 
 public:
-    OnexNStpMipMap(QString name, QByteArray content, int width, int height, int format,
+    OnexNStpMipMap(QByteArray header, QString name, QByteArray content, int width, int height, int format,
                    NosZlibOpener *opener, int id, int creationDate, bool compressed);
 
     virtual QImage getImage() override;
     virtual ImageResolution getResolution() override;
-
+    QWidget *getInfos() override;
     int getWidth();
     int getHeight();
     int getFormat();
@@ -23,6 +24,9 @@ public:
 
 public slots:
     virtual int onReplace(QString directory) override;
+    virtual void setWidth(int width);
+    virtual void setHeight(int height);
+    virtual void setFormat(uint8_t format);
 };
 
 #endif // ONEXNSTPMAPMAP_H

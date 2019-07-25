@@ -38,7 +38,6 @@ SOURCES += \
     Source/Ui/SingleImagePreview.cpp \
     Source/Ui/MultiImagePreview.cpp \
     Source/ImageConverter.cpp \
-    Source/Ui/FileInfo.cpp \
     Source/Ui/OnexTreeImage.cpp \
     Source/Ui/OnexTreeText.cpp \
     Source/Ui/OnexTreeZlibItem.cpp \
@@ -66,7 +65,6 @@ HEADERS  += \
     Source/Ui/SingleImagePreview.h \
     Source/Ui/MultiImagePreview.h \
     Source/ImageConverter.h \
-    Source/Ui/FileInfo.h \
     Source/Ui/OnexTreeImage.h \
     Source/Ui/OnexTreeText.h \
     Source/Ui/OnexTreeZlibItem.h \
@@ -83,7 +81,6 @@ FORMS    += \
     Source/Ui/SingleTextFilePreview.ui \
     Source/Ui/SingleImagePreview.ui \
     Source/Ui/MultiImagePreview.ui \
-    Source/Ui/FileInfo.ui
 
 DISTFILES +=
 

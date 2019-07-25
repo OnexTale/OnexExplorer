@@ -5,22 +5,27 @@
 class NosTextOpener;
 class OnexTreeText : public OnexTreeItem {
     Q_OBJECT
-    private:
-    int fileNmber;
+private:
+    int fileNumber;
     int isDat;
     NosTextOpener *opener;
 
-    public:
+public:
     OnexTreeText(QString name, NosTextOpener *opener, int fileNumber = 0, int isDat = 0,
                  QByteArray content = QByteArray());
-    virtual QWidget *onClicked() override;
+    virtual QWidget *getPreview() override;
+    virtual QWidget *getInfos() override;
     virtual int onExporAsOriginal() override;
     virtual ~OnexTreeText();
-    int getFileNmber() const;
+    int getFileNumber() const;
     int getIsDat() const;
-    public slots:
+
+public slots:
     virtual int onExport(QString directory);
     virtual int onReplace(QString directory);
+    void setFileNumber(int number);
+    void setIsDat(bool isDat);
+
 signals:
     void replaceSignal(QByteArray text);
 };

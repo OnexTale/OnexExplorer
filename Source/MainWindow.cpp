@@ -366,13 +366,3 @@ void MainWindow::on_actionClose_all_triggered() {
         ui->treeWidget->clear();
     }
 }
-
-void MainWindow::on_actionOptions_triggered() {
-    OnexTreeItem *item = static_cast<OnexTreeItem *>(ui->treeWidget->currentItem());
-    if (item == nullptr)
-        return;
-    if (item->childCount() != 0)
-        return;
-    FileInfo dialog(item);
-    dialog.exec();
-}

@@ -126,7 +126,6 @@
     <addaction name="actionReplace"/>
     <addaction name="actionReplace_with_raw"/>
     <addaction name="separator"/>
-    <addaction name="actionOptions"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools"/>
@@ -184,17 +183,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
-   </property>
-  </action>
-  <action name="actionOptions">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Options</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+,</string>
    </property>
   </action>
   <action name="actionClose_all">

@@ -2,6 +2,8 @@
 #define ONEXNSTGDATA_H
 #include "../Openers/NosZlibOpener.h"
 #include "OnexTreeZlibItem.h"
+#include "../NosModelConverter.h"
+#include "../ObjConverter.h"
 #include <QVector2D>
 #include <QVector3D>
 
@@ -13,15 +15,7 @@ public:
     virtual QWidget *onClicked() override;
 
 private:
-    int getVerticeCount();
-    int getGroupCount();
-    float getUVScale();
-    QVector<QVector3D> getVertices();
-    QVector<QVector3D> getFaces();
-    QVector<QVector2D> getUVMap();
-    QVector<QVector3D> getGroup(int group);
-    QVector<QVector3D> getNormals();
-    QVector<int> getTextures();
+    NosModelConverter *modelConverter;
 
 private slots:
     virtual int onExport(QString directory);

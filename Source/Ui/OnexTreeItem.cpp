@@ -47,7 +47,7 @@ QByteArray OnexTreeItem::fromIntToLittleEndian(int number) {
 
 QByteArray OnexTreeItem::fromFloatToLittleEndian(float number) {
     QByteArray writeArray;
-    writeArray.resize(2);
+    writeArray.resize(4);
     qToLittleEndian<float>(number, reinterpret_cast<uchar *>(writeArray.data()));
     return writeArray;
 }

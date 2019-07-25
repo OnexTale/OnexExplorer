@@ -36,7 +36,6 @@ SOURCES += \
     Source/Ui/SingleImagePreview.cpp \
     Source/Ui/MultiImagePreview.cpp \
     Source/ImageConverter.cpp \
-    Source/Ui/FileInfo.cpp \
     Source/Ui/OnexTreeImage.cpp \
     Source/Ui/OnexTreeText.cpp \
     Source/Ui/OnexTreeZlibItem.cpp \
@@ -48,7 +47,9 @@ SOURCES += \
     Source/Openers/NosCCInfOpener.cpp \
     Source/Ui/OnexNSmpData.cpp \
     Source/Ui/OnexNStgData.cpp \
-    Source/Ui/SingleModelPreview.cpp
+    Source/Ui/SingleModelPreview.cpp \
+    Source/NosModelConverter.cpp \
+    Source/ObjConverter.cpp \
 
 
 HEADERS  += \
@@ -67,7 +68,6 @@ HEADERS  += \
     Source/Ui/SingleImagePreview.h \
     Source/Ui/MultiImagePreview.h \
     Source/ImageConverter.h \
-    Source/Ui/FileInfo.h \
     Source/Ui/OnexTreeImage.h \
     Source/Ui/OnexTreeText.h \
     Source/Ui/OnexTreeZlibItem.h \
@@ -79,14 +79,15 @@ HEADERS  += \
     Source/Openers/NosCCInfOpener.h \
     Source/Ui/OnexNSmpData.h \
     Source/Ui/OnexNStgData.h \
-    Source/Ui/SingleModelPreview.h
+    Source/Ui/SingleModelPreview.h \
+    Source/NosModelConverter.h \
+    Source/ObjConverter.h \
 
 FORMS    += \
     Source/mainwindow.ui \
     Source/Ui/SingleTextFilePreview.ui \
     Source/Ui/SingleImagePreview.ui \
     Source/Ui/MultiImagePreview.ui \
-    Source/Ui/FileInfo.ui
 
 DISTFILES +=
 

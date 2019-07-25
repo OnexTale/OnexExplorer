@@ -40,8 +40,6 @@ private slots:
 
     void on_actionClose_all_triggered();
 
-    void on_actionOptions_triggered();
-
     void on_actionReplace_triggered();
 
     void on_actionExport_triggered();

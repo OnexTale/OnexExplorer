@@ -1,7 +1,7 @@
 #ifndef SINGLETEXTFILEPREVIEW_H
 #define SINGLETEXTFILEPREVIEW_H
 
-#include "OnexTreeText.h"
+#include "../TreeItems/OnexTreeText.h"
 #include <QTextCodec>
 #include <QWidget>
 #include <iostream>

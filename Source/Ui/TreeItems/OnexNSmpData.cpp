@@ -1,5 +1,5 @@
 #include "OnexNSmpData.h"
-#include "MultiImagePreview.h"
+#include "../Previews/MultiImagePreview.h"
 #include "OnexNSmpFrame.h"
 
 OnexNSmpData::OnexNSmpData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,

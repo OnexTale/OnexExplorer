@@ -4,8 +4,8 @@
 #include "Openers/NosCCInfOpener.h"
 #include "Openers/NosTextOpener.h"
 #include "Openers/NosZlibOpener.h"
-#include "Ui/SingleImagePreview.h"
-#include "Ui/SingleTextFilePreview.h"
+#include "Ui/Previews/SingleImagePreview.h"
+#include "Ui/Previews/SingleTextFilePreview.h"
 #include <QDebug>
 #include <QDropEvent>
 #include <QFileDialog>

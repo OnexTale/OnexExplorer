@@ -4,9 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT       += core gui widgets 3dcore 3dextras
 
 TARGET = OnexExplorer
 TEMPLATE = app
@@ -25,9 +23,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     Source/main.cpp \
-    Source/ImageConverter.cpp \
     Source/MainWindow.cpp \
-    Source/Ui/OnexTreeItem.cpp \
+    Source/Converters/ImageConverter.cpp \
+    Source/Converters/NosModelConverter.cpp \
+    Source/Converters/ObjConverter.cpp \
     Source/Decryptors/NosTextDatFileDecryptor.cpp \
     Source/Decryptors/NosTextOthersFileDecryptor.cpp \
     Source/Decryptors/NosZlibDecryptor.cpp \
@@ -35,9 +34,11 @@ SOURCES += \
     Source/Openers/NosCCInfOpener.cpp \
     Source/Openers/NosTextOpener.cpp \
     Source/Openers/INosFileOpener.cpp \
+    Source/Ui/OnexTreeItem.cpp \
     Source/Ui/Previews/SingleTextFilePreview.cpp \
     Source/Ui/Previews/SingleImagePreview.cpp \
     Source/Ui/Previews/MultiImagePreview.cpp \
+    Source/Ui/Previews/SingleModelPreview.cpp \
     Source/Ui/TreeItems/OnexTreeImage.cpp \
     Source/Ui/TreeItems/OnexTreeText.cpp \
     Source/Ui/TreeItems/OnexTreeZlibItem.cpp \
@@ -47,13 +48,17 @@ SOURCES += \
     Source/Ui/TreeItems/OnexNStpData.cpp \
     Source/Ui/TreeItems/OnexNStpMipMap.cpp \
     Source/Ui/TreeItems/OnexNSmpData.cpp \
-    Source/Ui/TreeItems/OnexNSmpFrame.cpp
+    Source/Ui/TreeItems/OnexNSmpFrame.cpp \
+    Source/Ui/TreeItems/OnexNStgData.cpp
+
+
 
 HEADERS  += \
-    Source/NosEnumTypes.h \
-    Source/ImageConverter.h \
     Source/MainWindow.h \
-    Source/Ui/OnexTreeItem.h \
+    Source/NosEnumTypes.h \
+    Source/Converters/ImageConverter.h \
+    Source/Converters/NosModelConverter.h \
+    Source/Converters/ObjConverter.h \
     Source/Decryptors/NosTextDatFileDecryptor.h \
     Source/Decryptors/NosTextOthersFileDecryptor.h \
     Source/Decryptors/NosZlibDecryptor.h \
@@ -61,9 +66,11 @@ HEADERS  += \
     Source/Openers/NosCCInfOpener.h \
     Source/Openers/NosTextOpener.h \
     Source/Openers/INosFileOpener.h \
+    Source/Ui/OnexTreeItem.h \
     Source/Ui/Previews/SingleTextFilePreview.h \
     Source/Ui/Previews/SingleImagePreview.h \
     Source/Ui/Previews/MultiImagePreview.h \
+    Source/Ui/Previews/SingleModelPreview.h \
     Source/Ui/TreeItems/OnexTreeImage.h \
     Source/Ui/TreeItems/OnexTreeText.h \
     Source/Ui/TreeItems/OnexTreeZlibItem.h \
@@ -73,7 +80,8 @@ HEADERS  += \
     Source/Ui/TreeItems/OnexNStpData.h \
     Source/Ui/TreeItems/OnexNStpMipMap.h \
     Source/Ui/TreeItems/OnexNSmpData.h \
-    Source/Ui/TreeItems/OnexNSmpFrame.h
+    Source/Ui/TreeItems/OnexNSmpFrame.h \
+    Source/Ui/TreeItems/OnexNStgData.h
 
 FORMS    += \
     Source/mainwindow.ui \

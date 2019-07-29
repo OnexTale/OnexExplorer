@@ -1,7 +1,7 @@
 #ifndef NOSZLIBOPENER_H
 #define NOSZLIBOPENER_H
 #include "../Decryptors/NosZlibDecryptor.h"
-#include "../ImageConverter.h"
+#include "../Converters/ImageConverter.h"
 #include "../NosEnumTypes.h"
 #include "INosFileOpener.h"
 #include <QDebug>

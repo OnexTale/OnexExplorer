@@ -1,7 +1,7 @@
 #ifndef ONEXTREEZLIBITEM_H
 #define ONEXTREEZLIBITEM_H
-#include "../Openers/NosZlibOpener.h"
-#include "OnexTreeItem.h"
+#include "../../Openers/NosZlibOpener.h"
+#include "../OnexTreeItem.h"
 #include <QCheckBox>
 #include <QGridLayout>
 #include <QLabel>

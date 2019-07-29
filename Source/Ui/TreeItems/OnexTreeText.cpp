@@ -1,6 +1,6 @@
 #include "OnexTreeText.h"
-#include "../Openers/NosTextOpener.h"
-#include "SingleTextFilePreview.h"
+#include "../../Openers/NosTextOpener.h"
+#include "../Previews/SingleTextFilePreview.h"
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>

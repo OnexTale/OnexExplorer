@@ -1,8 +1,8 @@
 #ifndef MULTIIMAGEPREVIEW_H
 #define MULTIIMAGEPREVIEW_H
 
-#include "../ImageConverter.h"
-#include "../NosEnumTypes.h"
+#include "../../Converters/ImageConverter.h"
+#include "../../NosEnumTypes.h"
 #include <QDebug>
 #include <QFileDialog>
 #include <QMenu>

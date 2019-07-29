@@ -22,8 +22,10 @@ public:
     bool hasParent();
     short fromLittleEndianToShort(QByteArray array);
     int fromLittleEndianToInt(QByteArray array);
+    float fromLittleEndianToFloat(QByteArray array);
     QByteArray fromShortToLittleEndian(short number);
     QByteArray fromIntToLittleEndian(int number);
+    QByteArray fromFloatToLittleEndian(float number);
     int getContentSize();
 
     virtual QWidget *getPreview() = 0;

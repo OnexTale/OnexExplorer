@@ -1,6 +1,6 @@
 #ifndef ONEXTREETEXT_H
 #define ONEXTREETEXT_H
-#include "OnexTreeItem.h"
+#include "../OnexTreeItem.h"
 
 class NosTextOpener;
 class OnexTreeText : public OnexTreeItem {

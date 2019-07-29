@@ -3,7 +3,7 @@
 
 #include "../Decryptors/NosTextDatFileDecryptor.h"
 #include "../Decryptors/NosTextOthersFileDecryptor.h"
-#include "../Ui/OnexTreeText.h"
+#include "../Ui/TreeItems/OnexTreeText.h"
 #include "INosFileOpener.h"
 #include <QDebug>
 #include <QObject>

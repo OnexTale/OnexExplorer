@@ -1,8 +1,8 @@
 #ifndef ONEXTREEIMAGE_H
 #define ONEXTREEIMAGE_H
 #include "OnexTreeZlibItem.h"
-#include "SingleImagePreview.h"
-#include "../ImageConverter.h"
+#include "../Previews/SingleImagePreview.h"
+#include "../../Converters/ImageConverter.h"
 
 struct ImageResolution {
     int x;

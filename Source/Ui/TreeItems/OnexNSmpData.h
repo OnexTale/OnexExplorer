@@ -1,6 +1,6 @@
 #ifndef ONEXNSMPDATA_H
 #define ONEXNSMPDATA_H
-#include "../Openers/NosZlibOpener.h"
+#include "../../Openers/NosZlibOpener.h"
 #include "OnexTreeZlibItem.h"
 
 class OnexNSmpData : public OnexTreeZlibItem {

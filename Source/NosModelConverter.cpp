@@ -13,6 +13,7 @@ NosModelConverter::NosModelConverter(QByteArray obj) {
     this->uv = readNosUV(offset, verticeCount, uvScale);
     this->normals = readNosNormals(offset, verticeCount);
     this->faces = readNosFaces(offset);
+    objectInfoOffset = offset;
     this->textures = readNosTextures(offset);
 }
 
@@ -133,17 +134,20 @@ QVector<int> NosModelConverter::readNosTextures(int &offset) {
         float x = fromLittleEndianToFloat(this->obj.mid(offset, 4));
         float y = fromLittleEndianToFloat(this->obj.mid(offset + 4, 4));
         float z = fromLittleEndianToFloat(this->obj.mid(offset + 8, 4));
+        positions.append(QVector3D(x,y,z));
         offset += 12;
 
         float rotation_x = (float)fromLittleEndianToShort(this->obj.mid(offset, 2)) / 0x7FFF;
         float rotation_y = (float)fromLittleEndianToShort(this->obj.mid(offset + 2, 2)) / 0x7FFF;
         float rotation_z = (float)fromLittleEndianToShort(this->obj.mid(offset + 4, 2)) / 0x7FFF;
         float rotation_w = (float)fromLittleEndianToShort(this->obj.mid(offset + 6, 2)) / 0x7FFF;
+        rotations.append(QVector4D(rotation_x,rotation_y,rotation_z,rotation_w));
         offset += 8;
 
         float scale_x = fromLittleEndianToFloat(this->obj.mid(offset, 4));
         float scale_y = fromLittleEndianToFloat(this->obj.mid(offset + 4, 4));
         float scale_z = fromLittleEndianToFloat(this->obj.mid(offset + 8, 4));
+        scales.append(QVector3D(scale_x,scale_y,scale_z));
         offset += 12;
 
         int translationFrameCount = fromLittleEndianToShort(this->obj.mid(offset, 2));
@@ -182,8 +186,8 @@ QVector<int> NosModelConverter::readNosTextures(int &offset) {
             offset += 4;
             bool smooth = this->obj.at(offset); // maybe means something else
             offset++;
-            int grp = fromLittleEndianToShort(this->obj.mid(offset, 2));
-            textures.append(img); // TODO!!!
+            int grp = fromLittleEndianToShort(this->obj.mid(offset, 2)); //equals i?
+            textures.append(img);
             offset += 2;
         }
         fromLittleEndianToShort(this->obj.mid(offset, 2)); // seems to be always 0?
@@ -207,4 +211,20 @@ QVector<QVector3D> NosModelConverter::readNosGroup(int group) {
     }
 
     return faceGroup;
+}
+
+int NosModelConverter::getObjectInfoOffset() {
+    return objectInfoOffset;
+}
+
+QVector3D NosModelConverter::getPosition(int index) {
+    return positions[index];
+}
+
+QVector4D NosModelConverter::getRotation(int index) {
+    return rotations.at(index);
+}
+
+QVector3D NosModelConverter::getScale(int index) {
+    return scales[index];
 }

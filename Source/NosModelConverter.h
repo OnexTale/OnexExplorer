@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QVector2D>
 #include <QVector3D>
+#include <QVector4D>
 
 class NosModelConverter {
 private:
@@ -15,6 +16,10 @@ private:
     QVector<QVector3D> faces;
     QVector<int> groups;
     QVector<int> textures;
+    QVector<QVector3D> positions;
+    QVector<QVector4D> rotations;
+    QVector<QVector3D> scales;
+    int objectInfoOffset;
     short fromLittleEndianToShort(QByteArray array);
     int fromLittleEndianToInt(QByteArray array);
     float fromLittleEndianToFloat(QByteArray array);
@@ -32,6 +37,10 @@ public:
     QVector<QVector3D> getVertices();
     QVector<QVector3D> getNormals();
     QVector<QVector3D> getFaces();
+    QVector3D getPosition(int index);
+    QVector4D getRotation(int index);
+    QVector3D getScale(int index);
+    int getObjectInfoOffset();
 };
 
 #endif // NOSMODELCONVERTER_H

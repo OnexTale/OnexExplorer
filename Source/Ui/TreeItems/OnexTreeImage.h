@@ -2,6 +2,7 @@
 #define ONEXTREEIMAGE_H
 #include "OnexTreeZlibItem.h"
 #include "SingleImagePreview.h"
+#include "../ImageConverter.h"
 
 struct ImageResolution {
     int x;
@@ -16,7 +17,7 @@ protected:
 
 public:
     OnexTreeImage(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate, bool compressed);
-
+    static ImageConverter imageConverter;
     virtual QWidget *getPreview() override;
     virtual QWidget *getInfos() override;
     virtual QImage getImage() = 0;

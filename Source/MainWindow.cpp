@@ -346,7 +346,7 @@ void MainWindow::on_actionSave_as_triggered() {
         }
 
         if (!item->hasParent()) {
-            item->onExporAsOriginal();
+            item->onExportAsOriginal();
         } else {
             QMessageBox::information(NULL, tr("Info"), tr("Select correct *.NOS file"));
         }

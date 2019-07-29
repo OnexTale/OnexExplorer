@@ -8,7 +8,7 @@
 #include <QDebug>
 #include <QObject>
 
-class NosTextOpener : public QObject, INosFileOpener {
+class NosTextOpener : public QObject, public INosFileOpener {
     Q_OBJECT
     private:
     NosTextDatFileDecryptor datDecryptor;

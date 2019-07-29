@@ -10,7 +10,6 @@ class NosZlibOpener : public INosFileOpener {
 private:
     static const int NOS_HEADER_SIZE = 0x10;
     NosZlibDecryptor decryptor;
-    ImageConverter imageConverter;
     QByteArray toBigEndian(qint32 value);
     int getNTHeaderNumber(QByteArray &array);
 
@@ -19,7 +18,6 @@ private:
 
 public:
     NosZlibOpener();
-    ImageConverter &getImageConverter();
     virtual OnexTreeItem *decrypt(QFile &file);
     virtual QByteArray encrypt(OnexTreeItem *item);
 };

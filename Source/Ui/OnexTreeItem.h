@@ -6,15 +6,17 @@
 #include <QObject>
 #include <QTreeWidgetItem>
 #include <QtEndian>
+#include "../Openers/INosFileOpener.h"
 
 class OnexTreeItem : public QObject, public QTreeWidgetItem {
     Q_OBJECT
 protected:
     QByteArray content;
     QString name;
+    INosFileOpener *opener;
 
 public:
-    OnexTreeItem(QString name, QByteArray content = QByteArray());
+    OnexTreeItem(QString name, INosFileOpener *opener, QByteArray content = QByteArray());
     virtual QString getName();
     virtual QByteArray getContent();
     bool hasParent();
@@ -36,7 +38,7 @@ public slots:
     virtual void setContent(QByteArray content);
     virtual int onExport(QString directory);
     virtual int onExportRaw(QString directory);
-    virtual int onExporAsOriginal();
+    virtual int onExportAsOriginal();
     virtual int onReplace(QString directory);
     virtual int onReplaceRaw(QString directory);
     virtual void onDelete();

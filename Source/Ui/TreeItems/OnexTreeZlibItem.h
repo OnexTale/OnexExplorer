@@ -14,14 +14,12 @@ class OnexTreeZlibItem : public OnexTreeItem {
     int creationDate;
     bool compressed;
     QByteArray header;
-    NosZlibOpener *opener;
 
 public:
     OnexTreeZlibItem(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
                      bool compressed);
     virtual QWidget *getPreview() override;
     virtual QWidget *getInfos() override;
-    virtual int onExporAsOriginal() override;
     int getId();
     int getCreationDate();
     bool isCompressed();

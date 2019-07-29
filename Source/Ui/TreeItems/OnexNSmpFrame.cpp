@@ -11,7 +11,7 @@ OnexNSmpFrame::OnexNSmpFrame(QByteArray header, QString name, QByteArray content
 
 QImage OnexNSmpFrame::getImage() {
     ImageResolution resolution = this->getResolution();
-    return opener->getImageConverter().convertGBAR4444(content, resolution.x, resolution.y);
+    return imageConverter.convertGBAR4444(content, resolution.x, resolution.y);
 }
 
 ImageResolution OnexNSmpFrame::getResolution() {
@@ -51,7 +51,7 @@ int OnexNSmpFrame::onReplace(QString directory) {
     if (!hasGoodResolution(image.width(), image.height()))
         return 0;
 
-    content = opener->getImageConverter().toGBAR4444(image);
+    content = imageConverter.toGBAR4444(image);
     emit OnexTreeImage::replaceSignal(this->getImage());
 
     return 1;

@@ -1,27 +1,28 @@
-#include "OnexNStcData.h"
+#include "OnexNS4BbData.h"
 
-OnexNStcData::OnexNStcData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
-                           bool compressed)
-    : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {}
-
-QImage OnexNStcData::getImage() {
-    ImageResolution resolution = this->getResolution();
-
-    return opener->getImageConverter().convertNSTC(content, resolution.x, resolution.y, 4);
+OnexNS4BbData::OnexNS4BbData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
+                             bool compressed)
+    : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {
 }
 
-ImageResolution OnexNStcData::getResolution() {
+QImage OnexNS4BbData::getImage() {
+    ImageResolution resolution = this->getResolution();
+
+    return imageConverter.convertBGRA8888_INTERLACED(content, resolution.x, resolution.y, 4);
+}
+
+ImageResolution OnexNS4BbData::getResolution() {
     int x = fromLittleEndianToShort(content.mid(0, 2));
     int y = fromLittleEndianToShort(content.mid(2, 2));
 
     return ImageResolution{x, y};
 }
 
-int OnexNStcData::onReplace(QString directory) {
+int OnexNS4BbData::onReplace(QString directory) {
     if (this->childCount() > 0) {
         int count = 0;
         for (int i = 0; i < this->childCount(); i++) {
-            OnexNStcData *item = static_cast<OnexNStcData *>(this->child(i));
+            OnexNS4BbData *item = static_cast<OnexNS4BbData *>(this->child(i));
             count += item->onReplace(directory);
         }
         return count;
@@ -36,16 +37,12 @@ int OnexNStcData::onReplace(QString directory) {
         if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0)
             return 0;
 
-        image = image.scaled(image.width() / 2, image.height() / 2);
-
-        if (!hasGoodResolution(image.width(), image.height())) {
-            qDebug() << "NStc wrong resolution";
+        if (!hasGoodResolution(image.width(), image.height()))
             return 0;
-        }
 
         QByteArray newContent;
         newContent.push_back(content.mid(0, 4));
-        newContent.push_back(opener->getImageConverter().toNSTC(image));
+        newContent.push_back(imageConverter.toBGRA8888_INTERLACED(image));
 
         content = newContent;
 
@@ -55,11 +52,12 @@ int OnexNStcData::onReplace(QString directory) {
     }
 }
 
-void OnexNStcData::setWidth(int width) {
+void OnexNS4BbData::setWidth(int width) {
     content.replace(0, 2, fromShortToLittleEndian(width));
 }
-void OnexNStcData::setHeight(int height) {
+void OnexNS4BbData::setHeight(int height) {
     content.replace(2, 2, fromShortToLittleEndian(height));
 }
 
-OnexNStcData::~OnexNStcData() {}
+OnexNS4BbData::~OnexNS4BbData() {
+}

@@ -1,6 +1,6 @@
 #include "OnexTreeItem.h"
 
-OnexTreeItem::OnexTreeItem(QString name, QByteArray content) : name(name), content(content) {
+OnexTreeItem::OnexTreeItem(QString name, INosFileOpener *opener, QByteArray content) : name(name), opener(opener), content(content) {
     this->setText(0, name);
 }
 
@@ -73,9 +73,30 @@ int OnexTreeItem::onExportRaw(QString directory) {
     return 1;
 }
 
-int OnexTreeItem::onExporAsOriginal() {
-    QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
-    return 0;
+int OnexTreeItem::onExportAsOriginal() {
+    QString fileName = getSaveDirectory(this->getName(), "NOS Archive (*.NOS)");
+
+    if (fileName.isEmpty())
+        return 0;
+
+    if (!fileName.endsWith(".NOS"))
+        fileName += ".NOS";
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly)) {
+        QMessageBox::critical(NULL, "Woops", "Couldn't open this file for writing");
+        return 0;
+    }
+
+    if (file.write(opener->encrypt(this)) == -1) {
+        QMessageBox::critical(NULL, "Woops", "Couldn't write to this file");
+        return 0;
+    }
+
+    file.close();
+    QMessageBox::information(NULL, "Yeah", "File exported into .NOS");
+
+    return 1;
 }
 
 int OnexTreeItem::onReplace(QString directory) {
@@ -100,7 +121,7 @@ int OnexTreeItem::onReplace(QString directory) {
 int OnexTreeItem::onReplaceRaw(QString directory) {
     QString fileName = directory + this->getName() + ".bin";
     QFile file(fileName);
-    
+
     if (file.open(QIODevice::ReadOnly)) {
         content = file.readAll();
         file.close();

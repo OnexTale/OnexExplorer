@@ -7,7 +7,7 @@ OnexNSipData::OnexNSipData(QByteArray header, QString name, QByteArray content, 
 QImage OnexNSipData::getImage() {
     ImageResolution resolution = this->getResolution();
 
-    return opener->getImageConverter().convertGBAR4444(content, resolution.x, resolution.y, 13);
+    return imageConverter.convertGBAR4444(content, resolution.x, resolution.y, 13);
 }
 
 ImageResolution OnexNSipData::getResolution() {
@@ -41,7 +41,7 @@ int OnexNSipData::onReplace(QString directory) {
 
         QByteArray newContent;
         newContent.push_back(content.mid(0, 13));
-        newContent.push_back(opener->getImageConverter().toGBAR4444(image));
+        newContent.push_back(imageConverter.toGBAR4444(image));
 
         content = newContent;
 

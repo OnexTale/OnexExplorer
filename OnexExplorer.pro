@@ -24,63 +24,62 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-    Source/Ui/OnexNSmpFrame.cpp \
     Source/main.cpp \
-    Source/Decryptors/NosTextDatFileDecryptor.cpp \
-    Source/Openers/NosTextOpener.cpp \
+    Source/ImageConverter.cpp \
     Source/MainWindow.cpp \
-    Source/Decryptors/NosTextOthersFileDecryptor.cpp \
-    Source/Openers/INosFileOpener.cpp \
     Source/Ui/OnexTreeItem.cpp \
-    Source/Ui/SingleTextFilePreview.cpp \
+    Source/Decryptors/NosTextDatFileDecryptor.cpp \
+    Source/Decryptors/NosTextOthersFileDecryptor.cpp \
     Source/Decryptors/NosZlibDecryptor.cpp \
     Source/Openers/NosZlibOpener.cpp \
-    Source/Ui/SingleImagePreview.cpp \
-    Source/Ui/MultiImagePreview.cpp \
-    Source/ImageConverter.cpp \
-    Source/Ui/OnexTreeImage.cpp \
-    Source/Ui/OnexTreeText.cpp \
-    Source/Ui/OnexTreeZlibItem.cpp \
-    Source/Ui/OnexNSipData.cpp \
-    Source/Ui/OnexNS4BbData.cpp \
-    Source/Ui/OnexNStcData.cpp \
-    Source/Ui/OnexNStpData.cpp \
-    Source/Ui/OnexNStpMipMap.cpp \
     Source/Openers/NosCCInfOpener.cpp \
-    Source/Ui/OnexNSmpData.cpp
+    Source/Openers/NosTextOpener.cpp \
+    Source/Openers/INosFileOpener.cpp \
+    Source/Ui/Previews/SingleTextFilePreview.cpp \
+    Source/Ui/Previews/SingleImagePreview.cpp \
+    Source/Ui/Previews/MultiImagePreview.cpp \
+    Source/Ui/TreeItems/OnexTreeImage.cpp \
+    Source/Ui/TreeItems/OnexTreeText.cpp \
+    Source/Ui/TreeItems/OnexTreeZlibItem.cpp \
+    Source/Ui/TreeItems/OnexNSipData.cpp \
+    Source/Ui/TreeItems/OnexNS4BbData.cpp \
+    Source/Ui/TreeItems/OnexNStcData.cpp \
+    Source/Ui/TreeItems/OnexNStpData.cpp \
+    Source/Ui/TreeItems/OnexNStpMipMap.cpp \
+    Source/Ui/TreeItems/OnexNSmpData.cpp \
+    Source/Ui/TreeItems/OnexNSmpFrame.cpp
 
 HEADERS  += \
-    Source/Decryptors/NosTextDatFileDecryptor.h \
-    Source/Decryptors/INosDecryptor.h \
-    Source/Openers/INosFileOpener.h \
-    Source/Openers/NosTextOpener.h \
+    Source/NosEnumTypes.h \
+    Source/ImageConverter.h \
     Source/MainWindow.h \
-    Source/Decryptors/NosTextOthersFileDecryptor.h \
-    Source/Ui/OnexNSmpFrame.h \
     Source/Ui/OnexTreeItem.h \
-    Source/Ui/SingleTextFilePreview.h \
+    Source/Decryptors/NosTextDatFileDecryptor.h \
+    Source/Decryptors/NosTextOthersFileDecryptor.h \
     Source/Decryptors/NosZlibDecryptor.h \
     Source/Openers/NosZlibOpener.h \
-    Source/NosEnumTypes.h \
-    Source/Ui/SingleImagePreview.h \
-    Source/Ui/MultiImagePreview.h \
-    Source/ImageConverter.h \
-    Source/Ui/OnexTreeImage.h \
-    Source/Ui/OnexTreeText.h \
-    Source/Ui/OnexTreeZlibItem.h \
-    Source/Ui/OnexNSipData.h \
-    Source/Ui/OnexNS4BbData.h \
-    Source/Ui/OnexNStcData.h \
-    Source/Ui/OnexNStpData.h \
-    Source/Ui/OnexNStpMipMap.h \
     Source/Openers/NosCCInfOpener.h \
-    Source/Ui/OnexNSmpData.h
+    Source/Openers/NosTextOpener.h \
+    Source/Openers/INosFileOpener.h \
+    Source/Ui/Previews/SingleTextFilePreview.h \
+    Source/Ui/Previews/SingleImagePreview.h \
+    Source/Ui/Previews/MultiImagePreview.h \
+    Source/Ui/TreeItems/OnexTreeImage.h \
+    Source/Ui/TreeItems/OnexTreeText.h \
+    Source/Ui/TreeItems/OnexTreeZlibItem.h \
+    Source/Ui/TreeItems/OnexNSipData.h \
+    Source/Ui/TreeItems/OnexNS4BbData.h \
+    Source/Ui/TreeItems/OnexNStcData.h \
+    Source/Ui/TreeItems/OnexNStpData.h \
+    Source/Ui/TreeItems/OnexNStpMipMap.h \
+    Source/Ui/TreeItems/OnexNSmpData.h \
+    Source/Ui/TreeItems/OnexNSmpFrame.h
 
 FORMS    += \
     Source/mainwindow.ui \
-    Source/Ui/SingleTextFilePreview.ui \
-    Source/Ui/SingleImagePreview.ui \
-    Source/Ui/MultiImagePreview.ui \
+    Source/Ui/Previews/SingleTextFilePreview.ui \
+    Source/Ui/Previews/SingleImagePreview.ui \
+    Source/Ui/Previews/MultiImagePreview.ui \
 
 DISTFILES +=
 

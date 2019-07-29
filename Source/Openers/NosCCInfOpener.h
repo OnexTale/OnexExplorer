@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QObject>
 
-class NosCCInfOpener : public QObject, INosFileOpener {
+class NosCCInfOpener : public QObject, public INosFileOpener {
     Q_OBJECT
     public:
     NosCCInfOpener();

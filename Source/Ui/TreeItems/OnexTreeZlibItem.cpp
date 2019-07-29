@@ -2,8 +2,7 @@
 
 OnexTreeZlibItem::OnexTreeZlibItem(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
                                    int creationDate, bool compressed)
-    : OnexTreeItem(name, content), header(header), id(id), creationDate(creationDate), compressed(compressed),
-      opener(opener) {
+    : OnexTreeItem(name, opener, content), header(header), id(id), creationDate(creationDate), compressed(compressed) {
 }
 
 QWidget *OnexTreeZlibItem::getPreview() {
@@ -56,32 +55,6 @@ QWidget *OnexTreeZlibItem::getInfos() {
     infos->setMaximumWidth(200);
 
     return infos;
-}
-
-int OnexTreeZlibItem::onExporAsOriginal() {
-    QString fileName = getSaveDirectory(this->getName(), "NOS Archive (*.NOS)");
-
-    if (fileName.isEmpty())
-        return 0;
-
-    if (!fileName.endsWith(".NOS"))
-        fileName += ".NOS";
-
-    QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly)) {
-        QMessageBox::critical(NULL, "Woops", "Couldn't open this file for writing");
-        return 0;
-    }
-
-    if (file.write(opener->encrypt(this)) == -1) {
-        QMessageBox::critical(NULL, "Woops", "Couldn't write to this file");
-        return 0;
-    }
-
-    file.close();
-    QMessageBox::information(NULL, "Yeah", "File exported into .NOS");
-
-    return 1;
 }
 
 int OnexTreeZlibItem::getId() {

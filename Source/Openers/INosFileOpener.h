@@ -1,9 +1,9 @@
 #ifndef INOSFILEOPENER_H
 #define INOSFILEOPENER_H
-#include "../Ui/OnexTreeItem.h"
 #include <QFile>
 #include <QtEndian>
 
+class OnexTreeItem;
 class INosFileOpener {
 protected:
     int readNextInt(QFile &file);

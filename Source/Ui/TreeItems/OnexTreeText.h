@@ -8,14 +8,12 @@ class OnexTreeText : public OnexTreeItem {
 private:
     int fileNumber;
     int isDat;
-    NosTextOpener *opener;
 
 public:
     OnexTreeText(QString name, NosTextOpener *opener, int fileNumber = 0, int isDat = 0,
                  QByteArray content = QByteArray());
     virtual QWidget *getPreview() override;
     virtual QWidget *getInfos() override;
-    virtual int onExporAsOriginal() override;
     virtual ~OnexTreeText();
     int getFileNumber() const;
     int getIsDat() const;

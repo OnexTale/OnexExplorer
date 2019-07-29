@@ -64,10 +64,6 @@ OnexTreeItem *NosZlibOpener::createItemFromHeader(QByteArray header, QString nam
 NosZlibOpener::NosZlibOpener() {
 }
 
-ImageConverter &NosZlibOpener::getImageConverter() { 
-    return imageConverter; 
-}
-
 OnexTreeItem *NosZlibOpener::decrypt(QFile &file) {
     file.seek(0);
 

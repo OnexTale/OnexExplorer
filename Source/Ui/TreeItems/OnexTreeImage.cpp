@@ -1,5 +1,7 @@
 #include "OnexTreeImage.h"
 
+ImageConverter OnexTreeImage::imageConverter = ImageConverter();
+
 OnexTreeImage::OnexTreeImage(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
                              int creationDate, bool compressed)
     : OnexTreeZlibItem(header, name, content, opener, id, creationDate, compressed) {

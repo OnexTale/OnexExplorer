@@ -1,4 +1,5 @@
 #include "OnexNStpMipMap.h"
+#include "OnexNStpData.h"
 
 OnexNStpMipMap::OnexNStpMipMap(QString name, QByteArray content, int width, int height, int format,
                                NosZlibOpener *opener, int id, int creationDate, bool compressed)
@@ -33,11 +34,17 @@ ImageResolution OnexNStpMipMap::getResolution() {
 int OnexNStpMipMap::onReplace(QString directory) {
         QString path = directory + this->getName() + ".png";
         if (!QFile(path).exists()) {
+            OnexNStpData *pItem = static_cast<OnexNStpData*>(QTreeWidgetItem::parent());
+            path = directory + pItem->getName() + ".png";
+        }
+        if (!QFile(path).exists()) {
             QMessageBox::critical(NULL, "Woops", "Missing " + path);
             return 0;
         }
 
         QImage image = importQImageFromSelectedUserFile(path);
+        image = image.scaled(width, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
         if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0)
             return 0;
 

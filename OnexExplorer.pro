@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets 3dcore 3dextras
+QT       += core gui widgets opengl
 
 TARGET = OnexExplorer
 TEMPLATE = app
@@ -25,6 +25,7 @@ SOURCES += \
     Source/main.cpp \
     Source/MainWindow.cpp \
     Source/Converters/ImageConverter.cpp \
+    Source/Converters/IModelConverter.cpp \
     Source/Converters/NosModelConverter.cpp \
     Source/Converters/ObjConverter.cpp \
     Source/Decryptors/NosTextDatFileDecryptor.cpp \
@@ -57,6 +58,7 @@ HEADERS  += \
     Source/MainWindow.h \
     Source/NosEnumTypes.h \
     Source/Converters/ImageConverter.h \
+    Source/Converters/IModelConverter.h \
     Source/Converters/NosModelConverter.h \
     Source/Converters/ObjConverter.h \
     Source/Decryptors/NosTextDatFileDecryptor.h \
@@ -95,3 +97,6 @@ RESOURCES += \
     resources.qrc
 
 RC_ICONS = ./resources/oxe_icon_trans.ico
+
+INCLUDEPATH += /usr/include/GL/
+LIBS += -lglut -lGLU -lGL

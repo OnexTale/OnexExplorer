@@ -1,46 +1,25 @@
 #ifndef NOSMODELCONVERTER_H
 #define NOSMODELCONVERTER_H
+#include "IModelConverter.h"
 #include <QByteArray>
 #include <QString>
-#include <QVector>
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
+#include <QVector>
 
-class NosModelConverter {
+class NosModelConverter : public IModelConverter {
 private:
-    QByteArray obj;
-    QVector<QVector3D> vertices;
-    QVector<QVector3D> normals;
-    QVector<QVector2D> uv;
-    QVector<QVector3D> faces;
-    QVector<int> groups;
-    QVector<int> textures;
-    QVector<QVector3D> positions;
-    QVector<QVector4D> rotations;
-    QVector<QVector3D> scales;
-    int objectInfoOffset;
-    short fromLittleEndianToShort(QByteArray array);
-    int fromLittleEndianToInt(QByteArray array);
-    float fromLittleEndianToFloat(QByteArray array);
-    QVector<QVector3D> readNosVertices(int &offset, int amount);
-    QVector<QVector3D> readNosNormals(int &offset, int amount);
-    QVector<QVector2D> readNosUV(int &offset, int amount, float scale);
-    QVector<QVector3D> readNosFaces(int &offset);
-    QVector<int> readNosTextures(int &offset);
-    QVector<QVector3D> readNosGroup(int group);
+    QVector<QVector3D> readNosVertices(QByteArray obj, int &offset, int verticeCount);
+    QVector<QVector3D> readNosNormals(QByteArray obj, int &offset, int verticeCount);
+    QVector<QVector2D> readNosUV(QByteArray obj, int &offset, int verticeCount, float uvScale);
+    QVector<ModelGroup> readNosFaces(QByteArray obj, int &offset);
+    Model readModelConstruction(QByteArray obj, int &offset, Model &model, QVector<ModelGroup> groups);
 
 public:
-    NosModelConverter(QByteArray obj);
-    QString toObjFile(QString name);
-    QString toMtlFile();
-    QVector<QVector3D> getVertices();
-    QVector<QVector3D> getNormals();
-    QVector<QVector3D> getFaces();
-    QVector3D getPosition(int index);
-    QVector4D getRotation(int index);
-    QVector3D getScale(int index);
-    int getObjectInfoOffset();
+    NosModelConverter();
+    Model fromBinary(QByteArray obj);
+    QByteArray toBinary(Model obj, float uvScale);
 };
 
 #endif // NOSMODELCONVERTER_H

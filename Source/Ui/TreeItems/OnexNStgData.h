@@ -14,9 +14,10 @@ public:
     virtual ~OnexNStgData();
     virtual QWidget *getPreview() override;
     virtual QWidget *getInfos() override;
+    virtual QByteArray getContent() override;
 
 private:
-    NosModelConverter *modelConverter;
+    Model model;
 
 private slots:
     virtual int onExport(QString directory);
@@ -31,16 +32,10 @@ private slots:
     virtual void setXScale(float x);
     virtual void setYScale(float y);
     virtual void setZScale(float z);
-    virtual void setXPosition(QString x);
-    virtual void setYPosition(QString y);
-    virtual void setZPosition(QString z);
-    virtual void setXRotation(QString x);
-    virtual void setYRotation(QString y);
-    virtual void setZRotation(QString z);
-    virtual void setWRotation(QString w);
-    virtual void setXScale(QString x);
-    virtual void setYScale(QString y);
-    virtual void setZScale(QString z);
+    virtual void setTexture(int index, int texture);
+
+signals:
+    void replaceSignal(Model newModel);
 };
 
 #endif // ONEXNSTGDATA_H

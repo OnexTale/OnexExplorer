@@ -3,154 +3,207 @@
 #include <QStringList>
 #include <QtEndian>
 
-ObjConverter::ObjConverter(QString obj) {
-    this->obj = obj;
+ObjConverter::ObjConverter() {
 }
 
-QByteArray ObjConverter::fromShortToLittleEndian(short number) {
-    QByteArray writeArray;
-    writeArray.resize(2);
-    qToLittleEndian<qint16>(number, reinterpret_cast<uchar *>(writeArray.data()));
-    return writeArray;
-}
+struct Face {
+    int object;
+    int group;
+    QVector3D v;
+    QVector3D vt;
+    QVector3D vn;
+};
 
-QByteArray ObjConverter::fromIntToLittleEndian(int number) {
-    QByteArray writeArray;
-    writeArray.resize(4);
-    qToLittleEndian<qint32>(number, reinterpret_cast<uchar *>(writeArray.data()));
-    return writeArray;
-}
+Model ObjConverter::fromObj(QString obj) {
+    QVector<QVector3D> fileVertices;
+    QVector<QVector3D> fileNormals;
+    QVector<QVector2D> fileUV;
+    // QVector<QVector3D> facesVertice;
+    // QVector<QVector3D> facesUV;
+    // QVector<QVector3D> facesNormal;
 
-QByteArray ObjConverter::fromFloatToLittleEndian(float number) {
-    QByteArray writeArray;
-    writeArray.resize(4);
-    qToLittleEndian<float>(number, reinterpret_cast<uchar *>(writeArray.data()));
-    return writeArray;
-}
-
-QByteArray ObjConverter::getNosFormat(float uvScale) {
-    QVector<QVector3D> vertices;
-    QVector<QVector3D> normals;
-    QVector<QVector2D> uv;
-    QVector<QVector3D> facesVertice;
-    QVector<QVector3D> facesUV;
-    QVector<QVector3D> facesNormal;
-    QVector<int> groups;
+    QVector<Face> faces;
     QVector<int> textures;
-    QVector<QVector3D> normalPerVertex;
-    QVector<QVector2D> uvPerVertex;
+    int group = -1;
+    int object = -1;
 
     QStringList lines = obj.split("\n");
     for (QString line : lines) {
         QStringList parts = line.split(" ", QString::SplitBehavior::SkipEmptyParts);
         if (parts.size() > 0) {
             if (parts[0] == "v") {
-                vertices.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat()));
+                fileVertices.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat()));
             } else if (parts[0] == "vn") {
-                normals.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat()));
+                fileNormals.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat()));
             } else if (parts[0] == "vt") {
-                uv.append(QVector2D(parts[1].toFloat(), parts[2].toFloat()));
-            } else if (parts[0] == "g") {
-                //    groups.append(facesVertice.size());
+                fileUV.append(QVector2D(parts[1].toFloat(), parts[2].toFloat()));
             } else if (parts[0] == "f") {
                 QStringList faceOneInfos = parts[1].split("/");
                 QStringList faceTwoInfos = parts[2].split("/");
                 QStringList faceThreeInfos = parts[3].split("/");
 
-                facesVertice.append(QVector3D(faceOneInfos[0].toFloat() - 1, faceTwoInfos[0].toFloat() - 1,
-                                              faceThreeInfos[0].toFloat() - 1));
-                facesUV.append(QVector3D(faceOneInfos[1].toFloat() - 1, faceTwoInfos[1].toFloat() - 1,
-                                         faceThreeInfos[1].toFloat() - 1));
-                facesNormal.append(QVector3D(faceOneInfos[2].toFloat() - 1, faceTwoInfos[2].toFloat() - 1,
-                                             faceThreeInfos[2].toFloat() - 1));
+                Face f;
+                if (object == -1)
+                    object = 0;
+                if (group == -1)
+                    group = 0;
+                f.object = object;
+                f.group = group;
+                f.v = QVector3D(faceOneInfos[0].toFloat() - 1, faceTwoInfos[0].toFloat() - 1,
+                                faceThreeInfos[0].toFloat() - 1);
+                f.vt = QVector3D(faceOneInfos[1].toFloat() - 1, faceTwoInfos[1].toFloat() - 1,
+                                 faceThreeInfos[1].toFloat() - 1);
+                f.vn = QVector3D(faceOneInfos[2].toFloat() - 1, faceTwoInfos[2].toFloat() - 1,
+                                 faceThreeInfos[2].toFloat() - 1);
+                faces.append(f);
+
             } else if (parts[0] == "usemtl") {
                 QStringList texturemtl = parts[1].split("mtl-", QString::SplitBehavior::SkipEmptyParts);
-                groups.append(facesVertice.size());
                 textures.append(texturemtl.at(0).toInt());
+                group++;
+            } else if (parts[0] == "o") {
+                object++;
+            }
+        }
+    }
+    // ModelGroup mg;
+    // mg.faces = groupFaces;
+    // mg.texture = groupTexture;
+    // mg.number = model.groups.size();
+    // model.groups.append(mg);
+    // objectGroups.append(model.groups.size() - 1);
+    // ModelObject mo;
+    // mo.groups = objectGroups;
+    // mo.position = QVector3D(0, 0, 0);
+    // mo.rotation = QVector4D(0, 0, 0, 0);
+    // mo.scale = QVector3D(0, 0, 0);
+    // model.objects.append(mo);
+
+    QVector<QVector3D> vertices;
+    QVector<QVector3D> normals;
+    QVector<QVector2D> uv;
+
+    vertices.resize(fileVertices.size());
+    normals.resize(fileVertices.size());
+    uv.resize(fileVertices.size());
+
+    for (int i = 0; i < faces.size(); i++) {
+        if ((!normals[faces[i].v.x()].isNull() && normals[faces[i].v.x()] != fileNormals[faces[i].vn.x()]) ||
+            (!uv[faces[i].v.x()].isNull() && uv[faces[i].v.x()] != fileUV[faces[i].vt.x()])) {
+            vertices.append(fileVertices[faces[i].v.x()]);
+            normals.append(fileNormals[faces[i].vn.x()]);
+            uv.append(fileUV[faces[i].vt.x()]);
+            faces[i].v.setX(vertices.size() - 1);
+            faces[i].vn.setX(normals.size() - 1);
+            faces[i].vt.setX(uv.size() - 1);
+        } else {
+            vertices[faces[i].v.x()] = fileVertices[faces[i].v.x()];
+            normals[faces[i].v.x()] = fileNormals[faces[i].vn.x()];
+            uv[faces[i].v.x()] = fileUV[faces[i].vt.x()];
+        }
+
+        if ((!normals[faces[i].v.y()].isNull() && normals[faces[i].v.y()] != fileNormals[faces[i].vn.y()]) ||
+            (!uv[faces[i].v.y()].isNull() && uv[faces[i].v.y()] != fileUV[faces[i].vt.y()])) {
+            vertices.append(fileVertices[faces[i].v.y()]);
+            normals.append(fileNormals[faces[i].vn.y()]);
+            uv.append(fileUV[faces[i].vt.y()]);
+            faces[i].v.setY(vertices.size() - 1);
+            faces[i].vn.setY(normals.size() - 1);
+            faces[i].vt.setY(uv.size() - 1);
+        } else {
+            vertices[faces[i].v.y()] = fileVertices[faces[i].v.y()];
+            normals[faces[i].v.y()] = fileNormals[faces[i].vn.y()];
+            uv[faces[i].v.y()] = fileUV[faces[i].vt.y()];
+        }
+
+        if ((!normals[faces[i].v.z()].isNull() && normals[faces[i].v.z()] != fileNormals[faces[i].vn.z()]) ||
+            (!uv[faces[i].v.z()].isNull() && uv[faces[i].v.z()] != fileUV[faces[i].vt.z()])) {
+            vertices.append(fileVertices[faces[i].v.z()]);
+            normals.append(fileNormals[faces[i].vn.z()]);
+            uv.append(fileUV[faces[i].vt.z()]);
+            faces[i].v.setZ(vertices.size() - 1);
+            faces[i].vn.setZ(normals.size() - 1);
+            faces[i].vt.setZ(uv.size() - 1);
+        } else {
+            vertices[faces[i].v.z()] = fileVertices[faces[i].v.z()];
+            normals[faces[i].v.z()] = fileNormals[faces[i].vn.z()];
+            uv[faces[i].v.z()] = fileUV[faces[i].vt.z()];
+        }
+    }
+
+    Model model;
+    model.vertices = vertices;
+    model.normals = normals;
+    model.uv = uv;
+
+    for (int i = 0; i <= object; i++) {
+        ModelObject mo;
+        mo.position = QVector3D(0, 0, 0);
+        mo.rotation = QVector4D(0, 0, 0, 0);
+        mo.scale = QVector3D(1, 1, 1);
+        model.objects.append(mo);
+    }
+    for (int i = 0; i <= group; i++) {
+        ModelGroup mg;
+        mg.number = i;
+        mg.texture = textures[i];
+        model.groups.append(mg);
+    }
+
+    for (int i = 0; i < faces.size(); i++) {
+        model.groups[faces[i].group].faces.append(faces[i].v);
+        if (!model.objects[faces[i].object].groups.contains(faces[i].group))
+            model.objects[faces[i].object].groups.append(faces[i].group);
+    }
+
+    return model;
+}
+
+QStringList ObjConverter::toObj(Model model, QString name) {
+    QStringList list;
+    list.append(generateObjFile(model, name));
+    list.append(generateMtlFile(model));
+    return list;
+}
+
+QString ObjConverter::generateObjFile(Model model, QString name) {
+    QString obj = "";
+
+    obj += "mtllib " + name + ".mtl\n\n";
+
+    for (QVector3D v : model.vertices) {
+        obj += "v " + QString::number(v.x()) + " " + QString::number(v.y()) + " " + QString::number(v.z()) + "\n";
+    }
+    for (QVector2D p : model.uv) {
+        obj += "vt " + QString::number(p.x()) + " " + QString::number(p.y()) + "\n";
+    }
+    for (QVector3D vn : model.normals) {
+        obj += "vn " + QString::number(vn.x()) + " " + QString::number(vn.y()) + " " + QString::number(vn.z()) + "\n";
+    }
+
+    for (int o = 0; o < model.objects.size(); o++) {
+        obj += "\no " + QString::number(o) + "\n";
+        for (int g = 0; g < model.objects[o].groups.size(); g++) {
+            obj += "usemtl mtl-" + QString::number(model.groups[model.objects[o].groups[g]].texture) + "\n";
+            for (QVector3D f : model.groups[model.objects[o].groups[g]].faces) {
+                obj += "f " + QString::number(f.x() + 1) + "/" + QString::number(f.x() + 1) + "/" +
+                       QString::number(f.x() + 1) + " " + QString::number(f.y() + 1) + "/" +
+                       QString::number(f.y() + 1) + "/" + QString::number(f.y() + 1) + " " +
+                       QString::number(f.z() + 1) + "/" + QString::number(f.z() + 1) + "/" +
+                       QString::number(f.z() + 1) + "\n";
             }
         }
     }
 
-    normalPerVertex.resize(vertices.size());
-    uvPerVertex.resize(vertices.size());
-    for (int i = 0; i < facesVertice.size(); i++) {
-        normalPerVertex[facesVertice[i].x()] = normals[facesNormal[i].x()];
-        normalPerVertex[facesVertice[i].y()] = normals[facesNormal[i].y()];
-        normalPerVertex[facesVertice[i].z()] = normals[facesNormal[i].z()];
+    return obj;
+}
 
-        uvPerVertex[facesVertice[i].x()] = uv[facesUV[i].x()];
-        uvPerVertex[facesVertice[i].y()] = uv[facesUV[i].y()];
-        uvPerVertex[facesVertice[i].z()] = uv[facesUV[i].z()];
+QString ObjConverter::generateMtlFile(Model model) {
+    QString mtl = "";
+    for (int g = 0; g < model.groups.size(); g++) {
+        mtl += "newmtl mtl-" + QString::number(model.groups[g].texture) + "\n";
+        mtl += "Ns 10\nKa 0 0 0\nKd 0 0 0\nKs 0 0 0\n";
+        mtl += "map_Kd " + QString::number(model.groups[g].texture) + ".png\n";
     }
-
-    QByteArray newContent;
-    newContent.append(fromFloatToLittleEndian(uvScale));
-    newContent.append(fromShortToLittleEndian(vertices.size()));
-    for (int i = 0; i < vertices.size(); i++) {
-        newContent.append(fromFloatToLittleEndian(vertices[i].x()));
-        newContent.append(fromFloatToLittleEndian(vertices[i].y()));
-        newContent.append(fromFloatToLittleEndian(vertices[i].z()));
-    }
-    for (int i = 0; i < uvPerVertex.size(); i++) {
-        float u = uvPerVertex[i].x();
-        if ((int)u != 1 && (int)u != -1)
-            u -= (int)u;
-        u /= uvScale;
-        float v = uvPerVertex[i].y();
-        if ((int)v != 1 && (int)v != -1)
-            v -= (int)v;
-        v = (1.0 - v) / uvScale;
-        newContent.append(fromShortToLittleEndian(u));
-        newContent.append(fromShortToLittleEndian(v));
-    }
-    for (int i = 0; i < normalPerVertex.size(); i++) {
-        uint8_t x = normalPerVertex[i].x() * 0x7F;
-        uint8_t y = normalPerVertex[i].y() * 0x7F;
-        uint8_t z = normalPerVertex[i].z() * 0x7F;
-        newContent.append(x);
-        newContent.append(y);
-        newContent.append(z);
-    }
-    newContent.append(fromShortToLittleEndian(groups.size()));
-    for (int g = 0; g < groups.size(); g++) {
-        int grpEnd = 0;
-        if (g + 1 < groups.size())
-            grpEnd = groups[g + 1];
-        else
-            grpEnd = facesVertice.size();
-        newContent.append(fromShortToLittleEndian((grpEnd - groups[g]) * 3)); // GroupSize
-        for (int i = groups[g]; i < grpEnd; i++) {
-            newContent.append(fromShortToLittleEndian(facesVertice[i].x()));
-            newContent.append(fromShortToLittleEndian(facesVertice[i].y()));
-            newContent.append(fromShortToLittleEndian(facesVertice[i].z()));
-        }
-    }
-    newContent.append(fromShortToLittleEndian(1)); // ObjectCount
-
-    newContent.append(fromFloatToLittleEndian(0.34155));   // x
-    newContent.append(fromFloatToLittleEndian(-2.403));    // y
-    newContent.append(fromFloatToLittleEndian(-0.318199)); // z
-
-    newContent.append(fromShortToLittleEndian(0)); // x rotation
-    newContent.append(fromShortToLittleEndian(0)); // y rotation
-    newContent.append(fromShortToLittleEndian(0)); // z rotation
-    newContent.append(fromShortToLittleEndian(0)); // w rotation
-
-    newContent.append(fromFloatToLittleEndian(1)); // x scale
-    newContent.append(fromFloatToLittleEndian(1)); // y scale
-    newContent.append(fromFloatToLittleEndian(1)); // z scale
-
-    newContent.append(fromShortToLittleEndian(0)); // translationFrameCount
-    newContent.append(fromShortToLittleEndian(0)); // rotationFrameCount
-    newContent.append(fromShortToLittleEndian(0)); // scaleFrameCount
-
-    newContent.append(fromShortToLittleEndian(groups.size()));
-    for (int i = 0; i < groups.size(); i++) {
-        newContent.append(fromIntToLittleEndian(textures[i]));
-        newContent.append((char)0);                    // bool
-        newContent.append(fromShortToLittleEndian(i)); // group
-    }
-    newContent.append(fromShortToLittleEndian(0));
-
-    return newContent;
+    return mtl;
 }

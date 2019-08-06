@@ -1,25 +1,22 @@
 #ifndef OBJCONVERTER_H
 #define OBJCONVERTER_H
+#include "IModelConverter.h"
 #include <QByteArray>
 #include <QString>
+#include <QStringList>
 #include <QVector>
 #include <QVector2D>
 #include <QVector3D>
 
-class ObjConverter {
+class ObjConverter : public IModelConverter {
 private:
-    QString obj;
-    QVector<QVector3D> vertices;
-    QVector<QVector3D> normals;
-    QVector<QVector2D> uv;
-    QVector<int> textures;
-    QByteArray fromShortToLittleEndian(short number);
-    QByteArray fromIntToLittleEndian(int number);
-    QByteArray fromFloatToLittleEndian(float number);
+    QString generateObjFile(Model model, QString name);
+    QString generateMtlFile(Model model);
 
 public:
-    ObjConverter(QString obj);
-    QByteArray getNosFormat(float uvScale);
+    ObjConverter();
+    Model fromObj(QString obj);
+    QStringList toObj(Model model, QString name);
 };
 
 #endif // OBJCONVERTER_H

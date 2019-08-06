@@ -19,7 +19,7 @@ QWidget *OnexTreeZlibItem::getInfos() {
     QLabel *idLabel = new QLabel("ID");
     infoLayout->addWidget(idLabel, 0, 0);
     QLineEdit *idIn = new QLineEdit(QString::number(getId()));
-    connect(idIn, SIGNAL(textChanged(QString)), this, SLOT(setId(QString)));
+    connect(idIn, &QLineEdit::textChanged, [=](const QString &value) { setId(value.toInt()); });
     infoLayout->addWidget(idIn, 0, 1);
 
     QLabel *sizeLabel = new QLabel("Size");
@@ -75,10 +75,6 @@ QByteArray OnexTreeZlibItem::getHeader() {
 
 void OnexTreeZlibItem::setId(int id) {
     this->id = id;
-}
-
-void OnexTreeZlibItem::setId(QString id) {
-    setId(id.toInt());
 }
 
 void OnexTreeZlibItem::setCreationDate(QString date) {

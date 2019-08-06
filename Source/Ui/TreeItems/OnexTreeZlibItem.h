@@ -28,7 +28,6 @@ public:
 
 public slots:
     void setId(int id);
-    void setId(QString id);
     void setCreationDate(QString date);
     void setCompressed(bool compressed);
     void setHeader(QString header);

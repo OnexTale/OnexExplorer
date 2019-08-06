@@ -35,7 +35,7 @@ QWidget *OnexNStpMipMap::getInfos() {
     QLabel *formatLabel = new QLabel("Format");
     infoLayout->addWidget(formatLabel, 7, 0);
     QLineEdit *formatIn = new QLineEdit(QString::number(getFormat()));
-    connect(formatIn, SIGNAL(textChanged(QString)), this, SLOT(setFormat(QString)));
+    connect(formatIn, &QLineEdit::textChanged, [=](const QString &value) { setFormat(value.toInt()); });
     infoLayout->addWidget(formatIn, 7, 1);
 
     return w;
@@ -100,10 +100,6 @@ void OnexNStpMipMap::setHeight(int height) {
 
 void OnexNStpMipMap::setFormat(uint8_t format) {
     this->format = format;
-}
-
-void OnexNStpMipMap::setFormat(QString format) {
-    setFormat(format.toInt());
 }
 
 OnexNStpMipMap::~OnexNStpMipMap() {

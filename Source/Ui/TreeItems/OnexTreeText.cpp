@@ -1,10 +1,10 @@
 #include "OnexTreeText.h"
 #include "../../Openers/NosTextOpener.h"
 #include "../Previews/SingleTextFilePreview.h"
+#include <QCheckBox>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QCheckBox>
 
 OnexTreeText::OnexTreeText(QString name, NosTextOpener *opener, int fileNumber, int isDat, QByteArray content)
     : OnexTreeItem(name, opener, content), fileNumber(fileNumber), isDat(isDat) {
@@ -20,10 +20,6 @@ int OnexTreeText::getIsDat() const {
 
 void OnexTreeText::setFileNumber(int fileNumber) {
     this->fileNumber = fileNumber;
-}
-
-void OnexTreeText::setFileNumber(QString fileNumber) {
-    setFileNumber(fileNumber.toInt());
 }
 
 void OnexTreeText::setIsDat(bool isDat) {
@@ -43,14 +39,14 @@ QWidget *OnexTreeText::getPreview() {
 QWidget *OnexTreeText::getInfos() {
     if (!hasParent())
         return nullptr;
-    
+
     QWidget *infos = new QWidget();
     QGridLayout *infoLayout = new QGridLayout();
 
     QLabel *fileNumberLabel = new QLabel("FileNumber");
     infoLayout->addWidget(fileNumberLabel, 0, 0);
     QLineEdit *fileNumberIn = new QLineEdit(QString::number(getFileNumber()));
-    connect(fileNumberIn, SIGNAL(textChanged(QString)), this, SLOT(setFileNumber(QString)));
+    connect(fileNumberIn, &QLineEdit::textChanged, [=](const QString &value) { setFileNumber(value.toInt()); });
     infoLayout->addWidget(fileNumberIn, 0, 1);
 
     QCheckBox *isDatCheckBox = new QCheckBox("IsDat");

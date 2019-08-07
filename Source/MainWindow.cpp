@@ -242,7 +242,7 @@ void MainWindow::on_actionReplace_triggered() {
 
     int count = 0;
 
-    if (selectedItems.size() == 1) {
+    if (selectedItems.size() == 1 && selectedItems.at(0)->childCount() == 0) {
         OnexTreeItem *item = static_cast<OnexTreeItem *>(selectedItems.at((0)));
         QString filter = "";
         if (item->getExportExtension() == ".png")
@@ -288,7 +288,7 @@ void MainWindow::on_actionReplace_with_raw_triggered() {
 
     int count = 0;
 
-    if (selectedItems.size() == 1) {
+    if (selectedItems.size() == 1 && selectedItems.at(0)->childCount() == 0) {
         OnexTreeItem *item = static_cast<OnexTreeItem *>(selectedItems.at((0)));
         QString path = getOpenDirectory(item->getName(), "Rawdata (*.bin)");
         if (path.isEmpty())
@@ -319,7 +319,7 @@ void MainWindow::on_actionExport_triggered() {
 
     int count = 0;
 
-    if (selectedItems.size() == 1) {
+    if (selectedItems.size() == 1 && selectedItems.at(0)->childCount() == 0) {
         OnexTreeItem *item = static_cast<OnexTreeItem *>(selectedItems.at((0)));
         QString filter = "";
         if (item->getExportExtension() == ".png")
@@ -363,7 +363,7 @@ void MainWindow::on_actionExport_to_raw_triggered() {
 
     int count = 0;
 
-    if (selectedItems.size() == 1) {
+    if (selectedItems.size() == 1 && selectedItems.at(0)->childCount() == 0) {
         OnexTreeItem *item = static_cast<OnexTreeItem *>(selectedItems.at((0)));
         QString path = getSaveDirectory(item->getName(), "Rawdata (*.bin)");
         if (path.isEmpty())

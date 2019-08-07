@@ -2,8 +2,8 @@
 #include "../Previews/MultiImagePreview.h"
 #include "OnexNSmpFrame.h"
 
-OnexNSmpData::OnexNSmpData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
-                           bool compressed)
+OnexNSmpData::OnexNSmpData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
+                           int creationDate, bool compressed)
     : OnexTreeZlibItem(header, name, content, opener, id, creationDate, compressed) {
     if (id == -1)
         return;
@@ -16,8 +16,8 @@ OnexNSmpData::OnexNSmpData(QByteArray header, QString name, QByteArray content, 
         int offset = fromLittleEndianToInt(content.mid(9 + i * 12, 4));
 
         QByteArray subContent = content.mid(offset, (width * 2 * height));
-        this->addChild(new OnexNSmpFrame(header, name + "_" + QString::number(i), subContent, width, height, xOrigin, yOrigin,
-                                         opener, id, creationDate, compressed));
+        this->addChild(new OnexNSmpFrame(header, name + "_" + QString::number(i), subContent, width, height, xOrigin,
+                                         yOrigin, opener, id, creationDate, compressed));
     }
 }
 
@@ -32,6 +32,8 @@ QWidget *OnexNSmpData::getPreview() {
     }
 
     MultiImagePreview *imagePreview = new MultiImagePreview(images);
+
+    connect(this, SIGNAL(replaceSignal(QList<QImage> *)), imagePreview, SLOT(onReplaced(QList<QImage> *)));
 
     return imagePreview;
 }
@@ -80,6 +82,13 @@ int OnexNSmpData::onReplace(QString directory) {
         OnexTreeItem *item = static_cast<OnexTreeItem *>(this->child(i));
         count += item->onReplace(directory);
     }
+
+    QList<QImage> *images = new QList<QImage>();
+    for (int i = 0; i != this->childCount(); ++i) {
+        OnexNSmpFrame *item = static_cast<OnexNSmpFrame *>(this->child(i));
+        images->append(item->getImage());
+    }
+    emit replaceSignal(images);
     return count;
 }
 

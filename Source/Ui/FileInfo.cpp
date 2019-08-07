@@ -69,16 +69,17 @@ void FileInfo::update(QString title, bool value) {
     for (int i = 0; i < grid->rowCount(); i++) {
         if (grid->itemAtPosition(i, 1) == nullptr)
             continue;
-        if (static_cast<QLabel *>(grid->itemAtPosition(i, 1)->widget())->text() == title) {
+        if (static_cast<QCheckBox *>(grid->itemAtPosition(i, 1)->widget())->text() == title) {
             QCheckBox *cb = static_cast<QCheckBox *>(grid->itemAtPosition(i, 1)->widget());
             cb->setChecked(value);
             break;
         }
     }
 }
-
+#include <QDebug>
 void FileInfo::replace(FileInfo *info) {
     qDeleteAll(children());
-    grid = static_cast<QGridLayout *>(info->layout());
-    setLayout(grid);
+    grid = info->grid;
+    rows = grid->rowCount();
+    setLayout(info->layout());
 }

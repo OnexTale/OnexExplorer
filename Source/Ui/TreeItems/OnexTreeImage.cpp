@@ -74,6 +74,13 @@ int OnexTreeImage::onExport(QString directory) {
     return 0;
 }
 
+int OnexTreeImage::onReplaceRaw(QString directory) {
+    int ret = OnexTreeItem::onReplaceRaw(directory);
+    emit replaceSignal(getImage());
+    emit replaceInfo(getInfos());
+    return ret;
+}
+
 QString OnexTreeImage::getExportExtension() {
     return ".png";
 }

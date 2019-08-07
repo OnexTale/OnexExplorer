@@ -10,10 +10,10 @@
 class FileInfo : public QWidget {
     Q_OBJECT
 private:
-    QGridLayout *grid;
     int rows;
 
 public:
+    QGridLayout *grid;
     FileInfo(QWidget *parent = 0);
     QLineEdit *addStringLineEdit(QString title, QString value);
     QLineEdit *addIntLineEdit(QString title, int value);

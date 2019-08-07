@@ -14,6 +14,9 @@ public:
 public slots:
     virtual int onExport(QString directory);
     virtual int onReplace(QString directory);
+
+signals:
+    void replaceSignal(QList<QImage> *newImages);
 };
 
 #endif // ONEXNSMPDATA_H

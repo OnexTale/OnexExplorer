@@ -40,3 +40,8 @@ QImage MultiImagePreview::generateImage() {
     }
     return image;
 }
+
+void MultiImagePreview::onReplaced(QList<QImage> *newImages) {
+    images = newImages;
+    ui->imgContent->setPixmap(QPixmap::fromImage(generateImage()));
+}

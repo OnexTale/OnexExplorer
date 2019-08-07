@@ -56,6 +56,9 @@ QByteArray OnexNStpData::getContent() {
 }
 
 QImage OnexNStpData::getImage() {
+    if (childCount() > 0)
+        return static_cast<OnexNStpData *>(this->child(0))->getImage();
+
     ImageResolution resolution = this->getResolution();
 
     int format = this->getFormat();
@@ -100,6 +103,7 @@ int OnexNStpData::onReplace(QString directory) {
             OnexNStpData *item = static_cast<OnexNStpData *>(this->child(i));
             count += item->onReplace(directory);
         }
+        emit replaceSignal(getImage());
         return count;
     } else {
         QString path;

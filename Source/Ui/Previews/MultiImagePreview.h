@@ -29,6 +29,9 @@ private:
     qint16 byteArrayToShort(QByteArray array);
     QImage generateImage();
     QPair<int,int> getResolution();
+
+private slots:
+    void onReplaced(QList<QImage> *newImages);
 };
 
 #endif // MULTIIMAGEPREVIEW_H

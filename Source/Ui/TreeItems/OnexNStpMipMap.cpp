@@ -39,7 +39,12 @@ FileInfo *OnexNStpMipMap::getInfos() {
 }
 
 int OnexNStpMipMap::onReplace(QString directory) {
-    QString path = directory + this->getName() + ".png";
+    QString path;
+    if (!directory.endsWith(".png"))
+        path = directory + this->getName() + ".png";
+    else
+        path = directory;
+
     if (!QFile(path).exists()) {
         OnexNStpData *pItem = static_cast<OnexNStpData *>(QTreeWidgetItem::parent());
         path = directory + pItem->getName() + ".png";

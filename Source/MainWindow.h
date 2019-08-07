@@ -57,6 +57,8 @@ private:
     int hasValidHeader(QFile &file);
 
     QString getSelectedDirectory();
+    QString getOpenDirectory(QString name, QString filter);
+    QString getSaveDirectory(QString name, QString filter);
 
     virtual void dropEvent(QDropEvent *e) override;
     virtual void dragEnterEvent(QDragEnterEvent *e) override;

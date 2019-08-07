@@ -31,7 +31,12 @@ FileInfo *OnexNSmpFrame::getInfos() {
 }
 
 int OnexNSmpFrame::onReplace(QString directory) {
-    QString path = directory + this->getName() + ".png";
+    QString path;
+    if (!directory.endsWith(".png"))
+        path = directory + this->getName() + ".png";
+    else
+        path = directory;
+
     if (!QFile(path).exists()) {
         QMessageBox::critical(NULL, "Woops", "Missing " + path);
         return 0;

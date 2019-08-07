@@ -23,6 +23,7 @@ public slots:
     virtual int onReplace(QString directory);
     void setFileNumber(int number);
     void setIsDat(bool isDat);
+    virtual QString getExportExtension();
 
 signals:
     void replaceSignal(QByteArray text);

@@ -65,8 +65,13 @@ int OnexTreeText::onExport(QString directory) {
         }
         return count;
     } else {
-        QString fileName = directory + this->getName();
-        QFile file(fileName);
+        QString path = "";
+        if (!directory.endsWith(getExportExtension()))
+            path = directory + this->name;
+        else
+            path = directory;
+
+        QFile file(path);
         if (file.open(QIODevice::WriteOnly)) {
             file.write(content);
             file.close();
@@ -80,6 +85,10 @@ int OnexTreeText::onReplace(QString directory) {
     int count = OnexTreeItem::onReplace(directory);
     emit replaceSignal(this->getContent());
     return count;
+}
+
+QString OnexTreeText::getExportExtension() {
+    return name.split(".").at(1);
 }
 
 OnexTreeText::~OnexTreeText() {

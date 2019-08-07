@@ -5,10 +5,6 @@ OnexTreeItem::OnexTreeItem(QString name, INosFileOpener *opener, QByteArray cont
     this->setText(0, name);
 }
 
-QString OnexTreeItem::getSaveDirectory(QString name, QString filter) {
-    return QFileDialog::getSaveFileName(0, tr("Save as..."), name, filter);
-}
-
 QByteArray OnexTreeItem::getContent() {
     return content;
 }
@@ -66,6 +62,10 @@ void OnexTreeItem::setContent(QByteArray content) {
     this->content = content;
 }
 
+QString OnexTreeItem::getExportExtension() {
+    return "";
+}
+
 OnexTreeItem::~OnexTreeItem() {
 }
 
@@ -75,8 +75,13 @@ int OnexTreeItem::onExport(QString directory) {
 }
 
 int OnexTreeItem::onExportRaw(QString directory) {
-    QString fileName = directory + this->getName() + ".bin";
-    QFile file(fileName);
+    QString path = "";
+    if (!directory.endsWith(".bin"))
+        path = directory + this->getName() + ".bin";
+    else
+        path = directory;
+
+    QFile file(path);
     file.open(QIODevice::WriteOnly);
     if (file.write(this->getContent()) == -1) {
         return 0;
@@ -86,9 +91,6 @@ int OnexTreeItem::onExportRaw(QString directory) {
 }
 
 int OnexTreeItem::onExportAsOriginal(QString path) {
-    if (path.isNull())
-        path = getSaveDirectory(this->getName(), "NOS Archive (*.NOS)");
-
     if (path.isEmpty())
         return 0;
 
@@ -121,7 +123,11 @@ int OnexTreeItem::onReplace(QString directory) {
         }
         return count;
     } else {
-        QString path = directory + this->getName();
+        QString path;
+        if (!directory.split(".").size() == 0)
+            path = directory + this->getName();
+        else
+            path = directory;
         QFile file(path);
         if (file.open(QIODevice::ReadOnly))
             this->content = file.readAll();
@@ -134,8 +140,12 @@ int OnexTreeItem::onReplace(QString directory) {
 }
 
 int OnexTreeItem::onReplaceRaw(QString directory) {
-    QString fileName = directory + this->getName() + ".bin";
-    QFile file(fileName);
+    QString path;
+    if (!directory.endsWith(".bin"))
+        path = directory + this->getName() + ".bin";
+    else
+        path = directory;
+    QFile file(path);
 
     if (file.open(QIODevice::ReadOnly)) {
         content = file.readAll();

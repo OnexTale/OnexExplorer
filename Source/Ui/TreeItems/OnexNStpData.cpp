@@ -102,8 +102,12 @@ int OnexNStpData::onReplace(QString directory) {
         }
         return count;
     } else {
+        QString path;
+        if (!directory.endsWith(".png"))
+            path = directory + this->getName() + ".png";
+        else
+            path = directory;
 
-        QString path = directory + this->getName() + ".png";
         if (!QFile(path).exists()) {
             QMessageBox::critical(NULL, "Woops", "Missing " + path);
             return 0;
@@ -125,8 +129,7 @@ int OnexNStpData::onReplace(QString directory) {
 
         int format = this->getFormat();
 
-        if (format < 0 || format > 4) 
-        {
+        if (format < 0 || format > 4) {
             QMessageBox::critical(NULL, "Woops", "Format of " + path + "is not supported!");
             return 0;
         }
@@ -163,7 +166,13 @@ int OnexNStpData::onExport(QString directory) {
         }
         return count;
     } else {
-        if (this->getImage().save(directory + getName() + ".png", "PNG", 100))
+        QString path = "";
+        if (!directory.endsWith(".png"))
+            path = directory + this->name + ".png";
+        else
+            path = directory;
+
+        if (this->getImage().save(path, "PNG", 100))
             return 1;
     }
     return 0;

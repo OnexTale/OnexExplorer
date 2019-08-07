@@ -33,7 +33,6 @@ public:
     virtual FileInfo *getInfos() = 0;
     virtual ~OnexTreeItem();
 
-    QString getSaveDirectory(QString name, QString filter);
     QMessageBox getMsgBox(QString title, QString message, QMessageBox::Icon icon);
 
 public slots:
@@ -41,11 +40,12 @@ public slots:
     virtual void setContent(QByteArray content);
     virtual int onExport(QString directory);
     virtual int onExportRaw(QString directory);
-    virtual int onExportAsOriginal(QString path = 0);
+    virtual int onExportAsOriginal(QString path);
     virtual int onReplace(QString directory);
     virtual int onReplaceRaw(QString directory);
     virtual void onDelete();
     virtual void actionClose();
+    virtual QString getExportExtension();
     
 signals:
     void changeSignal(QString title, QString value);

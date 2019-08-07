@@ -16,6 +16,9 @@ public:
     virtual FileInfo *getInfos() override;
     virtual QByteArray getContent() override;
 
+public slots:
+    virtual QString getExportExtension();
+
 private:
     Model *model;
 

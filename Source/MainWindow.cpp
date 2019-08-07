@@ -169,6 +169,14 @@ QString MainWindow::getSelectedDirectory() {
     return dir + "/";
 }
 
+QString MainWindow::getOpenDirectory(QString name, QString filter) {
+    return QFileDialog::getOpenFileName(0, tr("Open..."), "", filter);
+}
+
+QString MainWindow::getSaveDirectory(QString name, QString filter) {
+    return QFileDialog::getSaveFileName(0, tr("Save as..."), name, filter);
+}
+
 void MainWindow::dropEvent(QDropEvent *e) {
     for (auto &url : e->mimeData()->urls()) {
         QString fileName = url.toLocalFile();
@@ -232,14 +240,38 @@ void MainWindow::on_actionReplace_triggered() {
         return;
     }
 
-    QString directory = getSelectedDirectory();
-    if (directory.isEmpty())
-        return;
-
     int count = 0;
-    foreach (auto &s, selectedItems) {
-        OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
-        count += item->onReplace(directory);
+
+    if (selectedItems.size() == 1) {
+        OnexTreeItem *item = static_cast<OnexTreeItem *>(selectedItems.at((0)));
+        QString filter = "";
+        if (item->getExportExtension() == ".png")
+            filter = "PNG Image (*.png)";
+        else if (item->getExportExtension() == ".txt")
+            filter = "Text File (*.txt)";
+        else if (item->getExportExtension() == ".lst")
+            filter = "List File (*.lst)";
+        else if (item->getExportExtension() == ".dat")
+            filter = "DAT File (*.dat)";
+        else if (item->getExportExtension() == ".obj")
+            filter = "OBJ File (*.obj)";
+        else
+            filter = "All files (*.*)";
+
+        QString path = getOpenDirectory(item->getName(), filter);
+        if (path.isEmpty())
+            return;
+        count = item->onReplace(path);
+
+    } else {
+        QString directory = getSelectedDirectory();
+        if (directory.isEmpty())
+            return;
+
+        foreach (auto &s, selectedItems) {
+            OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
+            count += item->onReplace(directory);
+        }
     }
 
     QString text = "Replaced " + QString::number(count) + " file(s).";
@@ -254,14 +286,23 @@ void MainWindow::on_actionReplace_with_raw_triggered() {
         return;
     }
 
-    QString directory = getSelectedDirectory();
-    if (directory.isEmpty())
-        return;
-
     int count = 0;
-    foreach (auto &s, selectedItems) {
-        OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
-        count += item->onReplaceRaw(directory);
+
+    if (selectedItems.size() == 1) {
+        OnexTreeItem *item = static_cast<OnexTreeItem *>(selectedItems.at((0)));
+        QString path = getOpenDirectory(item->getName(), "Rawdata (*.bin)");
+        if (path.isEmpty())
+            return;
+        count = item->onReplaceRaw(path);
+    } else {
+        QString directory = getSelectedDirectory();
+        if (directory.isEmpty())
+            return;
+
+        foreach (auto &s, selectedItems) {
+            OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
+            count += item->onReplaceRaw(directory);
+        }
     }
 
     QString text = "Replaced " + QString::number(count) + " file(s).";
@@ -276,14 +317,36 @@ void MainWindow::on_actionExport_triggered() {
         return;
     }
 
-    QString directory = getSelectedDirectory();
-    if (directory.isEmpty())
-        return;
-
     int count = 0;
-    foreach (auto &s, selectedItems) {
-        OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
-        count += item->onExport(directory);
+
+    if (selectedItems.size() == 1) {
+        OnexTreeItem *item = static_cast<OnexTreeItem *>(selectedItems.at((0)));
+        QString filter = "";
+        if (item->getExportExtension() == ".png")
+            filter = "PNG Image (*.png)";
+        else if (item->getExportExtension() == ".txt")
+            filter = "Text File (*.txt)";
+        else if (item->getExportExtension() == ".lst")
+            filter = "List File (*.lst)";
+        else if (item->getExportExtension() == ".dat")
+            filter = "DAT File (*.dat)";
+        else if (item->getExportExtension() == ".obj")
+            filter = "OBJ File (*.obj)";
+        else
+            filter = "All files (*.*)";
+        QString path = getSaveDirectory(item->getName(), filter);
+        if (path.isEmpty())
+            return;
+        count = item->onExport(path);
+    } else {
+        QString directory = getSelectedDirectory();
+        if (directory.isEmpty())
+            return;
+
+        foreach (auto &s, selectedItems) {
+            OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
+            count += item->onExport(directory);
+        }
     }
 
     QString text = "Saved " + QString::number(count) + " file(s).";
@@ -298,14 +361,23 @@ void MainWindow::on_actionExport_to_raw_triggered() {
         return;
     }
 
-    QString directory = getSelectedDirectory();
-    if (directory.isEmpty())
-        return;
-
     int count = 0;
-    foreach (auto &s, selectedItems) {
-        OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
-        count += item->onExportRaw(directory);
+
+    if (selectedItems.size() == 1) {
+        OnexTreeItem *item = static_cast<OnexTreeItem *>(selectedItems.at((0)));
+        QString path = getSaveDirectory(item->getName(), "Rawdata (*.bin)");
+        if (path.isEmpty())
+            return;
+        count = item->onExportRaw(path);
+    } else {
+        QString directory = getSelectedDirectory();
+        if (directory.isEmpty())
+            return;
+
+        foreach (auto &s, selectedItems) {
+            OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
+            count += item->onExportRaw(directory);
+        }
     }
     QString text = "Saved " + QString::number(count) + " file(s).";
     QMessageBox msgBox(QMessageBox::Information, tr("End of operation"), text);
@@ -340,17 +412,13 @@ void MainWindow::on_actionHelp_triggered() {
 
 void MainWindow::on_actionSave_as_triggered() {
     if (ui->treeWidget->currentItem()) {
-
         OnexTreeItem *item = static_cast<OnexTreeItem *>(ui->treeWidget->currentItem());
         while (item->hasParent()) {
             item = static_cast<OnexTreeItem *>(item->QTreeWidgetItem::parent());
         }
 
-        if (!item->hasParent()) {
-            item->onExportAsOriginal();
-        } else {
-            QMessageBox::information(NULL, tr("Info"), tr("Select correct *.NOS file"));
-        }
+        QString path = getSaveDirectory(item->data(0, Qt::UserRole).toString(), "NOS Archive (*.NOS)");
+        item->onExportAsOriginal(path);
     } else {
         QMessageBox::information(NULL, tr("Info"), tr("Select .NOS file first"));
     }

@@ -27,7 +27,12 @@ int OnexNS4BbData::onReplace(QString directory) {
         }
         return count;
     } else {
-        QString path = directory + this->getName() + ".png";
+        QString path;
+        if (!directory.endsWith(".png"))
+            path = directory + this->getName() + ".png";
+        else
+            path = directory;
+
         if (!QFile(path).exists()) {
             QMessageBox::critical(NULL, "Woops", "Missing " + path);
             return 0;

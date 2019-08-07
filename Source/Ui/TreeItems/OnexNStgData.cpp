@@ -65,6 +65,12 @@ FileInfo *OnexNStgData::getInfos() {
 }
 
 int OnexNStgData::onExport(QString directory) {
+    QString path = "";
+    if (!directory.endsWith(".obj"))
+        path = directory + this->name + ".obj";
+    else
+        path = directory;
+
     if (model == nullptr) {
         NosModelConverter *nmc = new NosModelConverter();
         model = nmc->fromBinary(content);
@@ -73,12 +79,12 @@ int OnexNStgData::onExport(QString directory) {
     ObjConverter *ojc = new ObjConverter();
     QStringList obj = ojc->toObj(model, name);
 
-    QFile file(directory + name + ".obj");
+    QFile file(path);
     file.open(QIODevice::WriteOnly);
     file.write(obj.at(0).toLocal8Bit());
     file.close();
 
-    QFile file2(directory + name + ".mtl");
+    QFile file2(path.split(".").at(0) + ".mtl");
     file2.open(QIODevice::WriteOnly);
     file2.write(obj.at(1).toLocal8Bit());
     file2.close();
@@ -87,7 +93,12 @@ int OnexNStgData::onExport(QString directory) {
 }
 
 int OnexNStgData::onReplace(QString directory) {
-    QString path = directory + this->name + ".obj";
+    QString path;
+    if (!directory.endsWith(".obj"))
+        path = directory + this->getName() + ".obj";
+    else
+        path = directory;
+
     if (!QFile(path).exists()) {
         QMessageBox::critical(NULL, "Woops", "Missing " + path);
         return 0;
@@ -177,6 +188,10 @@ void OnexNStgData::setZScale(float z) {
 void OnexNStgData::setTexture(int index, int texture) {
     model->groups[index].texture = texture;
     emit changeSignal("Texture-" + QString::number(index), texture);
+}
+
+QString OnexNStgData::getExportExtension() {
+    return ".obj";
 }
 
 OnexNStgData::~OnexNStgData() {

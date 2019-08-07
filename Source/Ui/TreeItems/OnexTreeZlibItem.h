@@ -26,6 +26,7 @@ public:
     bool isCompressed();
     QByteArray getHeader();
     virtual ~OnexTreeZlibItem();
+    
 
 public slots:
     void setId(int id);

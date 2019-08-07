@@ -55,7 +55,12 @@ int OnexTreeImage::onExport(QString directory) {
         }
         return count;
     } else {
-        QString path = directory + this->getName() + ".png";
+        QString path = "";
+        if (!directory.endsWith(".png"))
+            path = directory + this->name + ".png";
+        else
+            path = directory;
+         
         if (this->getImage().save(path, "PNG", 100))
             return 1;
         else if (this->getResolution().x == 0 || this->getResolution().y == 0) {
@@ -67,4 +72,8 @@ int OnexTreeImage::onExport(QString directory) {
         }
     }
     return 0;
+}
+
+QString OnexTreeImage::getExportExtension() {
+    return ".png";
 }

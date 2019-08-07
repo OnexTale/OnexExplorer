@@ -27,6 +27,7 @@ public slots:
     virtual int onExport(QString directory);
     virtual void setWidth(int width) = 0;
     virtual void setHeight(int height) = 0;
+    virtual QString getExportExtension();
 
 signals:
     void replaceSignal(QImage newImage);

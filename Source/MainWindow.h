@@ -41,7 +41,9 @@ public slots:
     void on_actionAbout_triggered();
     void on_actionHelp_triggered();
     void on_actionSave_as_triggered();
-    void on_actionExport_as_NOS_triggered();
+
+private slots:
+    void on_actionSave_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -51,7 +53,7 @@ private:
     QMenu *contextMenu = nullptr;
 
     void openFile(QString path);
-    void handleOpenResults(OnexTreeItem *item);
+    void handleOpenResults(OnexTreeItem *item, QString path);
     int hasValidHeader(QFile &file);
 
     QString getSelectedDirectory();

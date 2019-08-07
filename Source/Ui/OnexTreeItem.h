@@ -41,7 +41,7 @@ public slots:
     virtual void setContent(QByteArray content);
     virtual int onExport(QString directory);
     virtual int onExportRaw(QString directory);
-    virtual int onExportAsOriginal();
+    virtual int onExportAsOriginal(QString path = 0);
     virtual int onReplace(QString directory);
     virtual int onReplaceRaw(QString directory);
     virtual void onDelete();

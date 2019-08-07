@@ -85,16 +85,17 @@ int OnexTreeItem::onExportRaw(QString directory) {
     return 1;
 }
 
-int OnexTreeItem::onExportAsOriginal() {
-    QString fileName = getSaveDirectory(this->getName(), "NOS Archive (*.NOS)");
+int OnexTreeItem::onExportAsOriginal(QString path) {
+    if (path.isNull())
+        path = getSaveDirectory(this->getName(), "NOS Archive (*.NOS)");
 
-    if (fileName.isEmpty())
+    if (path.isEmpty())
         return 0;
 
-    if (!fileName.endsWith(".NOS"))
-        fileName += ".NOS";
+    if (!path.endsWith(".NOS"))
+        path += ".NOS";
 
-    QFile file(fileName);
+    QFile file(path);
     if (!file.open(QIODevice::WriteOnly)) {
         QMessageBox::critical(NULL, "Woops", "Couldn't open this file for writing");
         return 0;

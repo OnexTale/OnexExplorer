@@ -100,6 +100,7 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
     <addaction name="actionSave_as"/>
     <addaction name="separator"/>
     <addaction name="actionClose_selected"/>
@@ -122,7 +123,6 @@
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionExport_as_NOS"/>
     <addaction name="actionExport"/>
     <addaction name="actionExport_to_raw"/>
     <addaction name="actionReplace"/>
@@ -233,15 +233,18 @@
     <string>Ctrl+Shift+R</string>
    </property>
   </action>
-  <action name="actionExport_as_NOS">
+  <action name="actionSave">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Export as .NOS</string>
+    <string>Save</string>
    </property>
    <property name="toolTip">
-    <string>Export as .NOS archiv</string>
+    <string>Save into original .NOS</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S</string>
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
  </widget>

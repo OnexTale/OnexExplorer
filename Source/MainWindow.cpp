@@ -136,16 +136,17 @@ void MainWindow::openFile(QString path) {
         return;
 
     if (hasValidHeader(file) == 1)
-        handleOpenResults(zlibOpener.decrypt(file));
+        handleOpenResults(zlibOpener.decrypt(file), path);
     else if (hasValidHeader(file) == 2)
-        handleOpenResults(ccinfOpener.decrypt(file));
+        handleOpenResults(ccinfOpener.decrypt(file), path);
     else
-        handleOpenResults(textOpener.decrypt(file));
+        handleOpenResults(textOpener.decrypt(file), path);
 
     file.close();
 }
 
-void MainWindow::handleOpenResults(OnexTreeItem *item) {
+void MainWindow::handleOpenResults(OnexTreeItem *item, QString path) {
+    item->setData(0, Qt::UserRole, path);
     ui->treeWidget->addTopLevelItem(item);
     item->setExpanded(true);
 }
@@ -203,11 +204,11 @@ void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTre
 
     if (!previewWindow) {
         previewWindow = new QWidget();
-        previewWindow->setMaximumSize(0,0);
+        previewWindow->setMaximumSize(0, 0);
     }
     if (!infoWindow) {
         infoWindow = new QWidget();
-        infoWindow->setMaximumSize(0,0);
+        infoWindow->setMaximumSize(0, 0);
     }
 
     ui->previewLayout->addWidget(previewWindow, 0, 0);
@@ -355,8 +356,14 @@ void MainWindow::on_actionSave_as_triggered() {
     }
 }
 
-void MainWindow::on_actionExport_as_NOS_triggered() {
-    on_actionSave_as_triggered();
+void MainWindow::on_actionSave_triggered() {
+    if (ui->treeWidget->currentItem()) {
+        OnexTreeItem *item = static_cast<OnexTreeItem *>(ui->treeWidget->currentItem());
+        while (item->hasParent()) {
+            item = static_cast<OnexTreeItem *>(item->QTreeWidgetItem::parent());
+        }
+        item->onExportAsOriginal(item->data(0, Qt::UserRole).toString());
+    }
 }
 
 void MainWindow::on_actionExit_triggered() {

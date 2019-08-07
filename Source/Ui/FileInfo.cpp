@@ -76,7 +76,7 @@ void FileInfo::update(QString title, bool value) {
         }
     }
 }
-#include <QDebug>
+
 void FileInfo::replace(FileInfo *info) {
     qDeleteAll(children());
     grid = info->grid;

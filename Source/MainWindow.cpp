@@ -1,5 +1,7 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
+#include <QScrollArea>
+
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -161,20 +163,20 @@ int MainWindow::hasValidHeader(QFile &file) {
     return 0;
 }
 
-QString MainWindow::getSelectedDirectory() {
-    QString dir = QFileDialog::getExistingDirectory(0, tr("Select Directory"));
+QString MainWindow::getSelectedDirectory(QString suggestion) {
+    QString dir = QFileDialog::getExistingDirectory(0, tr("Select Directory"), suggestion);
     if (dir.isEmpty())
         return dir;
 
     return dir + "/";
 }
 
-QString MainWindow::getOpenDirectory(QString name, QString filter) {
-    return QFileDialog::getOpenFileName(0, tr("Open..."), "", filter);
+QString MainWindow::getOpenFile(QString suggestion, QString filter) {
+    return QFileDialog::getOpenFileName(0, tr("Open..."), suggestion, filter);
 }
 
-QString MainWindow::getSaveDirectory(QString name, QString filter) {
-    return QFileDialog::getSaveFileName(0, tr("Save as..."), name, filter);
+QString MainWindow::getSaveDirectory(QString suggestion, QString filter) {
+    return QFileDialog::getSaveFileName(0, tr("Save as..."), suggestion, filter);
 }
 
 void MainWindow::dropEvent(QDropEvent *e) {
@@ -200,6 +202,7 @@ void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTre
 
     QWidget *previewWindow;
     QWidget *infoWindow;
+    QScrollArea *scrollArea = new QScrollArea();
 
     OnexTreeItem *item = static_cast<OnexTreeItem *>(current);
     if (item == nullptr) {
@@ -208,6 +211,8 @@ void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTre
     } else {
         previewWindow = item->getPreview();
         infoWindow = item->getInfos();
+        scrollArea->setWidget(infoWindow);
+        scrollArea->setMaximumWidth(225);
     }
 
     if (!previewWindow) {
@@ -216,11 +221,12 @@ void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTre
     }
     if (!infoWindow) {
         infoWindow = new QWidget();
+        scrollArea->setMaximumSize(0, 0);
         infoWindow->setMaximumSize(0, 0);
     }
 
     ui->previewLayout->addWidget(previewWindow, 0, 0);
-    ui->previewLayout->addWidget(infoWindow, 0, 1, Qt::AlignTop);
+    ui->previewLayout->addWidget(scrollArea, 0, 1);
 }
 
 void MainWindow::on_actionClose_selected_triggered() {
@@ -258,15 +264,18 @@ void MainWindow::on_actionReplace_triggered() {
         else
             filter = "All files (*.*)";
 
-        QString path = getOpenDirectory(item->getName(), filter);
+        QString path = getOpenFile(inExportPath + item->getName(), filter);
+        inExportPath = path.mid(0,path.lastIndexOf("/")) + "/";
         if (path.isEmpty())
             return;
         count = item->onReplace(path);
 
     } else {
-        QString directory = getSelectedDirectory();
+        QString directory = getSelectedDirectory(inExportPath);
         if (directory.isEmpty())
             return;
+
+        inExportPath = directory;
 
         foreach (auto &s, selectedItems) {
             OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
@@ -290,14 +299,16 @@ void MainWindow::on_actionReplace_with_raw_triggered() {
 
     if (selectedItems.size() == 1 && selectedItems.at(0)->childCount() == 0) {
         OnexTreeItem *item = static_cast<OnexTreeItem *>(selectedItems.at((0)));
-        QString path = getOpenDirectory(item->getName(), "Rawdata (*.bin)");
+        QString path = getOpenFile(inExportPath + item->getName(), "Rawdata (*.bin)");
+        inExportPath = path.mid(0,path.lastIndexOf("/")) + "/";
         if (path.isEmpty())
             return;
         count = item->onReplaceRaw(path);
     } else {
-        QString directory = getSelectedDirectory();
+        QString directory = getSelectedDirectory(inExportPath);
         if (directory.isEmpty())
             return;
+        inExportPath = directory;
 
         foreach (auto &s, selectedItems) {
             OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
@@ -334,14 +345,16 @@ void MainWindow::on_actionExport_triggered() {
             filter = "OBJ File (*.obj)";
         else
             filter = "All files (*.*)";
-        QString path = getSaveDirectory(item->getName(), filter);
+        QString path = getSaveDirectory(inExportPath + item->getName(), filter);
+        inExportPath = path.mid(0,path.lastIndexOf("/")) + "/";
         if (path.isEmpty())
             return;
         count = item->onExport(path);
     } else {
-        QString directory = getSelectedDirectory();
+        QString directory = getSelectedDirectory(inExportPath);
         if (directory.isEmpty())
             return;
+        inExportPath = directory;
 
         foreach (auto &s, selectedItems) {
             OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
@@ -365,14 +378,16 @@ void MainWindow::on_actionExport_to_raw_triggered() {
 
     if (selectedItems.size() == 1 && selectedItems.at(0)->childCount() == 0) {
         OnexTreeItem *item = static_cast<OnexTreeItem *>(selectedItems.at((0)));
-        QString path = getSaveDirectory(item->getName(), "Rawdata (*.bin)");
+        QString path = getSaveDirectory(inExportPath + item->getName(), "Rawdata (*.bin)");
+        inExportPath = path.mid(0,path.lastIndexOf("/")) + "/";
         if (path.isEmpty())
             return;
         count = item->onExportRaw(path);
     } else {
-        QString directory = getSelectedDirectory();
+        QString directory = getSelectedDirectory(inExportPath);
         if (directory.isEmpty())
             return;
+        inExportPath = directory;
 
         foreach (auto &s, selectedItems) {
             OnexTreeItem *item = static_cast<OnexTreeItem *>(s);
@@ -416,8 +431,12 @@ void MainWindow::on_actionSave_as_triggered() {
         while (item->hasParent()) {
             item = static_cast<OnexTreeItem *>(item->QTreeWidgetItem::parent());
         }
-
-        QString path = getSaveDirectory(item->data(0, Qt::UserRole).toString(), "NOS Archive (*.NOS)");
+        if (nosPath.isNull()) {
+            nosPath = item->data(0, Qt::UserRole).toString();
+            nosPath = nosPath.mid(0,nosPath.lastIndexOf("/")) + "/";
+        }
+        QString path = getSaveDirectory(nosPath + item->getName(), "NOS Archive (*.NOS)");
+        nosPath = path.mid(0,path.lastIndexOf("/")) + "/";
         item->onExportAsOriginal(path);
     } else {
         QMessageBox::information(NULL, tr("Info"), tr("Select .NOS file first"));

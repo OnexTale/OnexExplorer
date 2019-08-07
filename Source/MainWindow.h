@@ -52,13 +52,16 @@ private:
     NosCCInfOpener ccinfOpener;
     QMenu *contextMenu = nullptr;
 
+    QString inExportPath;
+    QString nosPath;
+
     void openFile(QString path);
     void handleOpenResults(OnexTreeItem *item, QString path);
     int hasValidHeader(QFile &file);
 
-    QString getSelectedDirectory();
-    QString getOpenDirectory(QString name, QString filter);
-    QString getSaveDirectory(QString name, QString filter);
+    QString getSelectedDirectory(QString suggestion);
+    QString getOpenFile(QString suggestion, QString filter);
+    QString getSaveDirectory(QString suggestion, QString filter);
 
     virtual void dropEvent(QDropEvent *e) override;
     virtual void dragEnterEvent(QDragEnterEvent *e) override;

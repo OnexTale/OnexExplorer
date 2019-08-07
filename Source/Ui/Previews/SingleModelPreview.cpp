@@ -46,8 +46,6 @@ void SingleModelPreview::paintGL() {
     // glEnable(GL_COLOR_MATERIAL);
     // glColor3f(0.5f, 0.5f, 0.5f);
 
-    glBegin(GL_TRIANGLES);
-
     for (int i = 0; i < model->objects.size(); i++) {
         glPushMatrix();
 
@@ -56,10 +54,13 @@ void SingleModelPreview::paintGL() {
             QQuaternion qr(model->objects[i].rotation);
             float xAxis, yAxis, zAxis, angle;
             qr.getAxisAndAngle(&xAxis, &yAxis, &zAxis, &angle);
-            glRotatef(angle, xAxis, yAxis, zAxis);
+            
             glTranslatef(model->objects[i].position.x(), model->objects[i].position.y(),
                          model->objects[i].position.z());
+            glRotatef(angle, xAxis, yAxis, zAxis);
+            
             for (int g = 0; g < model->groups[model->objects[i].groups[j]].faces.size(); g++) {
+                glBegin(GL_TRIANGLES);
                 glPushMatrix();
                 int p1 = model->groups[model->objects[i].groups[j]].faces[g].x();
                 int p2 = model->groups[model->objects[i].groups[j]].faces[g].y();
@@ -73,13 +74,13 @@ void SingleModelPreview::paintGL() {
                 glNormal3f(model->normals[p3].x(), model->normals[p3].y(), model->normals[p3].z());
                 glVertex3f(model->vertices[p3].x(), model->vertices[p3].y(), model->vertices[p3].z());
                 glPopMatrix();
+                glEnd();
             }
         }
         glPopMatrix();
     }
 
     glPopMatrix();
-    glEnd();
 }
 
 void SingleModelPreview::mousePressEvent(QMouseEvent *event) {

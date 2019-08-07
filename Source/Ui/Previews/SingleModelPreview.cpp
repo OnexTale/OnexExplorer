@@ -1,9 +1,9 @@
 #include "SingleModelPreview.h"
 #include <QLayout>
 #include <QLineEdit>
+#include <QQuaternion>
 
-SingleModelPreview::SingleModelPreview(Model *model, QWidget *parent)
-    : QOpenGLWidget(parent) {
+SingleModelPreview::SingleModelPreview(Model *model, QWidget *parent) : QOpenGLWidget(parent) {
     this->model = model;
 
     camera.X = 0;
@@ -25,7 +25,7 @@ void SingleModelPreview::initializeGL() {
     gluPerspective(60, (float)width() / (float)height(), 0, 300);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glEnable(GL_LIGHTING);
 }
@@ -36,12 +36,11 @@ void SingleModelPreview::paintGL() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
+    glPushMatrix();
     // Camera
     glTranslatef(camera.X, camera.Y, camera.Z);
     glRotatef(camera.angleY, 0, 1, 0);
     glRotatef(camera.angleX, 1, 0, 0);
-
-    glPushMatrix();
 
     // glEnable(GL_LIGHT0);
     // glEnable(GL_COLOR_MATERIAL);
@@ -50,8 +49,18 @@ void SingleModelPreview::paintGL() {
     glBegin(GL_TRIANGLES);
 
     for (int i = 0; i < model->objects.size(); i++) {
+        glPushMatrix();
+
         for (int j = 0; j < model->objects[i].groups.size(); j++) {
+
+            QQuaternion qr(model->objects[i].rotation);
+            float xAxis, yAxis, zAxis, angle;
+            qr.getAxisAndAngle(&xAxis, &yAxis, &zAxis, &angle);
+            glRotatef(angle, xAxis, yAxis, zAxis);
+            glTranslatef(model->objects[i].position.x(), model->objects[i].position.y(),
+                         model->objects[i].position.z());
             for (int g = 0; g < model->groups[model->objects[i].groups[j]].faces.size(); g++) {
+                glPushMatrix();
                 int p1 = model->groups[model->objects[i].groups[j]].faces[g].x();
                 int p2 = model->groups[model->objects[i].groups[j]].faces[g].y();
                 int p3 = model->groups[model->objects[i].groups[j]].faces[g].z();
@@ -63,12 +72,14 @@ void SingleModelPreview::paintGL() {
 
                 glNormal3f(model->normals[p3].x(), model->normals[p3].y(), model->normals[p3].z());
                 glVertex3f(model->vertices[p3].x(), model->vertices[p3].y(), model->vertices[p3].z());
+                glPopMatrix();
             }
         }
+        glPopMatrix();
     }
 
-    glEnd();
     glPopMatrix();
+    glEnd();
 }
 
 void SingleModelPreview::mousePressEvent(QMouseEvent *event) {

@@ -25,16 +25,16 @@ private:
 private slots:
     virtual int onExport(QString directory);
     virtual int onReplace(QString directory);
-    virtual void setXPosition(float x);
-    virtual void setYPosition(float y);
-    virtual void setZPosition(float z);
-    virtual void setXRotation(float x);
-    virtual void setYRotation(float y);
-    virtual void setZRotation(float z);
-    virtual void setWRotation(float w);
-    virtual void setXScale(float x);
-    virtual void setYScale(float y);
-    virtual void setZScale(float z);
+    virtual void setXPosition(int index, float x);
+    virtual void setYPosition(int index, float y);
+    virtual void setZPosition(int index, float z);
+    virtual void setXRotation(int index, float x);
+    virtual void setYRotation(int index, float y);
+    virtual void setZRotation(int index, float z);
+    virtual void setWRotation(int index, float w);
+    virtual void setXScale(int index, float x);
+    virtual void setYScale(int index, float y);
+    virtual void setZScale(int index, float z);
     virtual void setTexture(int index, int texture);
 
 signals:

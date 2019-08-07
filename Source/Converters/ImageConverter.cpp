@@ -23,7 +23,7 @@ QImage ImageConverter::convertGBAR4444(QByteArray &array, int width, int height,
         }
     }
 
-    return img.convertToFormat(QImage::Format_ARGB4444_Premultiplied);
+    return img;
 }
 
 QImage ImageConverter::convertBGRA8888(QByteArray &array, int width, int height, int startByte) {
@@ -66,7 +66,7 @@ QImage ImageConverter::convertARGB555(QByteArray &array, int width, int height, 
         }
     }
 
-    return img.convertToFormat(QImage::Format_RGB555);
+    return img;
 }
 
 QImage ImageConverter::convertNSTC(QByteArray &array, int width, int height, int startByte) {
@@ -89,7 +89,7 @@ QImage ImageConverter::convertNSTC(QByteArray &array, int width, int height, int
 
 QImage ImageConverter::convertBGRA8888_INTERLACED(QByteArray &array, int width, int height, int startByte) {
     qDebug() << "Opened BGRA888_INTERLACED image.";
-    QImage img(width, height, QImage::Format_RGBA8888);
+    QImage img(width, height, QImage::Format_ARGB32);
     img.fill(Qt::transparent);
 
     short num = 0, x = 0, y = 0;
@@ -136,7 +136,7 @@ QImage ImageConverter::convertBARG4444(QByteArray &array, int width, int height,
         }
     }
 
-    return img.convertToFormat(QImage::Format_ARGB4444_Premultiplied);
+    return img;
 }
 
 QImage ImageConverter::convertGrayscale(QByteArray& array, int width, int height, int startByte)
@@ -155,7 +155,7 @@ QImage ImageConverter::convertGrayscale(QByteArray& array, int width, int height
 		}
 	}
 
-	return img.convertToFormat(QImage::Format_Grayscale8);
+	return img;
 }
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////
 QByteArray ImageConverter::toGBAR4444(QImage &image) {

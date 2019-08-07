@@ -37,14 +37,22 @@ int OnexNS4BbData::onReplace(QString directory) {
         if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0)
             return 0;
 
-        if (!hasGoodResolution(image.width(), image.height()))
-            return 0;
+        if (!hasGoodResolution(image.width(), image.height())) {
+            QMessageBox::StandardButton reply = QMessageBox::question(
+                0, "Resolution changed",
+                "The resolution of the image " + name + " doesn't match!\nDo you want to replace it anyway?");
+            if (reply == QMessageBox::No)
+                return 0;
+        }
 
         QByteArray newContent;
-        newContent.push_back(content.mid(0, 4));
+        newContent.push_back(fromShortToLittleEndian(image.width()));
+        newContent.push_back(fromShortToLittleEndian(image.height()));
         newContent.push_back(imageConverter.toBGRA8888_INTERLACED(image));
 
         content = newContent;
+        setWidth(image.width());
+        setHeight(image.height());
 
         emit OnexTreeImage::replaceSignal(this->getImage());
 

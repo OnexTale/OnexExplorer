@@ -1,8 +1,9 @@
 #include "OnexNSipData.h"
 
-OnexNSipData::OnexNSipData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
-                           bool compressed)
-    : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {}
+OnexNSipData::OnexNSipData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
+                           int creationDate, bool compressed)
+    : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {
+}
 
 QImage OnexNSipData::getImage() {
     ImageResolution resolution = this->getResolution();
@@ -36,22 +37,33 @@ int OnexNSipData::onReplace(QString directory) {
         if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0)
             return 0;
 
-        if (!hasGoodResolution(image.width(), image.height()))
-            return 0;
+        if (!hasGoodResolution(image.width(), image.height())) {
+            QMessageBox::StandardButton reply = QMessageBox::question(
+                0, "Resolution changed",
+                "The resolution of the image " + name + " doesn't match!\nDo you want to replace it anyway?");
+            if (reply == QMessageBox::No)
+                return 0;
+        }
 
         QByteArray newContent;
-        newContent.push_back(content.mid(0, 13));
+        newContent.push_back(content.mid(0, 1));
+        newContent.push_back(fromShortToLittleEndian(image.width()));
+        newContent.push_back(fromShortToLittleEndian(image.height()));
+        newContent.push_back(content.mid(5, 8));
         newContent.push_back(imageConverter.toGBAR4444(image));
 
         content = newContent;
-
+        setWidth(image.width());
+        setHeight(image.height());
+        
         emit OnexTreeImage::replaceSignal(this->getImage());
 
         return 1;
     }
 }
 
-OnexNSipData::~OnexNSipData() {}
+OnexNSipData::~OnexNSipData() {
+}
 
 void OnexNSipData::setWidth(int width) {
     content.replace(1, 2, fromShortToLittleEndian(width));

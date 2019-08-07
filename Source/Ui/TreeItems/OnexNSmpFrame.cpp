@@ -41,8 +41,16 @@ int OnexNSmpFrame::onReplace(QString directory) {
     if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0)
         return 0;
 
-    if (!hasGoodResolution(image.width(), image.height()))
-        return 0;
+    if (!hasGoodResolution(image.width(), image.height())) {
+        QMessageBox::StandardButton reply = QMessageBox::question(
+            0, "Resolution changed",
+            "The resolution of the image " + name + " doesn't match!\nDo you want to replace it anyway?");
+        if (reply == QMessageBox::No)
+            return 0;
+    }
+
+    setWidth(image.width());
+    setHeight(image.height());
 
     content = imageConverter.toGBAR4444(image);
     emit OnexTreeImage::replaceSignal(this->getImage());

@@ -1,8 +1,9 @@
 #include "OnexNStcData.h"
 
-OnexNStcData::OnexNStcData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
-                           bool compressed)
-    : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {}
+OnexNStcData::OnexNStcData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
+                           int creationDate, bool compressed)
+    : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {
+}
 
 QImage OnexNStcData::getImage() {
     ImageResolution resolution = this->getResolution();
@@ -39,15 +40,22 @@ int OnexNStcData::onReplace(QString directory) {
         image = image.scaled(image.width() / 2, image.height() / 2);
 
         if (!hasGoodResolution(image.width(), image.height())) {
-            qDebug() << "NStc wrong resolution";
-            return 0;
+            QMessageBox::StandardButton reply = QMessageBox::question(
+                0, "Resolution changed",
+                "The resolution of the image " + name + " doesn't match!\nDo you want to replace it anyway?");
+            if (reply == QMessageBox::No)
+                return 0;
         }
 
         QByteArray newContent;
-        newContent.push_back(content.mid(0, 4));
+        newContent.push_back(fromShortToLittleEndian(image.width()));
+        newContent.push_back(fromShortToLittleEndian(image.height()));
+        newContent.push_back(content.mid(4, 4));
         newContent.push_back(imageConverter.toNSTC(image));
 
         content = newContent;
+        setWidth(image.width());
+        setHeight(image.height());
 
         emit OnexTreeImage::replaceSignal(this->getImage());
 
@@ -64,4 +72,5 @@ void OnexNStcData::setHeight(int height) {
     emit changeSignal("Width", height);
 }
 
-OnexNStcData::~OnexNStcData() {}
+OnexNStcData::~OnexNStcData() {
+}

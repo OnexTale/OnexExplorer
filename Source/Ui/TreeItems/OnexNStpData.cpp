@@ -113,8 +113,13 @@ int OnexNStpData::onReplace(QString directory) {
         if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0)
             return 0;
 
-        if (!hasGoodResolution(image.width(), image.height()))
-            return 0;
+        if (!hasGoodResolution(image.width(), image.height())) {
+            QMessageBox::StandardButton reply = QMessageBox::question(
+                0, "Resolution changed",
+                "The resolution of the image " + name + " doesn't match!\nDo you want to replace it anyway?");
+            if (reply == QMessageBox::No)
+                return 0;
+        }
 
         int format = this->getFormat();
 
@@ -122,7 +127,9 @@ int OnexNStpData::onReplace(QString directory) {
             return 0;
 
         QByteArray newContent;
-        newContent.push_back(content.mid(0, 8));
+        newContent.push_back(fromShortToLittleEndian(image.width()));
+        newContent.push_back(fromShortToLittleEndian(image.height()));
+        newContent.push_back(content.mid(4, 4));
         if (format == 0)
             newContent.push_back(imageConverter.toGBAR4444(image));
         else if (format == 1)
@@ -133,6 +140,8 @@ int OnexNStpData::onReplace(QString directory) {
             newContent.push_back(imageConverter.toGrayscale(image));
 
         content = newContent;
+        setWidth(image.width());
+        setHeight(image.height());
 
         emit OnexTreeImage::replaceSignal(this->getImage());
 

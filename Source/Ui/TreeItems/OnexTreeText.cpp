@@ -20,10 +20,12 @@ int OnexTreeText::getIsDat() const {
 
 void OnexTreeText::setFileNumber(int fileNumber) {
     this->fileNumber = fileNumber;
+    emit changeSignal("Filenum", fileNumber);
 }
 
 void OnexTreeText::setIsDat(bool isDat) {
     this->isDat = isDat;
+    emit changeSignal("isDat", isDat);
 }
 
 QWidget *OnexTreeText::getPreview() {
@@ -36,27 +38,20 @@ QWidget *OnexTreeText::getPreview() {
     return textPreview;
 }
 
-QWidget *OnexTreeText::getInfos() {
+FileInfo *OnexTreeText::getInfos() {
     if (!hasParent())
         return nullptr;
 
-    QWidget *infos = new QWidget();
-    QGridLayout *infoLayout = new QGridLayout();
+    FileInfo *infos = new FileInfo();
 
-    QLabel *fileNumberLabel = new QLabel("FileNumber");
-    infoLayout->addWidget(fileNumberLabel, 0, 0);
-    QLineEdit *fileNumberIn = new QLineEdit(QString::number(getFileNumber()));
-    connect(fileNumberIn, &QLineEdit::textChanged, [=](const QString &value) { setFileNumber(value.toInt()); });
-    infoLayout->addWidget(fileNumberIn, 0, 1);
+    connect(infos->addIntLineEdit("Filenumber", getFileNumber()), &QLineEdit::textChanged,
+            [=](const QString &value) { setFileNumber(value.toInt()); });
+    connect(infos->addCheckBox("isDat", getIsDat()), &QCheckBox::clicked, [=](const bool value) { setIsDat(value); });
 
-    QCheckBox *isDatCheckBox = new QCheckBox("IsDat");
-    isDatCheckBox->setChecked(getIsDat());
-    connect(isDatCheckBox, SIGNAL(clicked(bool)), this, SLOT(setIsDat(bool)));
-    infoLayout->addWidget(isDatCheckBox, 1, 1);
-
-    infos->setLayout(infoLayout);
-    infos->setMinimumWidth(200);
-    infos->setMaximumWidth(200);
+    connect(this, SIGNAL(changeSignal(QString, QString)), infos, SLOT(update(QString, QString)));
+    connect(this, SIGNAL(changeSignal(QString, int)), infos, SLOT(update(QString, int)));
+    connect(this, SIGNAL(changeSignal(QString, float)), infos, SLOT(update(QString, float)));
+    connect(this, SIGNAL(changeSignal(QString, bool)), infos, SLOT(update(QString, bool)));
 
     return infos;
 }

@@ -28,17 +28,13 @@ ImageResolution OnexNStpMipMap::getResolution() {
     return ImageResolution{this->width, this->height};
 }
 
-QWidget *OnexNStpMipMap::getInfos() {
-    QWidget *w = OnexTreeImage::getInfos();
-    QGridLayout *infoLayout = static_cast<QGridLayout *>(w->layout());
+FileInfo *OnexNStpMipMap::getInfos() {
+    FileInfo *infos = OnexTreeImage::getInfos();
 
-    QLabel *formatLabel = new QLabel("Format");
-    infoLayout->addWidget(formatLabel, 7, 0);
-    QLineEdit *formatIn = new QLineEdit(QString::number(getFormat()));
-    connect(formatIn, &QLineEdit::textChanged, [=](const QString &value) { setFormat(value.toInt()); });
-    infoLayout->addWidget(formatIn, 7, 1);
+    connect(infos->addIntLineEdit("Format", getFormat()), &QLineEdit::textChanged,
+            [=](const QString &value) { setFormat(value.toInt()); });
 
-    return w;
+    return infos;
 }
 
 int OnexNStpMipMap::onReplace(QString directory) {
@@ -92,14 +88,17 @@ QByteArray OnexNStpMipMap::getContent() {
 
 void OnexNStpMipMap::setWidth(int width) {
     this->width = width;
+    emit changeSignal("Width", width);
 }
 
 void OnexNStpMipMap::setHeight(int height) {
     this->height = height;
+    emit changeSignal("Height", height);
 }
 
 void OnexNStpMipMap::setFormat(uint8_t format) {
     this->format = format;
+    emit changeSignal("Format", format);
 }
 
 OnexNStpMipMap::~OnexNStpMipMap() {

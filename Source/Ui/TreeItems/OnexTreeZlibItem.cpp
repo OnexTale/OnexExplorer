@@ -9,50 +9,26 @@ QWidget *OnexTreeZlibItem::getPreview() {
     return nullptr;
 }
 
-QWidget *OnexTreeZlibItem::getInfos() {
+FileInfo *OnexTreeZlibItem::getInfos() {
     if (!hasParent())
         return nullptr;
 
-    QWidget *infos = new QWidget();
-    QGridLayout *infoLayout = new QGridLayout();
+    FileInfo *infos = new FileInfo();
 
-    QLabel *idLabel = new QLabel("ID");
-    infoLayout->addWidget(idLabel, 0, 0);
-    QLineEdit *idIn = new QLineEdit(QString::number(getId()));
-    connect(idIn, &QLineEdit::textChanged, [=](const QString &value) { setId(value.toInt()); });
-    infoLayout->addWidget(idIn, 0, 1);
+    connect(infos->addIntLineEdit("ID", getId()), &QLineEdit::textChanged,
+            [=](const QString &value) { setId(value.toInt()); });
+    infos->addIntLineEdit("Size", getContentSize())->setEnabled(false);
+    infos->addStringLineEdit("Header", getHeader())->setEnabled(false);
+    connect(infos->addStringLineEdit("Date", getDateAsString()), &QLineEdit::textChanged,
+            [=](const QString &value) { setCreationDate(value); });
+    connect(infos->addCheckBox("isCompressed", isCompressed()), &QCheckBox::clicked,
+            [=](const bool value) { setCompressed(value); });
 
-    QLabel *sizeLabel = new QLabel("Size");
-    infoLayout->addWidget(sizeLabel, 1, 0);
-    QLineEdit *sizeIn = new QLineEdit(QString::number(getContentSize()));
-    sizeIn->setEnabled(false);
-    infoLayout->addWidget(sizeIn, 1, 1);
-
-    QLabel *headerLabel = new QLabel("Header");
-    infoLayout->addWidget(headerLabel, 2, 0);
-    QLineEdit *headerIn = new QLineEdit("NT Data");
-    connect(headerIn, SIGNAL(textChanged(QString)), this, SLOT(setHeader(QString)));
-    infoLayout->addWidget(headerIn, 2, 1);
-
-    QLabel *dateLabel = new QLabel("Date");
-    infoLayout->addWidget(dateLabel, 3, 0);
-    int year = (creationDate & 0xFFFF0000) >> 0x10;
-    int month = (creationDate & 0xFF00) >> 0x08;
-    int day = creationDate & 0xFF;
-    QString date =
-        QString("%1/%2/%3").arg(day, 2, 16, QChar('0')).arg(month, 2, 16, QChar('0')).arg(year, 4, 16, QChar('0'));
-    QLineEdit *dateIn = new QLineEdit(date);
-    connect(dateIn, SIGNAL(textChanged(QString)), this, SLOT(setCreationDate(QString)));
-    infoLayout->addWidget(dateIn, 3, 1);
-
-    QCheckBox *compressCheckBox = new QCheckBox("isCompressed");
-    compressCheckBox->setChecked(isCompressed());
-    connect(compressCheckBox, SIGNAL(clicked(bool)), this, SLOT(setCompressed(bool)));
-    infoLayout->addWidget(compressCheckBox, 4, 1);
-
-    infos->setLayout(infoLayout);
-    infos->setMinimumWidth(200);
-    infos->setMaximumWidth(200);
+    connect(this, SIGNAL(changeSignal(QString, QString)), infos, SLOT(update(QString, QString)));
+    connect(this, SIGNAL(changeSignal(QString, int)), infos, SLOT(update(QString, int)));
+    connect(this, SIGNAL(changeSignal(QString, float)), infos, SLOT(update(QString, float)));
+    connect(this, SIGNAL(changeSignal(QString, bool)), infos, SLOT(update(QString, bool)));
+    connect(this, SIGNAL(replaceInfo(FileInfo*)), infos, SLOT(replace(FileInfo*)));
 
     return infos;
 }
@@ -65,6 +41,13 @@ int OnexTreeZlibItem::getCreationDate() {
     return creationDate;
 }
 
+QString OnexTreeZlibItem::getDateAsString() {
+    int year = (getCreationDate() & 0xFFFF0000) >> 0x10;
+    int month = (getCreationDate() & 0xFF00) >> 0x08;
+    int day = getCreationDate() & 0xFF;
+    return QString("%1/%2/%3").arg(day, 2, 16, QChar('0')).arg(month, 2, 16, QChar('0')).arg(year, 4, 16, QChar('0'));
+}
+
 bool OnexTreeZlibItem::isCompressed() {
     return compressed;
 }
@@ -75,6 +58,7 @@ QByteArray OnexTreeZlibItem::getHeader() {
 
 void OnexTreeZlibItem::setId(int id) {
     this->id = id;
+    emit changeSignal("ID", id);
 }
 
 void OnexTreeZlibItem::setCreationDate(QString date) {
@@ -87,14 +71,17 @@ void OnexTreeZlibItem::setCreationDate(QString date) {
         int day = parts[2].toInt();
         this->creationDate = year + month + day;
     }
+    emit changeSignal("Date", getDateAsString());
 }
 
 void OnexTreeZlibItem::setCompressed(bool compressed) {
     this->compressed = compressed;
+    emit changeSignal("isCompressed", compressed);
 }
 
 void OnexTreeZlibItem::setHeader(QString header) {
     this->header = header.toLocal8Bit();
+    emit changeSignal("Header", header);
 }
 
 OnexTreeZlibItem::~OnexTreeZlibItem() {

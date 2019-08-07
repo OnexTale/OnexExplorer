@@ -57,9 +57,11 @@ int OnexNStcData::onReplace(QString directory) {
 
 void OnexNStcData::setWidth(int width) {
     content.replace(0, 2, fromShortToLittleEndian(width));
+    emit changeSignal("Width", width);
 }
 void OnexNStcData::setHeight(int height) {
     content.replace(2, 2, fromShortToLittleEndian(height));
+    emit changeSignal("Width", height);
 }
 
 OnexNStcData::~OnexNStcData() {}

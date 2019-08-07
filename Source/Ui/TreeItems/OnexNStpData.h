@@ -11,7 +11,7 @@ public:
     int getFileAmount();
     virtual QImage getImage() override;
     virtual ImageResolution getResolution() override;
-    virtual QWidget *getInfos() override;
+    virtual FileInfo *getInfos() override;
     virtual ~OnexNStpData();
 
 public slots:

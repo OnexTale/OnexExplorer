@@ -4,110 +4,72 @@
 OnexNStgData::OnexNStgData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
                            int creationDate, bool compressed)
     : OnexTreeZlibItem(header, name, content, opener, id, creationDate, compressed) {
-    NosModelConverter *nmc = new NosModelConverter();
-    model = nmc->fromBinary(content);
+    model = nullptr;
 }
 
 QWidget *OnexNStgData::getPreview() {
     if (!hasParent())
         return nullptr;
 
-    NosModelConverter *nmc = new NosModelConverter();
-    model = nmc->fromBinary(content);
+    if (model == nullptr) {
+        NosModelConverter *nmc = new NosModelConverter();
+        model = nmc->fromBinary(content);
+    }
 
     QVector<QVector3D> faces;
-    for (ModelGroup mg : model.groups) {
+    for (ModelGroup mg : model->groups) {
         faces.append(mg.faces);
     }
 
     SingleModelPreview *modelPreview = new SingleModelPreview(model);
-    connect(this, SIGNAL(replaceSignal(Model)), modelPreview, SLOT(onReplaced(Model)));
-    
+    connect(this, SIGNAL(replaceSignal(Model *)), modelPreview, SLOT(onReplaced(Model *)));
+
     return modelPreview;
 }
 
-QWidget *OnexNStgData::getInfos() {
+FileInfo *OnexNStgData::getInfos() {
     if (!hasParent())
         return nullptr;
 
-    QWidget *w = OnexTreeZlibItem::getInfos();
-    QGridLayout *infoLayout = static_cast<QGridLayout *>(w->layout());
+    FileInfo *infos = OnexTreeZlibItem::getInfos();
 
-    QLabel *xLabel = new QLabel("x-Position");
-    infoLayout->addWidget(xLabel, 7, 0);
-    QLineEdit *xIn = new QLineEdit(QString::number(model.objects[0].position.x()));
-    connect(xIn, &QLineEdit::textChanged, [=](const QString &value) { setXPosition(value.toFloat()); });
-    infoLayout->addWidget(xIn, 7, 1);
+    connect(infos->addFloatLineEdit("x-Position", model->objects[0].position.x()), &QLineEdit::textChanged,
+            [=](const QString &value) { setXPosition(value.toFloat()); });
+    connect(infos->addFloatLineEdit("y-Position", model->objects[0].position.y()), &QLineEdit::textChanged,
+            [=](const QString &value) { setYPosition(value.toFloat()); });
+    connect(infos->addFloatLineEdit("z-Position", model->objects[0].position.z()), &QLineEdit::textChanged,
+            [=](const QString &value) { setZPosition(value.toFloat()); });
 
-    QLabel *yLabel = new QLabel("y-Position");
-    infoLayout->addWidget(yLabel, 8, 0);
-    QLineEdit *yIn = new QLineEdit(QString::number(model.objects[0].position.y()));
-    connect(yIn, &QLineEdit::textChanged, [=](const QString &value) { setYPosition(value.toFloat()); });
-    infoLayout->addWidget(yIn, 8, 1);
+    connect(infos->addFloatLineEdit("x-Rotation", model->objects[0].rotation.x()), &QLineEdit::textChanged,
+            [=](const QString &value) { setXRotation(value.toFloat()); });
+    connect(infos->addFloatLineEdit("y-Rotation", model->objects[0].rotation.y()), &QLineEdit::textChanged,
+            [=](const QString &value) { setYRotation(value.toFloat()); });
+    connect(infos->addFloatLineEdit("z-Rotation", model->objects[0].rotation.z()), &QLineEdit::textChanged,
+            [=](const QString &value) { setZRotation(value.toFloat()); });
+    connect(infos->addFloatLineEdit("w-Rotation", model->objects[0].rotation.w()), &QLineEdit::textChanged,
+            [=](const QString &value) { setWRotation(value.toFloat()); });
 
-    QLabel *zLabel = new QLabel("z-Position");
-    infoLayout->addWidget(zLabel, 9, 0);
-    QLineEdit *zIn = new QLineEdit(QString::number(model.objects[0].position.z()));
-    connect(zIn, &QLineEdit::textChanged, [=](const QString &value) { setZPosition(value.toFloat()); });
-    infoLayout->addWidget(zIn, 9, 1);
+    connect(infos->addFloatLineEdit("x-Scale", model->objects[0].scale.x()), &QLineEdit::textChanged,
+            [=](const QString &value) { setXScale(value.toFloat()); });
+    connect(infos->addFloatLineEdit("y-Scale", model->objects[0].scale.y()), &QLineEdit::textChanged,
+            [=](const QString &value) { setYScale(value.toFloat()); });
+    connect(infos->addFloatLineEdit("z-Scale", model->objects[0].scale.z()), &QLineEdit::textChanged,
+            [=](const QString &value) { setZScale(value.toFloat()); });
 
-    QLabel *xRotationLabel = new QLabel("x-Rotation");
-    infoLayout->addWidget(xRotationLabel, 10, 0);
-    QLineEdit *xRotationIn = new QLineEdit(QString::number(model.objects[0].rotation.x()));
-    connect(xRotationIn, &QLineEdit::textChanged, [=](const QString &value) { setXRotation(value.toFloat()); });
-    infoLayout->addWidget(xRotationIn, 10, 1);
-
-    QLabel *yRotationLabel = new QLabel("y-Rotation");
-    infoLayout->addWidget(yRotationLabel, 11, 0);
-    QLineEdit *yRotationIn = new QLineEdit(QString::number(model.objects[0].rotation.y()));
-    connect(yRotationIn, &QLineEdit::textChanged, [=](const QString &value) { setYRotation(value.toFloat()); });
-    infoLayout->addWidget(yRotationIn, 11, 1);
-
-    QLabel *zRotationLabel = new QLabel("z-Rotation");
-    infoLayout->addWidget(zRotationLabel, 12, 0);
-    QLineEdit *zRotationIn = new QLineEdit(QString::number(model.objects[0].rotation.z()));
-    connect(zRotationIn, &QLineEdit::textChanged, [=](const QString &value) { setZRotation(value.toFloat()); });
-    infoLayout->addWidget(zRotationIn, 12, 1);
-
-    QLabel *wRotationLabel = new QLabel("w-Rotation");
-    infoLayout->addWidget(wRotationLabel, 13, 0);
-    QLineEdit *wRotationIn = new QLineEdit(QString::number(model.objects[0].rotation.w()));
-    connect(wRotationIn, &QLineEdit::textChanged, [=](const QString &value) { setWRotation(value.toFloat()); });
-    infoLayout->addWidget(wRotationIn, 13, 1);
-
-    QLabel *xScaleLabel = new QLabel("x-Scale");
-    infoLayout->addWidget(xScaleLabel, 14, 0);
-    QLineEdit *xScaleIn = new QLineEdit(QString::number(model.objects[0].scale.x()));
-    connect(xScaleIn, &QLineEdit::textChanged, [=](const QString &value) { setXScale(value.toFloat()); });
-    infoLayout->addWidget(xScaleIn, 14, 1);
-
-    QLabel *yScaleLabel = new QLabel("y-Scale");
-    infoLayout->addWidget(yScaleLabel, 15, 0);
-    QLineEdit *yScaleIn = new QLineEdit(QString::number(model.objects[0].scale.y()));
-    connect(yScaleIn, &QLineEdit::textChanged, [=](const QString &value) { setYScale(value.toFloat()); });
-    infoLayout->addWidget(yScaleIn, 15, 1);
-
-    QLabel *zScaleLabel = new QLabel("z-Scale");
-    infoLayout->addWidget(zScaleLabel, 16, 0);
-    QLineEdit *zScaleIn = new QLineEdit(QString::number(model.objects[0].scale.z()));
-    connect(zScaleIn, &QLineEdit::textChanged, [=](const QString &value) { setZScale(value.toFloat()); });
-    infoLayout->addWidget(zScaleIn, 16, 1);
-
-    QLabel *texturesLabel = new QLabel("Textures");
-    infoLayout->addWidget(texturesLabel, 17, 0);
-
-    for (int i = 0; i < model.groups.size(); i++) {
-        QLabel *textureLabel = new QLabel("Texture-" + QString::number(i));
-        infoLayout->addWidget(textureLabel, 18 + i, 0);
-        QLineEdit *textureIn = new QLineEdit(QString::number(model.groups[i].texture));
-        connect(textureIn, &QLineEdit::textChanged, [=](const QString &newValue) { setTexture(i, newValue.toInt()); });
-        infoLayout->addWidget(textureIn, 18 + i, 1);
+    for (int i = 0; i < model->groups.size(); i++) {
+        connect(infos->addIntLineEdit("Texture-" + QString::number(i), model->groups[i].texture),
+                &QLineEdit::textChanged, [=](const QString &newValue) { setTexture(i, newValue.toInt()); });
     }
 
-    return w;
+    return infos;
 }
 
 int OnexNStgData::onExport(QString directory) {
+    if (model == nullptr) {
+        NosModelConverter *nmc = new NosModelConverter();
+        model = nmc->fromBinary(content);
+    }
+
     ObjConverter *ojc = new ObjConverter();
     QStringList obj = ojc->toObj(model, name);
 
@@ -140,11 +102,14 @@ int OnexNStgData::onReplace(QString directory) {
 
     emit replaceSignal(this->model);
 
+    FileInfo *newInfo = getInfos();
+    emit replaceInfo(newInfo);
+
     return 1;
 }
 
 QByteArray OnexNStgData::getContent() {
-    if (!hasParent())
+    if (!hasParent() || model == nullptr)
         return content;
 
     QByteArray newContent = content.mid(0, 0x30);
@@ -158,44 +123,55 @@ QByteArray OnexNStgData::getContent() {
 }
 
 void OnexNStgData::setXPosition(float x) {
-    model.objects[0].position.setX(x);
+    model->objects[0].position.setX(x);
+    emit changeSignal("x-Position", x);
 }
 
 void OnexNStgData::setYPosition(float y) {
-    model.objects[0].position.setY(y);
+    model->objects[0].position.setY(y);
+    emit changeSignal("y-Position", y);
 }
 
 void OnexNStgData::setZPosition(float z) {
-    model.objects[0].position.setZ(z);
+    model->objects[0].position.setZ(z);
+    emit changeSignal("z-Position", z);
 }
 
 void OnexNStgData::setXRotation(float x) {
-    model.objects[0].rotation.setX(x);
+    model->objects[0].rotation.setX(x);
+    emit changeSignal("x-Rotation", x);
 }
 void OnexNStgData::setYRotation(float y) {
-    model.objects[0].rotation.setY(y);
+    model->objects[0].rotation.setY(y);
+    emit changeSignal("y-Rotation", y);
 }
 void OnexNStgData::setZRotation(float z) {
-    model.objects[0].rotation.setZ(z);
+    model->objects[0].rotation.setZ(z);
+    emit changeSignal("z-Rotation", z);
 }
 void OnexNStgData::setWRotation(float w) {
-    model.objects[0].rotation.setW(w);
+    model->objects[0].rotation.setW(w);
+    emit changeSignal("w-Rotation", w);
 }
 
 void OnexNStgData::setXScale(float x) {
-    model.objects[0].scale.setX(x);
+    model->objects[0].scale.setX(x);
+    emit changeSignal("x-Scale", x);
 }
 
 void OnexNStgData::setYScale(float y) {
-    model.objects[0].scale.setY(y);
+    model->objects[0].scale.setY(y);
+    emit changeSignal("y-Scale", y);
 }
 
 void OnexNStgData::setZScale(float z) {
-    model.objects[0].scale.setZ(z);
+    model->objects[0].scale.setZ(z);
+    emit changeSignal("z-Scale", z);
 }
 
 void OnexNStgData::setTexture(int index, int texture) {
-    model.groups[index].texture = texture;
+    model->groups[index].texture = texture;
+    emit changeSignal("Texture-" + QString::number(index), texture);
 }
 
 OnexNStgData::~OnexNStgData() {

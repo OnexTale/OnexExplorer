@@ -1,13 +1,13 @@
 #include "OnexNS4BbData.h"
 
-OnexNS4BbData::OnexNS4BbData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
-                             bool compressed)
+OnexNS4BbData::OnexNS4BbData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
+                             int creationDate, bool compressed)
     : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {
 }
 
 QImage OnexNS4BbData::getImage() {
     ImageResolution resolution = this->getResolution();
-
+    setWidth(0);
     return imageConverter.convertBGRA8888_INTERLACED(content, resolution.x, resolution.y, 4);
 }
 
@@ -54,9 +54,11 @@ int OnexNS4BbData::onReplace(QString directory) {
 
 void OnexNS4BbData::setWidth(int width) {
     content.replace(0, 2, fromShortToLittleEndian(width));
+    emit changeSignal("Width", width);
 }
 void OnexNS4BbData::setHeight(int height) {
     content.replace(2, 2, fromShortToLittleEndian(height));
+    emit changeSignal("Height", height);
 }
 
 OnexNS4BbData::~OnexNS4BbData() {

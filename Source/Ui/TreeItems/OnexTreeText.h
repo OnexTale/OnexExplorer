@@ -13,7 +13,7 @@ public:
     OnexTreeText(QString name, NosTextOpener *opener, int fileNumber = 0, int isDat = 0,
                  QByteArray content = QByteArray());
     virtual QWidget *getPreview() override;
-    virtual QWidget *getInfos() override;
+    virtual FileInfo *getInfos() override;
     virtual ~OnexTreeText();
     int getFileNumber() const;
     int getIsDat() const;

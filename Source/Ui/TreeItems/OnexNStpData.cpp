@@ -81,20 +81,16 @@ ImageResolution OnexNStpData::getResolution() {
     return ImageResolution{x, y};
 }
 
-QWidget *OnexNStpData::getInfos() {
+FileInfo *OnexNStpData::getInfos() {
     if (!hasParent())
         return nullptr;
 
-    QWidget *w = OnexTreeImage::getInfos();
-    QGridLayout *infoLayout = static_cast<QGridLayout *>(w->layout());
+    FileInfo *infos = OnexTreeImage::getInfos();
 
-    QLabel *formatLabel = new QLabel("Format");
-    infoLayout->addWidget(formatLabel, 7, 0);
-    QLineEdit *formatIn = new QLineEdit(QString::number(getFormat()));
-    connect(formatIn, &QLineEdit::textChanged, [=](const QString &value) { setFormat(value.toInt()); });
-    infoLayout->addWidget(formatIn, 7, 1);
+    connect(infos->addIntLineEdit("Format", getFormat()), &QLineEdit::textChanged,
+            [=](const QString &value) { setFormat(value.toInt()); });
 
-    return w;
+    return infos;
 }
 
 int OnexNStpData::onReplace(QString directory) {
@@ -161,13 +157,16 @@ int OnexNStpData::onExport(QString directory) {
 
 void OnexNStpData::setWidth(int width) {
     content.replace(0, 2, fromShortToLittleEndian(width));
+    emit changeSignal("Width", width);
 }
 void OnexNStpData::setHeight(int height) {
     content.replace(2, 2, fromShortToLittleEndian(height));
+    emit changeSignal("Height", height);
 }
 
 void OnexNStpData::setFormat(uint8_t format) {
     content[4] = format;
+    emit changeSignal("Format", format);
 }
 
 OnexNStpData::~OnexNStpData() {

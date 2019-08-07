@@ -14,12 +14,12 @@ private:
     QVector<QVector3D> readNosNormals(QByteArray obj, int &offset, int verticeCount);
     QVector<QVector2D> readNosUV(QByteArray obj, int &offset, int verticeCount, float uvScale);
     QVector<ModelGroup> readNosFaces(QByteArray obj, int &offset);
-    Model readModelConstruction(QByteArray obj, int &offset, Model &model, QVector<ModelGroup> groups);
+    Model *readModelConstruction(QByteArray obj, int &offset, Model *model, QVector<ModelGroup> groups);
 
 public:
     NosModelConverter();
-    Model fromBinary(QByteArray obj);
-    QByteArray toBinary(Model obj, float uvScale);
+    Model *fromBinary(QByteArray obj);
+    QByteArray toBinary(Model *model, float uvScale);
 };
 
 #endif // NOSMODELCONVERTER_H

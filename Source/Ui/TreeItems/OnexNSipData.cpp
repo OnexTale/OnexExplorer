@@ -55,7 +55,9 @@ OnexNSipData::~OnexNSipData() {}
 
 void OnexNSipData::setWidth(int width) {
     content.replace(1, 2, fromShortToLittleEndian(width));
+    emit changeSignal("Width", width);
 }
 void OnexNSipData::setHeight(int height) {
     content.replace(3, 2, fromShortToLittleEndian(height));
+    emit changeSignal("Height", height);
 }

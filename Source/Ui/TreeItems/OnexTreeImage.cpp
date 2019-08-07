@@ -31,27 +31,19 @@ QWidget *OnexTreeImage::getPreview() {
     return imagePreview;
 }
 
-QWidget *OnexTreeImage::getInfos() {
+FileInfo *OnexTreeImage::getInfos() {
     if (!hasParent())
         return nullptr;
-    QWidget *w = OnexTreeZlibItem::getInfos();
-    QGridLayout *infoLayout = static_cast<QGridLayout *>(w->layout());
+    FileInfo *infos = OnexTreeZlibItem::getInfos();
 
     ImageResolution ir = getResolution();
 
-    QLabel *widthLabel = new QLabel("Width");
-    infoLayout->addWidget(widthLabel, 5, 0);
-    QLineEdit *widthIn = new QLineEdit(QString::number(ir.x));
-    connect(widthIn, &QLineEdit::textChanged, [=](const QString &value) { setWidth(value.toInt()); });
-    infoLayout->addWidget(widthIn, 5, 1);
+    connect(infos->addIntLineEdit("Width", ir.x), &QLineEdit::textChanged,
+            [=](const QString &value) { setWidth(value.toInt()); });
+    connect(infos->addIntLineEdit("Height", ir.y), &QLineEdit::textChanged,
+            [=](const QString &value) { setHeight(value.toInt()); });
 
-    QLabel *heightLabel = new QLabel("Height");
-    infoLayout->addWidget(heightLabel, 6, 0);
-    QLineEdit *heightIn = new QLineEdit(QString::number(ir.y));
-    connect(heightIn, &QLineEdit::textChanged, [=](const QString &value) { setHeight(value.toInt()); });
-    infoLayout->addWidget(heightIn, 6, 1);
-
-    return w;
+    return infos;
 }
 
 int OnexTreeImage::onExport(QString directory) {

@@ -6,15 +6,15 @@
 NosModelConverter::NosModelConverter() {
 }
 
-Model NosModelConverter::fromBinary(QByteArray obj) {
-    Model model;
+Model *NosModelConverter::fromBinary(QByteArray obj) {
+    Model *model = new Model();
 
     float uvScale = fromLittleEndianToFloat(obj.mid(0x30, 4));
     int verticeCount = fromLittleEndianToShort(obj.mid(0x34, 2));
     int offset = 0x36;
-    model.vertices = readNosVertices(obj, offset, verticeCount);
-    model.uv = readNosUV(obj, offset, verticeCount, uvScale);
-    model.normals = readNosNormals(obj, offset, verticeCount);
+    model->vertices = readNosVertices(obj, offset, verticeCount);
+    model->uv = readNosUV(obj, offset, verticeCount, uvScale);
+    model->normals = readNosNormals(obj, offset, verticeCount);
     QVector<ModelGroup> faces = readNosFaces(obj, offset);
 
     model = readModelConstruction(obj, offset, model, faces);
@@ -22,94 +22,90 @@ Model NosModelConverter::fromBinary(QByteArray obj) {
     return model;
 }
 
-QByteArray NosModelConverter::toBinary(Model model, float uvScale) {
+QByteArray NosModelConverter::toBinary(Model *model, float uvScale) {
     QByteArray newContent;
     newContent.append(fromFloatToLittleEndian(uvScale));
-    newContent.append(fromShortToLittleEndian(model.vertices.size()));
-    
-    for (int i = 0; i < model.vertices.size(); i++) {
-        newContent.append(fromFloatToLittleEndian(model.vertices[i].x()));
-        newContent.append(fromFloatToLittleEndian(model.vertices[i].y()));
-        newContent.append(fromFloatToLittleEndian(model.vertices[i].z()));
+    newContent.append(fromShortToLittleEndian(model->vertices.size()));
+
+    for (int i = 0; i < model->vertices.size(); i++) {
+        newContent.append(fromFloatToLittleEndian(model->vertices[i].x()));
+        newContent.append(fromFloatToLittleEndian(model->vertices[i].y()));
+        newContent.append(fromFloatToLittleEndian(model->vertices[i].z()));
     }
-    for (int i = 0; i < model.uv.size(); i++) {
-        float u = model.uv[i].x();
+    for (int i = 0; i < model->uv.size(); i++) {
+        float u = model->uv[i].x();
         if ((int)u != 1 && (int)u != -1)
             u -= (int)u;
         u /= uvScale;
-        float v = model.uv[i].y();
+        float v = model->uv[i].y();
         if ((int)v != 1 && (int)v != -1)
             v -= (int)v;
         v = (1.0 - v) / uvScale;
         newContent.append(fromShortToLittleEndian(u));
         newContent.append(fromShortToLittleEndian(v));
     }
-    for (int i = 0; i < model.normals.size(); i++) {
-        uint8_t x = model.normals[i].x() * 0x7F;
-        uint8_t y = model.normals[i].y() * 0x7F;
-        uint8_t z = model.normals[i].z() * 0x7F;
+    for (int i = 0; i < model->normals.size(); i++) {
+        uint8_t x = model->normals[i].x() * 0x7F;
+        uint8_t y = model->normals[i].y() * 0x7F;
+        uint8_t z = model->normals[i].z() * 0x7F;
         newContent.append(x);
         newContent.append(y);
         newContent.append(z);
     }
 
-    newContent.append(fromShortToLittleEndian(model.groups.size()));
-    for (int g = 0; g < model.groups.size(); g++) {
-        newContent.append(fromShortToLittleEndian(model.groups[g].faces.size() * 3)); // GroupSize
-        for (int j = 0; j < model.groups[g].faces.size(); j++) {
-            newContent.append(fromShortToLittleEndian(model.groups[g].faces[j].x()));
-            newContent.append(fromShortToLittleEndian(model.groups[g].faces[j].y()));
-            newContent.append(fromShortToLittleEndian(model.groups[g].faces[j].z()));
+    newContent.append(fromShortToLittleEndian(model->groups.size()));
+    for (int g = 0; g < model->groups.size(); g++) {
+        newContent.append(fromShortToLittleEndian(model->groups[g].faces.size() * 3)); // GroupSize
+        for (int j = 0; j < model->groups[g].faces.size(); j++) {
+            newContent.append(fromShortToLittleEndian(model->groups[g].faces[j].x()));
+            newContent.append(fromShortToLittleEndian(model->groups[g].faces[j].y()));
+            newContent.append(fromShortToLittleEndian(model->groups[g].faces[j].z()));
         }
     }
 
-    newContent.append(fromShortToLittleEndian(model.objects.size())); // ObjectCount
-    for (int m = 0; m < model.objects.size(); m++) {
-        newContent.append(fromFloatToLittleEndian(model.objects[m].position.x())); // x
-        newContent.append(fromFloatToLittleEndian(model.objects[m].position.y())); // y
-        newContent.append(fromFloatToLittleEndian(model.objects[m].position.z())); // z
+    newContent.append(fromShortToLittleEndian(model->objects.size())); // ObjectCount
+    for (int m = 0; m < model->objects.size(); m++) {
+        newContent.append(fromFloatToLittleEndian(model->objects[m].position.x())); // x
+        newContent.append(fromFloatToLittleEndian(model->objects[m].position.y())); // y
+        newContent.append(fromFloatToLittleEndian(model->objects[m].position.z())); // z
 
-        newContent.append(fromShortToLittleEndian(model.objects[m].rotation.x() * 0x7FFF)); // x rotation
-        newContent.append(fromShortToLittleEndian(model.objects[m].rotation.y() * 0x7FFF)); // y rotation
-        newContent.append(fromShortToLittleEndian(model.objects[m].rotation.z() * 0x7FFF)); // z rotation
-        newContent.append(fromShortToLittleEndian(model.objects[m].rotation.w() * 0x7FFF)); // w rotation
+        newContent.append(fromShortToLittleEndian(model->objects[m].rotation.x() * 0x7FFF)); // x rotation
+        newContent.append(fromShortToLittleEndian(model->objects[m].rotation.y() * 0x7FFF)); // y rotation
+        newContent.append(fromShortToLittleEndian(model->objects[m].rotation.z() * 0x7FFF)); // z rotation
+        newContent.append(fromShortToLittleEndian(model->objects[m].rotation.w() * 0x7FFF)); // w rotation
 
-        newContent.append(fromFloatToLittleEndian(model.objects[m].scale.x())); // x scale
-        newContent.append(fromFloatToLittleEndian(model.objects[m].scale.y())); // y scale
-        newContent.append(fromFloatToLittleEndian(model.objects[m].scale.z())); // z scale
+        newContent.append(fromFloatToLittleEndian(model->objects[m].scale.x())); // x scale
+        newContent.append(fromFloatToLittleEndian(model->objects[m].scale.y())); // y scale
+        newContent.append(fromFloatToLittleEndian(model->objects[m].scale.z())); // z scale
 
+        newContent.append(fromShortToLittleEndian(model->objects[m].animationPositions.size())); // translationFrameCount
+        for (int a = 0; a < model->objects[m].animationPositions.size(); a++) {
+            newContent.append(fromShortToLittleEndian(model->objects[m].animationPositions[a].timestamp));
+            newContent.append(fromFloatToLittleEndian(model->objects[m].animationPositions[a].position.x()));
+            newContent.append(fromFloatToLittleEndian(model->objects[m].animationPositions[a].position.y()));
+            newContent.append(fromFloatToLittleEndian(model->objects[m].animationPositions[a].position.z()));
+        }
+        newContent.append(fromShortToLittleEndian(model->objects[m].animationRotations.size())); // rotationFrameCount
+        for (int a = 0; a < model->objects[m].animationRotations.size(); a++) {
+            newContent.append(fromShortToLittleEndian(model->objects[m].animationRotations[a].timestamp));
+            newContent.append(fromShortToLittleEndian(model->objects[m].animationRotations[a].rotation.x() * 0x7FFF));
+            newContent.append(fromShortToLittleEndian(model->objects[m].animationRotations[a].rotation.y() * 0x7FFF));
+            newContent.append(fromShortToLittleEndian(model->objects[m].animationRotations[a].rotation.z() * 0x7FFF));
+            newContent.append(fromShortToLittleEndian(model->objects[m].animationRotations[a].rotation.w() * 0x7FFF));
+        }
+        newContent.append(fromShortToLittleEndian(model->objects[m].animationScales.size())); // scaleFrameCount
+        for (int a = 0; a < model->objects[m].animationScales.size(); a++) {
+            newContent.append(fromShortToLittleEndian(model->objects[m].animationScales[a].timestamp));
+            newContent.append(fromFloatToLittleEndian(model->objects[m].animationScales[a].scale.x()));
+            newContent.append(fromFloatToLittleEndian(model->objects[m].animationScales[a].scale.y()));
+            newContent.append(fromFloatToLittleEndian(model->objects[m].animationScales[a].scale.z()));
+        }
 
-        newContent.append(fromShortToLittleEndian(0));
-        newContent.append(fromShortToLittleEndian(0));
-        newContent.append(fromShortToLittleEndian(0));
-        // newContent.append(fromShortToLittleEndian(model.objects[m].animationPositions.size())); // translationFrameCount
-        // for (int a = 0; a < model.objects[m].animationPositions.size(); a++) {
-        //     newContent.append(fromShortToLittleEndian(model.objects[m].animationPositions[a].timestamp));
-        //     newContent.append(fromFloatToLittleEndian(model.objects[m].animationPositions[a].position.x()));
-        //     newContent.append(fromFloatToLittleEndian(model.objects[m].animationPositions[a].position.y()));
-        //     newContent.append(fromFloatToLittleEndian(model.objects[m].animationPositions[a].position.z()));
-        // }
-        // newContent.append(fromShortToLittleEndian(model.objects[m].animationRotations.size())); // rotationFrameCount
-        // for (int a = 0; a < model.objects[m].animationRotations.size(); a++) {
-        //     newContent.append(fromShortToLittleEndian(model.objects[m].animationRotations[a].timestamp));
-        //     newContent.append(fromShortToLittleEndian(model.objects[m].animationRotations[a].rotation.x() * 0x7FFF));
-        //     newContent.append(fromShortToLittleEndian(model.objects[m].animationRotations[a].rotation.y() * 0x7FFF));
-        //     newContent.append(fromShortToLittleEndian(model.objects[m].animationRotations[a].rotation.z() * 0x7FFF));
-        //     newContent.append(fromShortToLittleEndian(model.objects[m].animationRotations[a].rotation.w() * 0x7FFF));
-        // }
-        // newContent.append(fromShortToLittleEndian(model.objects[m].animationScales.size())); // scaleFrameCount
-        // for (int a = 0; a < model.objects[m].animationScales.size(); a++) {
-        //     newContent.append(fromShortToLittleEndian(model.objects[m].animationScales[a].timestamp));
-        //     newContent.append(fromFloatToLittleEndian(model.objects[m].animationScales[a].scale.x()));
-        //     newContent.append(fromFloatToLittleEndian(model.objects[m].animationScales[a].scale.y()));
-        //     newContent.append(fromFloatToLittleEndian(model.objects[m].animationScales[a].scale.z()));
-        // }
-
-        newContent.append(fromShortToLittleEndian(model.objects[m].groups.size()));
-        for (int i = 0; i < model.objects[m].groups.size(); i++) {
-            newContent.append(fromIntToLittleEndian(model.groups[model.objects[m].groups[i]].texture));
-            newContent.append((char)0);                                                                  // bool
-            newContent.append(fromShortToLittleEndian(model.groups[model.objects[m].groups[i]].number)); // group
+        newContent.append(fromShortToLittleEndian(model->objects[m].groups.size()));
+        for (int i = 0; i < model->objects[m].groups.size(); i++) {
+            newContent.append(fromIntToLittleEndian(model->groups[model->objects[m].groups[i]].texture));
+            newContent.append((char)0);                                                                    // bool
+            newContent.append(fromShortToLittleEndian(model->groups[model->objects[m].groups[i]].number)); // group
         }
         newContent.append(fromShortToLittleEndian(0));
     }
@@ -171,7 +167,7 @@ QVector<ModelGroup> NosModelConverter::readNosFaces(QByteArray obj, int &offset)
     return groups;
 }
 
-Model NosModelConverter::readModelConstruction(QByteArray obj, int &offset, Model &model, QVector<ModelGroup> groups) {
+Model *NosModelConverter::readModelConstruction(QByteArray obj, int &offset, Model *model, QVector<ModelGroup> groups) {
     int parts = fromLittleEndianToShort(obj.mid(offset, 2));
     offset += 2;
 
@@ -247,14 +243,14 @@ Model NosModelConverter::readModelConstruction(QByteArray obj, int &offset, Mode
             offset++;
             int grp = fromLittleEndianToShort(obj.mid(offset, 2)); // equals i?
             groups[grp].texture = img;
-            model.groups.append(groups[grp]);
+            model->groups.append(groups[grp]);
             modelPart.groups.append(grp);
             offset += 2;
         }
         fromLittleEndianToShort(obj.mid(offset, 2)); // seems to be always 0?
         offset += 2;
 
-        model.objects.append(modelPart);
+        model->objects.append(modelPart);
     }
 
     return model;

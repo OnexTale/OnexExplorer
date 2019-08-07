@@ -14,7 +14,7 @@ struct Face {
     QVector3D vn;
 };
 
-Model ObjConverter::fromObj(QString obj) {
+Model *ObjConverter::fromObj(QString obj) {
     QVector<QVector3D> fileVertices;
     QVector<QVector3D> fileNormals;
     QVector<QVector2D> fileUV;
@@ -69,15 +69,15 @@ Model ObjConverter::fromObj(QString obj) {
     // ModelGroup mg;
     // mg.faces = groupFaces;
     // mg.texture = groupTexture;
-    // mg.number = model.groups.size();
-    // model.groups.append(mg);
-    // objectGroups.append(model.groups.size() - 1);
+    // mg.number = model->groups.size();
+    // model->groups.append(mg);
+    // objectGroups.append(model->groups.size() - 1);
     // ModelObject mo;
     // mo.groups = objectGroups;
     // mo.position = QVector3D(0, 0, 0);
     // mo.rotation = QVector4D(0, 0, 0, 0);
     // mo.scale = QVector3D(0, 0, 0);
-    // model.objects.append(mo);
+    // model->objects.append(mo);
 
     QVector<QVector3D> vertices;
     QVector<QVector3D> normals;
@@ -131,61 +131,61 @@ Model ObjConverter::fromObj(QString obj) {
         }
     }
 
-    Model model;
-    model.vertices = vertices;
-    model.normals = normals;
-    model.uv = uv;
+    Model *model = new Model();
+    model->vertices = vertices;
+    model->normals = normals;
+    model->uv = uv;
 
     for (int i = 0; i <= object; i++) {
         ModelObject mo;
         mo.position = QVector3D(0, 0, 0);
         mo.rotation = QVector4D(0, 0, 0, 0);
         mo.scale = QVector3D(1, 1, 1);
-        model.objects.append(mo);
+        model->objects.append(mo);
     }
     for (int i = 0; i <= group; i++) {
         ModelGroup mg;
         mg.number = i;
         mg.texture = textures[i];
-        model.groups.append(mg);
+        model->groups.append(mg);
     }
 
     for (int i = 0; i < faces.size(); i++) {
-        model.groups[faces[i].group].faces.append(faces[i].v);
-        if (!model.objects[faces[i].object].groups.contains(faces[i].group))
-            model.objects[faces[i].object].groups.append(faces[i].group);
+        model->groups[faces[i].group].faces.append(faces[i].v);
+        if (!model->objects[faces[i].object].groups.contains(faces[i].group))
+            model->objects[faces[i].object].groups.append(faces[i].group);
     }
 
     return model;
 }
 
-QStringList ObjConverter::toObj(Model model, QString name) {
+QStringList ObjConverter::toObj(Model *model, QString name) {
     QStringList list;
     list.append(generateObjFile(model, name));
     list.append(generateMtlFile(model));
     return list;
 }
 
-QString ObjConverter::generateObjFile(Model model, QString name) {
+QString ObjConverter::generateObjFile(Model *model, QString name) {
     QString obj = "";
 
     obj += "mtllib " + name + ".mtl\n\n";
 
-    for (QVector3D v : model.vertices) {
+    for (QVector3D v : model->vertices) {
         obj += "v " + QString::number(v.x()) + " " + QString::number(v.y()) + " " + QString::number(v.z()) + "\n";
     }
-    for (QVector2D p : model.uv) {
+    for (QVector2D p : model->uv) {
         obj += "vt " + QString::number(p.x()) + " " + QString::number(p.y()) + "\n";
     }
-    for (QVector3D vn : model.normals) {
+    for (QVector3D vn : model->normals) {
         obj += "vn " + QString::number(vn.x()) + " " + QString::number(vn.y()) + " " + QString::number(vn.z()) + "\n";
     }
 
-    for (int o = 0; o < model.objects.size(); o++) {
+    for (int o = 0; o < model->objects.size(); o++) {
         obj += "\no " + QString::number(o) + "\n";
-        for (int g = 0; g < model.objects[o].groups.size(); g++) {
-            obj += "usemtl mtl-" + QString::number(model.groups[model.objects[o].groups[g]].texture) + "\n";
-            for (QVector3D f : model.groups[model.objects[o].groups[g]].faces) {
+        for (int g = 0; g < model->objects[o].groups.size(); g++) {
+            obj += "usemtl mtl-" + QString::number(model->groups[model->objects[o].groups[g]].texture) + "\n";
+            for (QVector3D f : model->groups[model->objects[o].groups[g]].faces) {
                 obj += "f " + QString::number(f.x() + 1) + "/" + QString::number(f.x() + 1) + "/" +
                        QString::number(f.x() + 1) + " " + QString::number(f.y() + 1) + "/" +
                        QString::number(f.y() + 1) + "/" + QString::number(f.y() + 1) + " " +
@@ -198,12 +198,12 @@ QString ObjConverter::generateObjFile(Model model, QString name) {
     return obj;
 }
 
-QString ObjConverter::generateMtlFile(Model model) {
+QString ObjConverter::generateMtlFile(Model *model) {
     QString mtl = "";
-    for (int g = 0; g < model.groups.size(); g++) {
-        mtl += "newmtl mtl-" + QString::number(model.groups[g].texture) + "\n";
+    for (int g = 0; g < model->groups.size(); g++) {
+        mtl += "newmtl mtl-" + QString::number(model->groups[g].texture) + "\n";
         mtl += "Ns 10\nKa 0 0 0\nKd 0 0 0\nKs 0 0 0\n";
-        mtl += "map_Kd " + QString::number(model.groups[g].texture) + ".png\n";
+        mtl += "map_Kd " + QString::number(model->groups[g].texture) + ".png\n";
     }
     return mtl;
 }

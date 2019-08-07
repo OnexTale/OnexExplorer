@@ -24,11 +24,11 @@ struct Camera {
 class SingleModelPreview : public QOpenGLWidget {
     Q_OBJECT
 public:
-    SingleModelPreview(Model model, QWidget *parent = 0);
+    SingleModelPreview(Model *model, QWidget *parent = 0);
     ~SingleModelPreview();
 
 private:
-    Model model;
+    Model *model;
     Camera camera;
     Mouse mouse;
     void initializeGL();
@@ -38,7 +38,7 @@ private:
     void wheelEvent(QWheelEvent *event);
 
 private slots:
-    void onReplaced(Model model);
+    void onReplaced(Model *model);
 };
 
 #endif // SINGLEMODELPREVIEW_H

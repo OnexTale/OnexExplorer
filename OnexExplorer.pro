@@ -36,6 +36,7 @@ SOURCES += \
     Source/Openers/NosTextOpener.cpp \
     Source/Openers/INosFileOpener.cpp \
     Source/Ui/OnexTreeItem.cpp \
+    Source/Ui/FileInfo.cpp \
     Source/Ui/Previews/SingleTextFilePreview.cpp \
     Source/Ui/Previews/SingleImagePreview.cpp \
     Source/Ui/Previews/MultiImagePreview.cpp \
@@ -69,6 +70,7 @@ HEADERS  += \
     Source/Openers/NosTextOpener.h \
     Source/Openers/INosFileOpener.h \
     Source/Ui/OnexTreeItem.h \
+    Source/Ui/FileInfo.h \
     Source/Ui/Previews/SingleTextFilePreview.h \
     Source/Ui/Previews/SingleImagePreview.h \
     Source/Ui/Previews/MultiImagePreview.h \

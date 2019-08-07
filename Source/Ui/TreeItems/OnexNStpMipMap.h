@@ -15,7 +15,7 @@ public:
 
     virtual QImage getImage() override;
     virtual ImageResolution getResolution() override;
-    QWidget *getInfos() override;
+    FileInfo *getInfos() override;
     int getWidth();
     int getHeight();
     int getFormat();

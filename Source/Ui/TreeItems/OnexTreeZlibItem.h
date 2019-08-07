@@ -19,9 +19,10 @@ public:
     OnexTreeZlibItem(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
                      bool compressed);
     virtual QWidget *getPreview() override;
-    virtual QWidget *getInfos() override;
+    virtual FileInfo *getInfos() override;
     int getId();
     int getCreationDate();
+    QString getDateAsString();
     bool isCompressed();
     QByteArray getHeader();
     virtual ~OnexTreeZlibItem();

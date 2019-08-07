@@ -18,23 +18,16 @@ ImageResolution OnexNSmpFrame::getResolution() {
     return ImageResolution{this->width, this->height};
 }
 
-QWidget *OnexNSmpFrame::getInfos() {
-    QWidget *w = OnexTreeImage::getInfos();
-    QGridLayout *infoLayout = static_cast<QGridLayout *>(w->layout());
+FileInfo *OnexNSmpFrame::getInfos() {
+    FileInfo *infos = OnexTreeImage::getInfos();
 
-    QLabel *xLabel = new QLabel("x-Origin");
-    infoLayout->addWidget(xLabel, 7, 0);
-    QLineEdit *xIn = new QLineEdit(QString::number(getXOrigin()));
-    connect(xIn, &QLineEdit::textChanged, [=](const QString &value) { setXOrigin(value.toInt()); });
-    infoLayout->addWidget(xIn, 7, 1);
+    connect(infos->addIntLineEdit("x-Origin", getXOrigin()), &QLineEdit::textChanged,
+            [=](const QString &value) { setXOrigin(value.toInt()); });
 
-    QLabel *yLabel = new QLabel("y-Origin");
-    infoLayout->addWidget(yLabel, 8, 0);
-    QLineEdit *yIn = new QLineEdit(QString::number(getYOrigin()));
-    connect(yIn, &QLineEdit::textChanged, [=](const QString &value) { setYOrigin(value.toInt()); });
-    infoLayout->addWidget(yIn, 8, 1);
+    connect(infos->addIntLineEdit("y-Origin", getYOrigin()), &QLineEdit::textChanged,
+            [=](const QString &value) { setYOrigin(value.toInt()); });
 
-    return w;
+    return infos;
 }
 
 int OnexNSmpFrame::onReplace(QString directory) {
@@ -75,17 +68,21 @@ QByteArray OnexNSmpFrame::getContent() {
 
 void OnexNSmpFrame::setWidth(int width) {
     this->width = width;
+    emit changeSignal("Width", width);
 }
 void OnexNSmpFrame::setHeight(int height) {
     this->height = height;
+    emit changeSignal("Height", height);
 }
 
 void OnexNSmpFrame::setXOrigin(int xOrigin) {
     this->xOrigin = xOrigin;
+    emit changeSignal("x-Origin", xOrigin);
 }
 
 void OnexNSmpFrame::setYOrigin(int yOrigin) {
     this->yOrigin = yOrigin;
+    emit changeSignal("y-Origin", yOrigin);
 }
 
 OnexNSmpFrame::~OnexNSmpFrame() {

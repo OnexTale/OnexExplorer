@@ -10,13 +10,13 @@
 
 class ObjConverter : public IModelConverter {
 private:
-    QString generateObjFile(Model model, QString name);
-    QString generateMtlFile(Model model);
+    QString generateObjFile(Model *model, QString name);
+    QString generateMtlFile(Model *model);
 
 public:
     ObjConverter();
-    Model fromObj(QString obj);
-    QStringList toObj(Model model, QString name);
+    Model *fromObj(QString obj);
+    QStringList toObj(Model *model, QString name);
 };
 
 #endif // OBJCONVERTER_H

@@ -7,6 +7,7 @@
 #include <QTreeWidgetItem>
 #include <QtEndian>
 #include "../Openers/INosFileOpener.h"
+#include "FileInfo.h"
 
 class OnexTreeItem : public QObject, public QTreeWidgetItem {
     Q_OBJECT
@@ -29,7 +30,7 @@ public:
     int getContentSize();
 
     virtual QWidget *getPreview() = 0;
-    virtual QWidget *getInfos() = 0;
+    virtual FileInfo *getInfos() = 0;
     virtual ~OnexTreeItem();
 
     QString getSaveDirectory(QString name, QString filter);
@@ -45,6 +46,13 @@ public slots:
     virtual int onReplaceRaw(QString directory);
     virtual void onDelete();
     virtual void actionClose();
+    
+signals:
+    void changeSignal(QString title, QString value);
+    void changeSignal(QString title, int value);
+    void changeSignal(QString title, float value);
+    void changeSignal(QString title, bool value);
+    void replaceInfo(FileInfo *info);
 };
 
 #endif // ONEXTREEITEM_H

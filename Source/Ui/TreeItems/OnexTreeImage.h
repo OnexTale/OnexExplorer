@@ -19,7 +19,7 @@ public:
     OnexTreeImage(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate, bool compressed);
     static ImageConverter imageConverter;
     virtual QWidget *getPreview() override;
-    virtual QWidget *getInfos() override;
+    virtual FileInfo *getInfos() override;
     virtual QImage getImage() = 0;
     virtual ImageResolution getResolution() = 0;
 

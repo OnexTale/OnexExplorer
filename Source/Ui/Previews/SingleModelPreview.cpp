@@ -2,7 +2,7 @@
 #include <QLayout>
 #include <QLineEdit>
 
-SingleModelPreview::SingleModelPreview(Model model, QWidget *parent)
+SingleModelPreview::SingleModelPreview(Model *model, QWidget *parent)
     : QOpenGLWidget(parent) {
     this->model = model;
 
@@ -26,6 +26,8 @@ void SingleModelPreview::initializeGL() {
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    glEnable(GL_LIGHTING);
 }
 
 void SingleModelPreview::paintGL() {
@@ -41,27 +43,26 @@ void SingleModelPreview::paintGL() {
 
     glPushMatrix();
 
-    // glEnable(GL_LIGHTING);
     // glEnable(GL_LIGHT0);
     // glEnable(GL_COLOR_MATERIAL);
     // glColor3f(0.5f, 0.5f, 0.5f);
 
     glBegin(GL_TRIANGLES);
 
-    for (int i = 0; i < model.objects.size(); i++) {
-        for (int j = 0; j < model.objects[i].groups.size(); j++) {
-            for (int g = 0; g < model.groups[model.objects[i].groups[j]].faces.size(); g++) {
-                int p1 = model.groups[model.objects[i].groups[j]].faces[g].x();
-                int p2 = model.groups[model.objects[i].groups[j]].faces[g].y();
-                int p3 = model.groups[model.objects[i].groups[j]].faces[g].z();
-                glNormal3f(model.normals[p1].x(), model.normals[p1].y(), model.normals[p1].z());
-                glVertex3f(model.vertices[p1].x(), model.vertices[p1].y(), model.vertices[p1].z());
+    for (int i = 0; i < model->objects.size(); i++) {
+        for (int j = 0; j < model->objects[i].groups.size(); j++) {
+            for (int g = 0; g < model->groups[model->objects[i].groups[j]].faces.size(); g++) {
+                int p1 = model->groups[model->objects[i].groups[j]].faces[g].x();
+                int p2 = model->groups[model->objects[i].groups[j]].faces[g].y();
+                int p3 = model->groups[model->objects[i].groups[j]].faces[g].z();
+                glNormal3f(model->normals[p1].x(), model->normals[p1].y(), model->normals[p1].z());
+                glVertex3f(model->vertices[p1].x(), model->vertices[p1].y(), model->vertices[p1].z());
 
-                glNormal3f(model.normals[p2].x(), model.normals[p2].y(), model.normals[p2].z());
-                glVertex3f(model.vertices[p2].x(), model.vertices[p2].y(), model.vertices[p2].z());
+                glNormal3f(model->normals[p2].x(), model->normals[p2].y(), model->normals[p2].z());
+                glVertex3f(model->vertices[p2].x(), model->vertices[p2].y(), model->vertices[p2].z());
 
-                glNormal3f(model.normals[p3].x(), model.normals[p3].y(), model.normals[p3].z());
-                glVertex3f(model.vertices[p3].x(), model.vertices[p3].y(), model.vertices[p3].z());
+                glNormal3f(model->normals[p3].x(), model->normals[p3].y(), model->normals[p3].z());
+                glVertex3f(model->vertices[p3].x(), model->vertices[p3].y(), model->vertices[p3].z());
             }
         }
     }
@@ -109,7 +110,7 @@ void SingleModelPreview::wheelEvent(QWheelEvent *event) {
     repaint();
 }
 
-void SingleModelPreview::onReplaced(Model model) {
+void SingleModelPreview::onReplaced(Model *model) {
     this->model = model;
     repaint();
 }

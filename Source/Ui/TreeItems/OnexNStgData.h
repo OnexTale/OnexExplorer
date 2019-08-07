@@ -13,11 +13,11 @@ public:
     OnexNStgData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate, bool compressed);
     virtual ~OnexNStgData();
     virtual QWidget *getPreview() override;
-    virtual QWidget *getInfos() override;
+    virtual FileInfo *getInfos() override;
     virtual QByteArray getContent() override;
 
 private:
-    Model model;
+    Model *model;
 
 private slots:
     virtual int onExport(QString directory);
@@ -35,7 +35,7 @@ private slots:
     virtual void setTexture(int index, int texture);
 
 signals:
-    void replaceSignal(Model newModel);
+    void replaceSignal(Model *newModel);
 };
 
 #endif // ONEXNSTGDATA_H

@@ -34,8 +34,10 @@ int OnexNS4BbData::onReplace(QString directory) {
         }
 
         QImage image = importQImageFromSelectedUserFile(path);
-        if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0)
+        if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0) {
+            QMessageBox::critical(NULL, "Woops", "Couldn't read image " + path);
             return 0;
+        }
 
         if (!hasGoodResolution(image.width(), image.height())) {
             QMessageBox::StandardButton reply = QMessageBox::question(

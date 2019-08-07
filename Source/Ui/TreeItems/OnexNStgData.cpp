@@ -94,8 +94,13 @@ int OnexNStgData::onReplace(QString directory) {
     }
 
     QFile file(path);
-    file.open(QIODevice::ReadOnly);
-    QString obj = QString::fromLocal8Bit(file.readAll());
+    QString obj = "";
+    if (file.open(QIODevice::ReadOnly))
+        obj = QString::fromLocal8Bit(file.readAll());
+    else {
+        QMessageBox::critical(NULL, "Woops", "Couldn't open " + path);
+        return 0;
+    }
 
     ObjConverter *oc = new ObjConverter();
     model = oc->fromObj(obj);

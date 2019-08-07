@@ -1,6 +1,7 @@
 #include "OnexTreeItem.h"
 
-OnexTreeItem::OnexTreeItem(QString name, INosFileOpener *opener, QByteArray content) : name(name), opener(opener), content(content) {
+OnexTreeItem::OnexTreeItem(QString name, INosFileOpener *opener, QByteArray content)
+    : name(name), opener(opener), content(content) {
     this->setText(0, name);
 }
 
@@ -27,7 +28,6 @@ int OnexTreeItem::fromLittleEndianToInt(QByteArray array) {
 float OnexTreeItem::fromLittleEndianToFloat(QByteArray array) {
     return qFromLittleEndian<float>(reinterpret_cast<const uchar *>(array.data()));
 }
-
 
 QByteArray OnexTreeItem::fromShortToLittleEndian(short number) {
     QByteArray writeArray;
@@ -120,12 +120,14 @@ int OnexTreeItem::onReplace(QString directory) {
         }
         return count;
     } else {
-        QString fileName = directory + this->getName();
-        QFile file(fileName);
+        QString path = directory + this->getName();
+        QFile file(path);
         if (file.open(QIODevice::ReadOnly))
             this->content = file.readAll();
-        else
+        else {
+            QMessageBox::critical(NULL, "Woops", "Couldn't open " + path);
             return 0;
+        }
         return 1;
     }
 }

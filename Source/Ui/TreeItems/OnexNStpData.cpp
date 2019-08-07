@@ -110,8 +110,10 @@ int OnexNStpData::onReplace(QString directory) {
         }
 
         QImage image = importQImageFromSelectedUserFile(path);
-        if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0)
+        if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0) {
+            QMessageBox::critical(NULL, "Woops", "Couldn't read image " + path);
             return 0;
+        }
 
         if (!hasGoodResolution(image.width(), image.height())) {
             QMessageBox::StandardButton reply = QMessageBox::question(
@@ -123,8 +125,11 @@ int OnexNStpData::onReplace(QString directory) {
 
         int format = this->getFormat();
 
-        if (format < 0 || format > 4)
+        if (format < 0 || format > 4) 
+        {
+            QMessageBox::critical(NULL, "Woops", "Format of " + path + "is not supported!");
             return 0;
+        }
 
         QByteArray newContent;
         newContent.push_back(fromShortToLittleEndian(image.width()));

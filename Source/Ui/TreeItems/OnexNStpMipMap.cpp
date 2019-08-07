@@ -52,8 +52,10 @@ int OnexNStpMipMap::onReplace(QString directory) {
     QImage image = importQImageFromSelectedUserFile(path);
     image = image.scaled(width, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-    if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0)
+    if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0) {
+        QMessageBox::critical(NULL, "Woops", "Couldn't read image " + path);
         return 0;
+    }
 
     if (!hasGoodResolution(image.width(), image.height())) {
         QMessageBox::StandardButton reply = QMessageBox::question(
@@ -65,8 +67,10 @@ int OnexNStpMipMap::onReplace(QString directory) {
 
     int format = this->getFormat();
 
-    if (format < 0 || format > 4)
+    if (format < 0 || format > 4) {
+        QMessageBox::critical(NULL, "Woops", "Format of " + path + "is not supported!");
         return 0;
+    }
 
     QByteArray newContent;
     if (format == 0)

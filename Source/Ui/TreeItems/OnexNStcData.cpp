@@ -34,8 +34,10 @@ int OnexNStcData::onReplace(QString directory) {
         }
 
         QImage image = importQImageFromSelectedUserFile(path);
-        if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0)
+        if (image.isNull() && this->getResolution().x != 0 && this->getResolution().y != 0) {
+            QMessageBox::critical(NULL, "Woops", "Couldn't read image " + path);
             return 0;
+        }
 
         image = image.scaled(image.width() / 2, image.height() / 2);
 

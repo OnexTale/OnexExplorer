@@ -3,8 +3,8 @@
 FileInfo::FileInfo(QWidget *parent) : QWidget(parent) {
     grid = new QGridLayout();
     setLayout(grid);
-    setMinimumWidth(200);
-    setMaximumWidth(200);
+    setMinimumWidth(225);
+    setMaximumWidth(225);
     rows = 0;
 }
 

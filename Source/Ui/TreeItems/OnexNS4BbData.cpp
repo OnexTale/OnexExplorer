@@ -7,7 +7,6 @@ OnexNS4BbData::OnexNS4BbData(QByteArray header, QString name, QByteArray content
 
 QImage OnexNS4BbData::getImage() {
     ImageResolution resolution = this->getResolution();
-    setWidth(0);
     return imageConverter.convertBGRA8888_INTERLACED(content, resolution.x, resolution.y, 4);
 }
 

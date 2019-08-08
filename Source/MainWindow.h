@@ -22,7 +22,7 @@ class MainWindow : public QMainWindow {
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    const QString VERSION = "v0.5";
+    const QString VERSION = "v0.6";
 
 
 public slots:

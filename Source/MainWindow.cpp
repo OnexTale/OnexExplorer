@@ -212,7 +212,8 @@ void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTre
         previewWindow = item->getPreview();
         infoWindow = item->getInfos();
         scrollArea->setWidget(infoWindow);
-        scrollArea->setMaximumWidth(225);
+        scrollArea->setMinimumWidth(250);
+        scrollArea->setMaximumWidth(250);
     }
 
     if (!previewWindow) {

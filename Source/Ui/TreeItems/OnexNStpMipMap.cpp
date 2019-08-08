@@ -109,19 +109,22 @@ QByteArray OnexNStpMipMap::getContent() {
     return content;
 }
 
-void OnexNStpMipMap::setWidth(int width) {
+void OnexNStpMipMap::setWidth(int width, bool update) {
     this->width = width;
-    emit changeSignal("Width", width);
+    if (update)
+        emit changeSignal("Width", width);
 }
 
-void OnexNStpMipMap::setHeight(int height) {
+void OnexNStpMipMap::setHeight(int height, bool update) {
     this->height = height;
-    emit changeSignal("Height", height);
+    if (update)
+        emit changeSignal("Height", height);
 }
 
-void OnexNStpMipMap::setFormat(uint8_t format) {
+void OnexNStpMipMap::setFormat(uint8_t format, bool update) {
     this->format = format;
-    emit changeSignal("Format", format);
+    if (update)
+        emit changeSignal("Format", format);
 }
 
 OnexNStpMipMap::~OnexNStpMipMap() {

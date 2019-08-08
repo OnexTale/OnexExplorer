@@ -72,11 +72,13 @@ int OnexNSipData::onReplace(QString directory) {
 OnexNSipData::~OnexNSipData() {
 }
 
-void OnexNSipData::setWidth(int width) {
+void OnexNSipData::setWidth(int width, bool update) {
     content.replace(1, 2, fromShortToLittleEndian(width));
-    emit changeSignal("Width", width);
+    if (update)
+        emit changeSignal("Width", width);
 }
-void OnexNSipData::setHeight(int height) {
+void OnexNSipData::setHeight(int height, bool update) {
     content.replace(3, 2, fromShortToLittleEndian(height));
-    emit changeSignal("Height", height);
+    if (update)
+        emit changeSignal("Height", height);
 }

@@ -140,56 +140,67 @@ QByteArray OnexNStgData::getContent() {
     return content;
 }
 
-void OnexNStgData::setXPosition(int index, float x) {
+void OnexNStgData::setXPosition(int index, float x, bool update) {
     model->objects[index].position.setX(x);
-    emit changeSignal("O-" + QString::number(index) + "-x-Position", x);
+    if (update)
+        emit changeSignal("O-" + QString::number(index) + "-x-Position", x);
 }
 
-void OnexNStgData::setYPosition(int index, float y) {
+void OnexNStgData::setYPosition(int index, float y, bool update) {
     model->objects[index].position.setY(y);
-    emit changeSignal("O-" + QString::number(index) + "-y-Position", y);
+    if (update)
+        emit changeSignal("O-" + QString::number(index) + "-y-Position", y);
 }
 
-void OnexNStgData::setZPosition(int index, float z) {
+void OnexNStgData::setZPosition(int index, float z, bool update) {
     model->objects[index].position.setZ(z);
-    emit changeSignal("O-" + QString::number(index) + "-z-Position", z);
+    if (update)
+        emit changeSignal("O-" + QString::number(index) + "-z-Position", z);
 }
 
-void OnexNStgData::setXRotation(int index, float x) {
+void OnexNStgData::setXRotation(int index, float x, bool update) {
     model->objects[index].rotation.setX(x);
-    emit changeSignal("O-" + QString::number(index) + "-x-Rotation", x);
+    if (update)
+        emit changeSignal("O-" + QString::number(index) + "-x-Rotation", x);
 }
-void OnexNStgData::setYRotation(int index, float y) {
+void OnexNStgData::setYRotation(int index, float y, bool update) {
     model->objects[index].rotation.setY(y);
-    emit changeSignal("O-" + QString::number(index) + "-y-Rotation", y);
+    if (update)
+        emit changeSignal("O-" + QString::number(index) + "-y-Rotation", y);
 }
-void OnexNStgData::setZRotation(int index, float z) {
+void OnexNStgData::setZRotation(int index, float z, bool update) {
     model->objects[index].rotation.setZ(z);
-    emit changeSignal("O-" + QString::number(index) + "-z-Rotation", z);
+    if (update)
+        emit changeSignal("O-" + QString::number(index) + "-z-Rotation", z);
 }
-void OnexNStgData::setWRotation(int index, float w) {
+void OnexNStgData::setWRotation(int index, float w, bool update) {
     model->objects[index].rotation.setW(w);
-    emit changeSignal("O-" + QString::number(index) + "-w-Rotation", w);
+    if (update)
+        emit changeSignal("O-" + QString::number(index) + "-w-Rotation", w);
 }
 
-void OnexNStgData::setXScale(int index, float x) {
+void OnexNStgData::setXScale(int index, float x, bool update) {
     model->objects[index].scale.setX(x);
-    emit changeSignal("O-" + QString::number(index) + "-x-Scale", x);
+    if (update)
+        emit changeSignal("O-" + QString::number(index) + "-x-Scale", x);
 }
 
-void OnexNStgData::setYScale(int index, float y) {
+void OnexNStgData::setYScale(int index, float y, bool update) {
     model->objects[index].scale.setY(y);
-    emit changeSignal("O-" + QString::number(index) + "-y-Scale", y);
+    if (update)
+        emit changeSignal("O-" + QString::number(index) + "-y-Scale", y);
 }
 
-void OnexNStgData::setZScale(int index, float z) {
+void OnexNStgData::setZScale(int index, float z, bool update) {
     model->objects[index].scale.setZ(z);
-    emit changeSignal("O-" + QString::number(index) + "-z-Scale", z);
+    if (update)
+        emit changeSignal("O-" + QString::number(index) + "-z-Scale", z);
 }
 
-void OnexNStgData::setTexture(int index, int texture) {
+void OnexNStgData::setTexture(int index, int texture, bool update) {
     model->groups[index].texture = texture;
-    emit changeSignal("Texture-" + QString::number(index), texture);
+    if (update)
+        emit changeSignal("Texture-" + QString::number(index), texture);
 }
 
 QString OnexNStgData::getExportExtension() {

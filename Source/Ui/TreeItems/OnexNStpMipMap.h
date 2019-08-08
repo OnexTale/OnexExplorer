@@ -24,9 +24,9 @@ public:
 
 public slots:
     virtual int onReplace(QString directory) override;
-    virtual void setWidth(int width);
-    virtual void setHeight(int height);
-    virtual void setFormat(uint8_t format);
+    virtual void setWidth(int width, bool update = false);
+    virtual void setHeight(int height, bool update = false);
+    virtual void setFormat(uint8_t format, bool update = false);
 };
 
 #endif // ONEXNSTPMAPMAP_H

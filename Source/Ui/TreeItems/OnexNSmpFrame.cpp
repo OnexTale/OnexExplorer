@@ -81,23 +81,27 @@ QByteArray OnexNSmpFrame::getContent() {
     return content;
 }
 
-void OnexNSmpFrame::setWidth(int width) {
+void OnexNSmpFrame::setWidth(int width, bool update) {
     this->width = width;
-    emit changeSignal("Width", width);
+    if (update)
+        emit changeSignal("Width", width);
 }
-void OnexNSmpFrame::setHeight(int height) {
+void OnexNSmpFrame::setHeight(int height, bool update) {
     this->height = height;
-    emit changeSignal("Height", height);
+    if (update)
+        emit changeSignal("Height", height);
 }
 
-void OnexNSmpFrame::setXOrigin(int xOrigin) {
+void OnexNSmpFrame::setXOrigin(int xOrigin, bool update) {
     this->xOrigin = xOrigin;
-    emit changeSignal("x-Origin", xOrigin);
+    if (update)
+        emit changeSignal("x-Origin", xOrigin);
 }
 
-void OnexNSmpFrame::setYOrigin(int yOrigin) {
+void OnexNSmpFrame::setYOrigin(int yOrigin, bool update) {
     this->yOrigin = yOrigin;
-    emit changeSignal("y-Origin", yOrigin);
+    if (update)
+        emit changeSignal("y-Origin", yOrigin);
 }
 
 OnexNSmpFrame::~OnexNSmpFrame() {

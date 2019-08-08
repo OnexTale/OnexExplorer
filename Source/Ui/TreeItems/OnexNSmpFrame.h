@@ -26,10 +26,10 @@ public:
 
 public slots:
     virtual int onReplace(QString directory) override;
-    virtual void setWidth(int width);
-    virtual void setHeight(int height);
-    virtual void setXOrigin(int xOrigin);
-    virtual void setYOrigin(int yOrigin);
+    virtual void setWidth(int width, bool update = false);
+    virtual void setHeight(int height, bool update = false);
+    virtual void setXOrigin(int xOrigin, bool update = false);
+    virtual void setYOrigin(int yOrigin, bool update = false);
 };
 
 #endif // ONEXNSMPFRAME_H

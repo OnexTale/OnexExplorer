@@ -29,10 +29,10 @@ public:
     
 
 public slots:
-    void setId(int id);
-    void setCreationDate(QString date);
-    void setCompressed(bool compressed);
-    void setHeader(QString header);
+    void setId(int id, bool update = false);
+    void setCreationDate(QString date, bool update = false);
+    void setCompressed(bool compressed, bool update = false);
+    void setHeader(QString header, bool update = false);
 };
 
 #endif // ONEXTREEZLIBITEM_H

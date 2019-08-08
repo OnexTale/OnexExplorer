@@ -70,13 +70,15 @@ int OnexNStcData::onReplace(QString directory) {
     }
 }
 
-void OnexNStcData::setWidth(int width) {
+void OnexNStcData::setWidth(int width, bool update) {
     content.replace(0, 2, fromShortToLittleEndian(width));
-    emit changeSignal("Width", width);
+    if (update)
+        emit changeSignal("Width", width);
 }
-void OnexNStcData::setHeight(int height) {
+void OnexNStcData::setHeight(int height, bool update) {
     content.replace(2, 2, fromShortToLittleEndian(height));
-    emit changeSignal("Width", height);
+    if (update)
+        emit changeSignal("Width", height);
 }
 
 OnexNStcData::~OnexNStcData() {

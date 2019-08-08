@@ -21,8 +21,8 @@ public:
 public slots:
     virtual int onExport(QString directory);
     virtual int onReplace(QString directory);
-    void setFileNumber(int number);
-    void setIsDat(bool isDat);
+    void setFileNumber(int number, bool update = false);
+    void setIsDat(bool isDat, bool update = false);
     virtual QString getExportExtension();
 
 signals:

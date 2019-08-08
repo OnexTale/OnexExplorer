@@ -49,16 +49,13 @@ void SingleModelPreview::paintGL() {
     for (int i = 0; i < model->objects.size(); i++) {
         glPushMatrix();
 
-        for (int j = 0; j < model->objects[i].groups.size(); j++) {
+        QQuaternion qr(model->objects[i].rotation);
+        float xAxis, yAxis, zAxis, angle;
+        qr.getAxisAndAngle(&xAxis, &yAxis, &zAxis, &angle);
+        glTranslatef(model->objects[i].position.x(), model->objects[i].position.y(), model->objects[i].position.z());
+        glRotatef(angle, xAxis, yAxis, zAxis);
 
-            QQuaternion qr(model->objects[i].rotation);
-            float xAxis, yAxis, zAxis, angle;
-            qr.getAxisAndAngle(&xAxis, &yAxis, &zAxis, &angle);
-            
-            glTranslatef(model->objects[i].position.x(), model->objects[i].position.y(),
-                         model->objects[i].position.z());
-            glRotatef(angle, xAxis, yAxis, zAxis);
-            
+        for (int j = 0; j < model->objects[i].groups.size(); j++) {
             for (int g = 0; g < model->groups[model->objects[i].groups[j]].faces.size(); g++) {
                 glBegin(GL_TRIANGLES);
                 glPushMatrix();

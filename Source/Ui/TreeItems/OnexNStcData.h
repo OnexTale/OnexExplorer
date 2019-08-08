@@ -13,8 +13,8 @@ public:
 
 public slots:
     virtual int onReplace(QString directory) override;
-    virtual void setWidth(int width);
-    virtual void setHeight(int height);
+    virtual void setWidth(int width, bool update = false);
+    virtual void setHeight(int height, bool update = false);
 };
 
 #endif // ONEXNSTCDATA_H

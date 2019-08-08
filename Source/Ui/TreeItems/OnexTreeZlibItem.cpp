@@ -28,7 +28,7 @@ FileInfo *OnexTreeZlibItem::getInfos() {
     connect(this, SIGNAL(changeSignal(QString, int)), infos, SLOT(update(QString, int)));
     connect(this, SIGNAL(changeSignal(QString, float)), infos, SLOT(update(QString, float)));
     connect(this, SIGNAL(changeSignal(QString, bool)), infos, SLOT(update(QString, bool)));
-    connect(this, SIGNAL(replaceInfo(FileInfo*)), infos, SLOT(replace(FileInfo*)));
+    connect(this, SIGNAL(replaceInfo(FileInfo *)), infos, SLOT(replace(FileInfo *)));
 
     return infos;
 }
@@ -56,12 +56,13 @@ QByteArray OnexTreeZlibItem::getHeader() {
     return header;
 }
 
-void OnexTreeZlibItem::setId(int id) {
+void OnexTreeZlibItem::setId(int id, bool update) {
     this->id = id;
-    emit changeSignal("ID", id);
+    if (update)
+        emit changeSignal("ID", id);
 }
 
-void OnexTreeZlibItem::setCreationDate(QString date) {
+void OnexTreeZlibItem::setCreationDate(QString date, bool update) {
     QStringList parts = date.split("/", QString::SplitBehavior::SkipEmptyParts);
     if (parts.size() != 3)
         this->creationDate = 0;
@@ -71,17 +72,20 @@ void OnexTreeZlibItem::setCreationDate(QString date) {
         int day = parts[2].toInt();
         this->creationDate = year + month + day;
     }
-    emit changeSignal("Date", getDateAsString());
+    if (update)
+        emit changeSignal("Date", getDateAsString());
 }
 
-void OnexTreeZlibItem::setCompressed(bool compressed) {
+void OnexTreeZlibItem::setCompressed(bool compressed, bool update) {
     this->compressed = compressed;
-    emit changeSignal("isCompressed", compressed);
+    if (update)
+        emit changeSignal("isCompressed", compressed);
 }
 
-void OnexTreeZlibItem::setHeader(QString header) {
+void OnexTreeZlibItem::setHeader(QString header, bool update) {
     this->header = header.toLocal8Bit();
-    emit changeSignal("Header", header);
+    if (update)
+        emit changeSignal("Header", header);
 }
 
 OnexTreeZlibItem::~OnexTreeZlibItem() {

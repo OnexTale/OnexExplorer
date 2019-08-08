@@ -25,17 +25,17 @@ private:
 private slots:
     virtual int onExport(QString directory);
     virtual int onReplace(QString directory);
-    virtual void setXPosition(int index, float x);
-    virtual void setYPosition(int index, float y);
-    virtual void setZPosition(int index, float z);
-    virtual void setXRotation(int index, float x);
-    virtual void setYRotation(int index, float y);
-    virtual void setZRotation(int index, float z);
-    virtual void setWRotation(int index, float w);
-    virtual void setXScale(int index, float x);
-    virtual void setYScale(int index, float y);
-    virtual void setZScale(int index, float z);
-    virtual void setTexture(int index, int texture);
+    virtual void setXPosition(int index, float x, bool update = false);
+    virtual void setYPosition(int index, float y, bool update = false);
+    virtual void setZPosition(int index, float z, bool update = false);
+    virtual void setXRotation(int index, float x, bool update = false);
+    virtual void setYRotation(int index, float y, bool update = false);
+    virtual void setZRotation(int index, float z, bool update = false);
+    virtual void setWRotation(int index, float w, bool update = false);
+    virtual void setXScale(int index, float x, bool update = false);
+    virtual void setYScale(int index, float y, bool update = false);
+    virtual void setZScale(int index, float z, bool update = false);
+    virtual void setTexture(int index, int texture, bool update = false);
 
 signals:
     void replaceSignal(Model *newModel);

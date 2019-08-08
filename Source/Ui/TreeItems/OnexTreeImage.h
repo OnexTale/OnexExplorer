@@ -26,8 +26,8 @@ public:
 public slots:
     virtual int onExport(QString directory);
     virtual int onReplaceRaw(QString directory);
-    virtual void setWidth(int width) = 0;
-    virtual void setHeight(int height) = 0;
+    virtual void setWidth(int width, bool update = false) = 0;
+    virtual void setHeight(int height, bool update = false) = 0;
     virtual QString getExportExtension();
 
 signals:

@@ -18,14 +18,16 @@ int OnexTreeText::getIsDat() const {
     return isDat;
 }
 
-void OnexTreeText::setFileNumber(int fileNumber) {
+void OnexTreeText::setFileNumber(int fileNumber, bool update) {
     this->fileNumber = fileNumber;
-    emit changeSignal("Filenum", fileNumber);
+    if (update)
+        emit changeSignal("Filenum", fileNumber);
 }
 
-void OnexTreeText::setIsDat(bool isDat) {
+void OnexTreeText::setIsDat(bool isDat, bool update) {
     this->isDat = isDat;
-    emit changeSignal("isDat", isDat);
+    if (update)
+        emit changeSignal("isDat", isDat);
 }
 
 QWidget *OnexTreeText::getPreview() {

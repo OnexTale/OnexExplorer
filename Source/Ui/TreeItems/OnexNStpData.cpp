@@ -182,18 +182,21 @@ int OnexNStpData::onExport(QString directory) {
     return 0;
 }
 
-void OnexNStpData::setWidth(int width) {
+void OnexNStpData::setWidth(int width, bool update) {
     content.replace(0, 2, fromShortToLittleEndian(width));
-    emit changeSignal("Width", width);
+    if (update)
+        emit changeSignal("Width", width);
 }
-void OnexNStpData::setHeight(int height) {
+void OnexNStpData::setHeight(int height, bool update) {
     content.replace(2, 2, fromShortToLittleEndian(height));
-    emit changeSignal("Height", height);
+    if (update)
+        emit changeSignal("Height", height);
 }
 
-void OnexNStpData::setFormat(uint8_t format) {
+void OnexNStpData::setFormat(uint8_t format, bool update) {
     content[4] = format;
-    emit changeSignal("Format", format);
+    if (update)
+        emit changeSignal("Format", format);
 }
 
 OnexNStpData::~OnexNStpData() {

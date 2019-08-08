@@ -67,13 +67,15 @@ int OnexNS4BbData::onReplace(QString directory) {
     }
 }
 
-void OnexNS4BbData::setWidth(int width) {
+void OnexNS4BbData::setWidth(int width, bool update) {
     content.replace(0, 2, fromShortToLittleEndian(width));
-    emit changeSignal("Width", width);
+    if (update)
+        emit changeSignal("Width", width);
 }
-void OnexNS4BbData::setHeight(int height) {
+void OnexNS4BbData::setHeight(int height, bool update) {
     content.replace(2, 2, fromShortToLittleEndian(height));
-    emit changeSignal("Height", height);
+    if (update)
+        emit changeSignal("Height", height);
 }
 
 OnexNS4BbData::~OnexNS4BbData() {

@@ -44,6 +44,12 @@ FileInfo *OnexTreeText::getInfos() {
     if (!hasParent())
         return nullptr;
 
+    FileInfo *infos = generateInfos();
+    connect(this, SIGNAL(replaceInfo(FileInfo *)), infos, SLOT(replace(FileInfo *)));
+    return infos;
+}
+
+FileInfo *OnexTreeText::generateInfos() {
     FileInfo *infos = new FileInfo();
 
     connect(infos->addIntLineEdit("Filenumber", getFileNumber()), &QLineEdit::textChanged,

@@ -88,7 +88,13 @@ FileInfo *OnexNStpData::getInfos() {
     if (!hasParent())
         return nullptr;
 
-    FileInfo *infos = OnexTreeImage::getInfos();
+    FileInfo *infos = generateInfos();
+    connect(this, SIGNAL(replaceInfo(FileInfo *)), infos, SLOT(replace(FileInfo *)));
+    return infos;
+}
+
+FileInfo *OnexNStpData::generateInfos() {
+    FileInfo *infos = OnexTreeImage::generateInfos();
 
     connect(infos->addIntLineEdit("Format", getFormat()), &QLineEdit::textChanged,
             [=](const QString &value) { setFormat(value.toInt()); });

@@ -9,6 +9,7 @@ private:
     int height;
     int xOrigin;
     int yOrigin;
+    FileInfo *generateInfos() override;
 
 public:
     OnexNSmpFrame(QByteArray header, QString name, QByteArray content, int width, int height, int xOrigin, int yOrigin,

@@ -26,6 +26,9 @@ public slots:
     void update(QString title, float value);
     void update(QString title, bool value);
     void replace(FileInfo *newInfo);
-};
 
+signals:
+    void updateInfo(FileInfo *info);
+
+};
 #endif // FILEINFO_H

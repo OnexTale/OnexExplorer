@@ -21,6 +21,7 @@ public slots:
 
 private:
     Model *model;
+    FileInfo *generateInfos() override;
 
 private slots:
     virtual int onExport(QString directory);

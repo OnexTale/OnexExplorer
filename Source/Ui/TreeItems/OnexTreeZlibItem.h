@@ -14,6 +14,7 @@ class OnexTreeZlibItem : public OnexTreeItem {
     int creationDate;
     bool compressed;
     QByteArray header;
+    FileInfo *generateInfos() override;
 
 public:
     OnexTreeZlibItem(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,

@@ -211,6 +211,7 @@ void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTre
     } else {
         previewWindow = item->getPreview();
         infoWindow = item->getInfos();
+        connect(infoWindow, SIGNAL(updateInfo(FileInfo*)), this, SLOT(replaceInfo(FileInfo*)));
         scrollArea->setWidget(infoWindow);
         scrollArea->setMinimumWidth(250);
         scrollArea->setMaximumWidth(250);
@@ -227,6 +228,16 @@ void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTre
     }
 
     ui->previewLayout->addWidget(previewWindow, 0, 0);
+    ui->previewLayout->addWidget(scrollArea, 0, 1);
+}
+
+void MainWindow::replaceInfo(FileInfo *info) {
+    delete ui->previewLayout->takeAt(1)->widget();
+    QScrollArea *scrollArea = new QScrollArea();
+    connect(info, SIGNAL(updateInfo(FileInfo*)), this, SLOT(replaceInfo(FileInfo*)));
+    scrollArea->setWidget(info);
+    scrollArea->setMinimumWidth(250);
+    scrollArea->setMaximumWidth(250);
     ui->previewLayout->addWidget(scrollArea, 0, 1);
 }
 

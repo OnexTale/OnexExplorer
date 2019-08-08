@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>resources/oxe_icon_trans.ico</file>
+        <file>resources/kofi4.png</file>
     </qresource>
 </RCC>

@@ -30,7 +30,13 @@ ImageResolution OnexNStpMipMap::getResolution() {
 }
 
 FileInfo *OnexNStpMipMap::getInfos() {
-    FileInfo *infos = OnexTreeImage::getInfos();
+    FileInfo *infos = generateInfos();
+    connect(this, SIGNAL(replaceInfo(FileInfo *)), infos, SLOT(replace(FileInfo *)));
+    return infos;
+}
+
+FileInfo *OnexNStpMipMap::generateInfos() {
+    FileInfo *infos = OnexTreeImage::generateInfos();
 
     connect(infos->addIntLineEdit("Format", getFormat()), &QLineEdit::textChanged,
             [=](const QString &value) { setFormat(value.toInt()); });

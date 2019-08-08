@@ -4,6 +4,9 @@
 
 class OnexNStpData : public OnexTreeImage {
     Q_OBJECT
+
+private:
+    FileInfo *generateInfos() override;
 public:
     OnexNStpData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate, bool compressed);
     virtual QByteArray getContent() override;

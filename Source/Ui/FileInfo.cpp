@@ -78,8 +78,5 @@ void FileInfo::update(QString title, bool value) {
 }
 
 void FileInfo::replace(FileInfo *info) {
-    qDeleteAll(children());
-    grid = info->grid;
-    rows = grid->rowCount();
-    setLayout(info->layout());
+    emit updateInfo(info);
 }

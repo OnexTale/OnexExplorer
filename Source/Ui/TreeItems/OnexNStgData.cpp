@@ -31,7 +31,13 @@ FileInfo *OnexNStgData::getInfos() {
     if (!hasParent())
         return nullptr;
 
-    FileInfo *infos = OnexTreeZlibItem::getInfos();
+    FileInfo *infos = generateInfos();
+    connect(this, SIGNAL(replaceInfo(FileInfo *)), infos, SLOT(replace(FileInfo *)));
+    return infos;
+}
+
+FileInfo *OnexNStgData::generateInfos() {
+    FileInfo *infos = OnexTreeZlibItem::generateInfos();
 
     for (int i = 0; i < model->objects.size(); i++) {
         connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-x-Position", model->objects[i].position.x()),
@@ -120,7 +126,7 @@ int OnexNStgData::onReplace(QString directory) {
 
     emit replaceSignal(this->model);
 
-    FileInfo *newInfo = getInfos();
+    FileInfo *newInfo = generateInfos();
     emit replaceInfo(newInfo);
 
     return 1;

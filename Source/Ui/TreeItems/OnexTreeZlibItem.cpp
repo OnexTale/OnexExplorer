@@ -13,6 +13,12 @@ FileInfo *OnexTreeZlibItem::getInfos() {
     if (!hasParent())
         return nullptr;
 
+    FileInfo *infos = generateInfos();
+    connect(this, SIGNAL(replaceInfo(FileInfo *)), infos, SLOT(replace(FileInfo *)));
+    return infos;
+}
+
+FileInfo *OnexTreeZlibItem::generateInfos() {
     FileInfo *infos = new FileInfo();
 
     connect(infos->addIntLineEdit("ID", getId()), &QLineEdit::textChanged,
@@ -28,7 +34,6 @@ FileInfo *OnexTreeZlibItem::getInfos() {
     connect(this, SIGNAL(changeSignal(QString, int)), infos, SLOT(update(QString, int)));
     connect(this, SIGNAL(changeSignal(QString, float)), infos, SLOT(update(QString, float)));
     connect(this, SIGNAL(changeSignal(QString, bool)), infos, SLOT(update(QString, bool)));
-    connect(this, SIGNAL(replaceInfo(FileInfo *)), infos, SLOT(replace(FileInfo *)));
 
     return infos;
 }

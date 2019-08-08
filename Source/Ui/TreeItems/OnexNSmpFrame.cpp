@@ -19,7 +19,13 @@ ImageResolution OnexNSmpFrame::getResolution() {
 }
 
 FileInfo *OnexNSmpFrame::getInfos() {
-    FileInfo *infos = OnexTreeImage::getInfos();
+    FileInfo *infos = generateInfos();
+    connect(this, SIGNAL(replaceInfo(FileInfo *)), infos, SLOT(replace(FileInfo *)));
+    return infos;
+}
+
+FileInfo *OnexNSmpFrame::generateInfos() {
+    FileInfo *infos = OnexTreeImage::generateInfos();
 
     connect(infos->addIntLineEdit("x-Origin", getXOrigin()), &QLineEdit::textChanged,
             [=](const QString &value) { setXOrigin(value.toInt()); });

@@ -15,6 +15,7 @@ protected:
     QByteArray content;
     QString name;
     INosFileOpener *opener;
+    virtual FileInfo *generateInfos() = 0;
 
 public:
     OnexTreeItem(QString name, INosFileOpener *opener, QByteArray content = QByteArray());

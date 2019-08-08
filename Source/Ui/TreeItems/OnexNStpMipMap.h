@@ -8,6 +8,7 @@ private:
     int width;
     int height;
     int format;
+    FileInfo *generateInfos() override;
 
 public:
     OnexNStpMipMap(QByteArray header, QString name, QByteArray content, int width, int height, int format,

@@ -8,6 +8,7 @@ class OnexTreeText : public OnexTreeItem {
 private:
     int fileNumber;
     int isDat;
+    FileInfo *generateInfos() override;
 
 public:
     OnexTreeText(QString name, NosTextOpener *opener, int fileNumber = 0, int isDat = 0,

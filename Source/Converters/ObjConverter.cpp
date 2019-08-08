@@ -18,10 +18,6 @@ Model *ObjConverter::fromObj(QString obj) {
     QVector<QVector3D> fileVertices;
     QVector<QVector3D> fileNormals;
     QVector<QVector2D> fileUV;
-    // QVector<QVector3D> facesVertice;
-    // QVector<QVector3D> facesUV;
-    // QVector<QVector3D> facesNormal;
-
     QVector<Face> faces;
     QVector<int> textures;
     int group = -1;
@@ -66,18 +62,6 @@ Model *ObjConverter::fromObj(QString obj) {
             }
         }
     }
-    // ModelGroup mg;
-    // mg.faces = groupFaces;
-    // mg.texture = groupTexture;
-    // mg.number = model->groups.size();
-    // model->groups.append(mg);
-    // objectGroups.append(model->groups.size() - 1);
-    // ModelObject mo;
-    // mo.groups = objectGroups;
-    // mo.position = QVector3D(0, 0, 0);
-    // mo.rotation = QVector4D(0, 0, 0, 0);
-    // mo.scale = QVector3D(0, 0, 0);
-    // model->objects.append(mo);
 
     QVector<QVector3D> vertices;
     QVector<QVector3D> normals;

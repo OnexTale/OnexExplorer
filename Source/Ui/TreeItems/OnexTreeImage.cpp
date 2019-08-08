@@ -34,7 +34,13 @@ QWidget *OnexTreeImage::getPreview() {
 FileInfo *OnexTreeImage::getInfos() {
     if (!hasParent())
         return nullptr;
-    FileInfo *infos = OnexTreeZlibItem::getInfos();
+    FileInfo *infos = generateInfos();
+    connect(this, SIGNAL(replaceInfo(FileInfo *)), infos, SLOT(replace(FileInfo *)));
+    return infos;
+}
+
+FileInfo *OnexTreeImage::generateInfos() {
+    FileInfo *infos = OnexTreeZlibItem::generateInfos();
 
     ImageResolution ir = getResolution();
 
@@ -77,7 +83,7 @@ int OnexTreeImage::onExport(QString directory) {
 int OnexTreeImage::onReplaceRaw(QString directory) {
     int ret = OnexTreeItem::onReplaceRaw(directory);
     emit replaceSignal(getImage());
-    emit replaceInfo(getInfos());
+    emit replaceInfo(generateInfos());
     return ret;
 }
 

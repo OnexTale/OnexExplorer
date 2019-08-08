@@ -101,8 +101,6 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file) {
         file.seek(previousOffset);
     }
 
-    // encrypt(item);
-
     return item;
 }
 

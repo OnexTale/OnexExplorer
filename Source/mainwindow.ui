@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1200</width>
-    <height>700</height>
+    <height>699</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -29,6 +29,42 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="mainLayout">
+    <item row="0" column="1" rowspan="2">
+     <widget class="QWidget" name="previewContainer" native="true">
+      <layout class="QGridLayout" name="previewLayout">
+       <item row="0" column="1">
+        <widget class="QWidget" name="infoWidget" native="true"/>
+       </item>
+       <item row="0" column="0">
+        <widget class="QWidget" name="previewWidget" native="true"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://discord.gg/t73Ayca&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600; text-decoration: underline; color:#000000;&quot;&gt;Custom Client Modding Discord&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item alignment="Qt::AlignRight">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://ko-fi.com/Pumbaa&quot;&gt;&lt;img src=&quot;:/resources/kofi4.png&quot; height=&quot;36&quot;/&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
     <item row="0" column="0">
      <widget class="QLineEdit" name="filterInput">
       <property name="maximumSize">
@@ -40,18 +76,6 @@
       <property name="placeholderText">
        <string>Search...</string>
       </property>
-     </widget>
-    </item>
-    <item row="0" column="1" rowspan="2">
-     <widget class="QWidget" name="previewContainer" native="true">
-      <layout class="QGridLayout" name="previewLayout">
-       <item row="0" column="0">
-        <widget class="QWidget" name="previewWidget" native="true"/>
-       </item>
-       <item row="0" column="1">
-        <widget class="QWidget" name="infoWidget" native="true"/>
-       </item>
-      </layout>
      </widget>
     </item>
     <item row="1" column="0">
@@ -92,7 +116,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>30</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

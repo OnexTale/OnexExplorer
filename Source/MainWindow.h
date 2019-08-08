@@ -31,6 +31,7 @@ public slots:
     void clearMenu();
     void on_actionOpen_triggered();
     void on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *prev);
+    void replaceInfo(FileInfo *info);
     void on_actionClose_selected_triggered();
     void on_actionExit_triggered();
     void on_actionClose_all_triggered();

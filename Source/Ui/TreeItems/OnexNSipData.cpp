@@ -11,9 +11,36 @@ QImage OnexNSipData::getImage() {
     return imageConverter.convertGBAR4444(content, resolution.x, resolution.y, 13);
 }
 
+FileInfo *OnexNSipData::getInfos() {
+    if (!hasParent())
+        return nullptr;
+    FileInfo *infos = generateInfos();
+    connect(this, SIGNAL(replaceInfo(FileInfo *)), infos, SLOT(replace(FileInfo *)));
+    return infos;
+}
+
+FileInfo *OnexNSipData::generateInfos() {
+    FileInfo *infos = OnexTreeImage::generateInfos();
+
+    connect(infos->addIntLineEdit("Center-X", getCenter().x), &QLineEdit::textChanged,
+            [=](const QString &value) { setCenterY(value.toInt()); });
+
+    connect(infos->addIntLineEdit("Center-Y", getCenter().y), &QLineEdit::textChanged,
+            [=](const QString &value) { setCenterX(value.toInt()); });
+
+    return infos;
+}
+
 ImageResolution OnexNSipData::getResolution() {
     int x = fromLittleEndianToShort(content.mid(1, 2));
     int y = fromLittleEndianToShort(content.mid(3, 2));
+
+    return ImageResolution{x, y};
+}
+
+ImageResolution OnexNSipData::getCenter() {
+    int x = fromLittleEndianToShort(content.mid(5, 2));
+    int y = fromLittleEndianToShort(content.mid(7, 2));
 
     return ImageResolution{x, y};
 }
@@ -77,8 +104,21 @@ void OnexNSipData::setWidth(int width, bool update) {
     if (update)
         emit changeSignal("Width", width);
 }
+
 void OnexNSipData::setHeight(int height, bool update) {
     content.replace(3, 2, fromShortToLittleEndian(height));
     if (update)
         emit changeSignal("Height", height);
+}
+
+void OnexNSipData::setCenterX(int center, bool update) {
+    content.replace(5, 2, fromShortToLittleEndian(center));
+    if (update)
+        emit changeSignal("Center-X", center);
+}
+
+void OnexNSipData::setCenterY(int center, bool update) {
+    content.replace(7, 2, fromShortToLittleEndian(center));
+    if (update)
+        emit changeSignal("Center-Y", center);
 }

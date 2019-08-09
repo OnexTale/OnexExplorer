@@ -40,6 +40,9 @@ FileInfo *OnexNStgData::generateInfos() {
     FileInfo *infos = OnexTreeZlibItem::generateInfos();
 
     for (int i = 0; i < model->objects.size(); i++) {
+        connect(infos->addFloatLineEdit("UV-Scale", model->uvScale),
+                &QLineEdit::textChanged, [=](const QString &value) { setUVScale( value.toFloat()); });
+
         connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-x-Position", model->objects[i].position.x()),
                 &QLineEdit::textChanged, [=](const QString &value) { setXPosition(i, value.toFloat()); });
         connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-y-Position", model->objects[i].position.y()),
@@ -121,8 +124,10 @@ int OnexNStgData::onReplace(QString directory) {
         return 0;
     }
 
+    float scale = model->uvScale;
     ObjConverter *oc = new ObjConverter();
     model = oc->fromObj(obj);
+    model->uvScale = scale;
 
     emit replaceSignal(this->model);
 
@@ -140,7 +145,7 @@ QByteArray OnexNStgData::getContent() {
 
     NosModelConverter *nmc = new NosModelConverter();
 
-    newContent.append(nmc->toBinary(model, 0.00005));
+    newContent.append(nmc->toBinary(model));
 
     content = newContent;
     return content;
@@ -207,6 +212,12 @@ void OnexNStgData::setTexture(int index, int texture, bool update) {
     model->groups[index].texture = texture;
     if (update)
         emit changeSignal("Texture-" + QString::number(index), texture);
+}
+
+void OnexNStgData::setUVScale(float scale, bool update) {
+    model->uvScale = scale;
+    if (update)
+        emit changeSignal("UV-Scale", scale);
 }
 
 QString OnexNStgData::getExportExtension() {

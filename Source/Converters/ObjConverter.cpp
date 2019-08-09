@@ -119,6 +119,7 @@ Model *ObjConverter::fromObj(QString obj) {
     model->vertices = vertices;
     model->normals = normals;
     model->uv = uv;
+    model->uvScale = 0.0005;
 
     for (int i = 0; i <= object; i++) {
         ModelObject mo;

@@ -19,7 +19,7 @@ private:
 public:
     NosModelConverter();
     Model *fromBinary(QByteArray obj);
-    QByteArray toBinary(Model *model, float uvScale);
+    QByteArray toBinary(Model *model);
 };
 
 #endif // NOSMODELCONVERTER_H

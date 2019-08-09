@@ -44,6 +44,7 @@ struct Model {
     QVector<QVector2D> uv;
     QVector<ModelGroup> groups;
     QVector<ModelObject> objects;
+    float uvScale;
 };
 
 class IModelConverter {

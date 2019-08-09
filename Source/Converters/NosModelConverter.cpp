@@ -12,6 +12,7 @@ Model *NosModelConverter::fromBinary(QByteArray obj) {
     float uvScale = fromLittleEndianToFloat(obj.mid(0x30, 4));
     int verticeCount = fromLittleEndianToShort(obj.mid(0x34, 2));
     int offset = 0x36;
+    model->uvScale = uvScale;
     model->vertices = readNosVertices(obj, offset, verticeCount);
     model->uv = readNosUV(obj, offset, verticeCount, uvScale);
     model->normals = readNosNormals(obj, offset, verticeCount);
@@ -22,9 +23,9 @@ Model *NosModelConverter::fromBinary(QByteArray obj) {
     return model;
 }
 
-QByteArray NosModelConverter::toBinary(Model *model, float uvScale) {
+QByteArray NosModelConverter::toBinary(Model *model) {
     QByteArray newContent;
-    newContent.append(fromFloatToLittleEndian(uvScale));
+    newContent.append(fromFloatToLittleEndian(model->uvScale));
     newContent.append(fromShortToLittleEndian(model->vertices.size()));
 
     for (int i = 0; i < model->vertices.size(); i++) {
@@ -34,13 +35,9 @@ QByteArray NosModelConverter::toBinary(Model *model, float uvScale) {
     }
     for (int i = 0; i < model->uv.size(); i++) {
         float u = model->uv[i].x();
-        if ((int)u != 1 && (int)u != -1)
-            u -= (int)u;
-        u /= uvScale;
+        u /= model->uvScale;
         float v = model->uv[i].y();
-        if ((int)v != 1 && (int)v != -1)
-            v -= (int)v;
-        v = (1.0 - v) / uvScale;
+        v = (1.0 - v) / model->uvScale;
         newContent.append(fromShortToLittleEndian(u));
         newContent.append(fromShortToLittleEndian(v));
     }

@@ -14,6 +14,11 @@ SingleModelPreview::SingleModelPreview(Model *model, QWidget *parent) : QOpenGLW
 
     mouse.X = 0;
     mouse.Y = 0;
+
+    setMinimumHeight(600);
+    setMaximumHeight(600);
+    setMinimumWidth(650);
+    setMaximumWidth(650);
 }
 
 void SingleModelPreview::initializeGL() {
@@ -22,7 +27,8 @@ void SingleModelPreview::initializeGL() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    gluPerspective(60, (float)width() / (float)height(), 0, 300);
+    glViewport(0,0,width(), height());
+    gluPerspective(65, (float)width() / (float)height(), 0.1, 300);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -54,6 +60,7 @@ void SingleModelPreview::paintGL() {
         qr.getAxisAndAngle(&xAxis, &yAxis, &zAxis, &angle);
         glTranslatef(model->objects[i].position.x(), model->objects[i].position.y(), model->objects[i].position.z());
         glRotatef(angle, xAxis, yAxis, zAxis);
+        glScalef(model->objects[i].scale.x(),model->objects[i].scale.y(), model->objects[i].scale.z());
 
         for (int j = 0; j < model->objects[i].groups.size(); j++) {
             for (int g = 0; g < model->groups[model->objects[i].groups[j]].faces.size(); g++) {

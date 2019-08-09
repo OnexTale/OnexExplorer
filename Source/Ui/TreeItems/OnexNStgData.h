@@ -37,7 +37,7 @@ private slots:
     virtual void setYScale(int index, float y, bool update = false);
     virtual void setZScale(int index, float z, bool update = false);
     virtual void setTexture(int index, int texture, bool update = false);
-    virtual void setUVScale(float scale, bool update);
+    virtual void setUVScale(float scale, bool update = false);
 
 signals:
     void replaceSignal(Model *newModel);

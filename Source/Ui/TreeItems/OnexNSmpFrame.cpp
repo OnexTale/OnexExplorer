@@ -62,8 +62,8 @@ int OnexNSmpFrame::onReplace(QString directory) {
             return 0;
     }
 
-    setWidth(image.width());
-    setHeight(image.height());
+    setWidth(image.width(), true);
+    setHeight(image.height(), true);
 
     content = imageConverter.toGBAR4444(image);
     emit OnexTreeImage::replaceSignal(this->getImage());

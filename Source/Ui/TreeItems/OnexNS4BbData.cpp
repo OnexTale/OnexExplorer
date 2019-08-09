@@ -57,8 +57,8 @@ int OnexNS4BbData::onReplace(QString directory) {
         newContent.push_back(imageConverter.toBGRA8888_INTERLACED(image));
 
         content = newContent;
-        setWidth(image.width());
-        setHeight(image.height());
+        setWidth(image.width(), true);
+        setHeight(image.height(), true);
 
         emit OnexTreeImage::replaceSignal(this->getImage());
 

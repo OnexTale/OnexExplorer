@@ -94,8 +94,8 @@ int OnexNStpMipMap::onReplace(QString directory) {
         newContent.push_back(imageConverter.toGrayscale(image));
 
     content = newContent;
-    setWidth(image.width());
-    setHeight(image.height());
+    setWidth(image.width(), true);
+    setHeight(image.height(), true);
 
     emit OnexTreeImage::replaceSignal(this->getImage());
 

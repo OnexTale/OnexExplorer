@@ -90,7 +90,30 @@ int OnexTreeText::onExport(QString directory) {
 }
 
 int OnexTreeText::onReplace(QString directory) {
-    int count = OnexTreeItem::onReplace(directory);
+    int count = 0;
+    if (this->childCount() > 0) {
+        for (int i = 0; i < this->childCount(); i++) {
+            OnexTreeItem *item = static_cast<OnexTreeItem *>(this->child(i));
+            count += item->onReplace(directory);
+        }
+    } else {
+        QString path;
+        if (!directory.endsWith(getExportExtension()))
+            path = directory + this->getName();
+        else
+            path = directory;
+
+        QFile file(path);
+        if (file.open(QIODevice::ReadOnly)) {
+            this->content = file.readAll();
+            count = 1;
+        }
+        else {
+            QMessageBox::critical(NULL, "Woops", "Couldn't open " + path);
+            return 0;
+        }
+    }
+
     emit replaceSignal(this->getContent());
     return count;
 }

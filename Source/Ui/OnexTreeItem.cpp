@@ -124,7 +124,7 @@ int OnexTreeItem::onReplace(QString directory) {
         return count;
     } else {
         QString path;
-        if (!directory.split(".").size() == 0)
+        if (directory.split(".").size() == 0)
             path = directory + this->getName();
         else
             path = directory;

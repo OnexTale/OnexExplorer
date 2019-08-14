@@ -1,6 +1,5 @@
 #ifndef NOSENUMTYPES_H
 #define NOSENUMTYPES_H
-
 #define PCHPKG 1
 #define NStuData 2
 #define NStkData 3
@@ -22,7 +21,6 @@
 #define NSeffData 23
 #define NSipData 24
 #define NSgrdData 26
-
 #define NS4BbData 101 // temporary
 #define NSipData2006 103
 

@@ -1,15 +1,13 @@
 #ifndef IMAGECONVERTER_H
 #define IMAGECONVERTER_H
+
 #include <QColor>
 #include <QImage>
 #include <QMap>
 #include <QtEndian>
 
 class ImageConverter {
-    private:
-    QMap<int, QColor> colors;
-
-    public:
+public:
     QImage convertGBAR4444(QByteArray &array, int width, int height, int startByte = 0);
     QImage convertBGRA8888(QByteArray &array, int width, int height, int startByte = 0);
     QImage convertARGB555(QByteArray &array, int width, int height, int startByte = 0);
@@ -25,6 +23,8 @@ class ImageConverter {
     QByteArray toBARG4444(QImage &image);
     QByteArray toGrayscale(QImage &image);
     ImageConverter();
+private:
+    QMap<int, QColor> colors;
 };
 
 #endif // IMAGECONVERTER_H

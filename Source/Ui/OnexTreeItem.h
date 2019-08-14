@@ -1,5 +1,6 @@
 #ifndef ONEXTREEITEM_H
 #define ONEXTREEITEM_H
+
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -10,50 +11,46 @@
 #include "FileInfo.h"
 
 class OnexTreeItem : public QObject, public QTreeWidgetItem {
-    Q_OBJECT
-protected:
-    QByteArray content;
-    QString name;
-    INosFileOpener *opener;
-    virtual FileInfo *generateInfos() = 0;
-
+Q_OBJECT
 public:
-    OnexTreeItem(QString name, INosFileOpener *opener, QByteArray content = QByteArray());
+    OnexTreeItem(const QString &name, INosFileOpener *opener, QByteArray content = QByteArray());
+    ~OnexTreeItem() override;
+    virtual QWidget *getPreview() = 0;
+    virtual FileInfo *getInfos();
+    bool hasParent();
     virtual QString getName();
     virtual QByteArray getContent();
-    bool hasParent();
+    int getContentSize();
+    virtual QString getExportExtension();
+    QString getExportExtensionFilter();
     short fromLittleEndianToShort(QByteArray array);
     int fromLittleEndianToInt(QByteArray array);
     float fromLittleEndianToFloat(QByteArray array);
     QByteArray fromShortToLittleEndian(short number);
     QByteArray fromIntToLittleEndian(int number);
     QByteArray fromFloatToLittleEndian(float number);
-    int getContentSize();
-
-    virtual QWidget *getPreview() = 0;
-    virtual FileInfo *getInfos() = 0;
-    virtual ~OnexTreeItem();
-
-    QMessageBox getMsgBox(QString title, QString message, QMessageBox::Icon icon);
-
 public slots:
     virtual void setName(QString name);
+    virtual int onExportAsOriginal(QString path);
     virtual void setContent(QByteArray content);
     virtual int onExport(QString directory);
     virtual int onExportRaw(QString directory);
-    virtual int onExportAsOriginal(QString path);
     virtual int onReplace(QString directory);
     virtual int onReplaceRaw(QString directory);
-    virtual void onDelete();
-    virtual void actionClose();
-    virtual QString getExportExtension();
-    
+    virtual int afterReplace(QByteArray content);
 signals:
     void changeSignal(QString title, QString value);
     void changeSignal(QString title, int value);
     void changeSignal(QString title, float value);
     void changeSignal(QString title, bool value);
     void replaceInfo(FileInfo *info);
+protected:
+    QByteArray content;
+    QString name;
+    INosFileOpener *opener;
+    virtual FileInfo *generateInfos() = 0;
+    virtual int saveAsFile(const QString &path, QByteArray content = QByteArray());
+    QString getCorrectPath(QString input, QString extension = QString());
 };
 
 #endif // ONEXTREEITEM_H

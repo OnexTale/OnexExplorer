@@ -11,23 +11,19 @@ struct ModelAnimationPositionFrame {
     int timestamp;
     QVector3D position;
 };
-
 struct ModelAnimationRotationFrame {
     int timestamp;
     QVector4D rotation;
 };
-
 struct ModelAnimationScaleFrame {
     int timestamp;
     QVector3D scale;
 };
-
 struct ModelGroup {
     int number;
     QVector<QVector3D> faces;
     int texture;
 };
-
 struct ModelObject {
     QVector<int> groups;
     QVector3D position;
@@ -37,7 +33,6 @@ struct ModelObject {
     QVector<ModelAnimationRotationFrame> animationRotations;
     QVector<ModelAnimationScaleFrame> animationScales;
 };
-
 struct Model {
     QVector<QVector3D> vertices;
     QVector<QVector3D> normals;

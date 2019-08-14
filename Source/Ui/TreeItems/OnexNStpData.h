@@ -1,28 +1,29 @@
 #ifndef ONEXNSTPDATA_H
 #define ONEXNSTPDATA_H
+
 #include "OnexTreeImage.h"
 
 class OnexNStpData : public OnexTreeImage {
-    Q_OBJECT
-
-private:
-    FileInfo *generateInfos() override;
+Q_OBJECT
 public:
-    OnexNStpData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate, bool compressed);
-    virtual QByteArray getContent() override;
+    OnexNStpData(const QByteArray &header, const QString &name, const QByteArray &content, NosZlibOpener *opener,
+                 int id, int creationDate,
+                 bool compressed);
+
+    ~OnexNStpData() override;
+    QByteArray getContent() override;
+    QImage getImage() override;
+    ImageResolution getResolution() override;
     int getFormat();
     int getFileAmount();
-    virtual QImage getImage() override;
-    virtual ImageResolution getResolution() override;
-    virtual FileInfo *getInfos() override;
-    virtual ~OnexNStpData();
-
 public slots:
-    virtual int onReplace(QString directory) override;
-    virtual int onExport(QString directory) override;
-    virtual void setWidth(int width, bool update = false);
-    virtual void setHeight(int height, bool update = false);
-    virtual void setFormat(uint8_t format, bool update = false);
+    int afterReplace(QImage image) override;
+    void setWidth(int width, bool update = false) override;
+    void setHeight(int height, bool update = false) override;
+    void setFormat(uint8_t format, bool update = false);
+protected:
+    FileInfo *generateInfos() override;
+    void generateMipMap();
 };
 
 #endif // ONEXNSTPDATA_H

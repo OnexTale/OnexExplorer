@@ -1,5 +1,6 @@
 #ifndef ONEXTREEZLIBITEM_H
 #define ONEXTREEZLIBITEM_H
+
 #include "../../Openers/NosZlibOpener.h"
 #include "../OnexTreeItem.h"
 #include <QCheckBox>
@@ -8,32 +9,29 @@
 #include <QLineEdit>
 
 class OnexTreeZlibItem : public OnexTreeItem {
-    Q_OBJECT
- protected:
+Q_OBJECT
+public:
+    OnexTreeZlibItem(QByteArray header, const QString &name, QByteArray content, NosZlibOpener *opener, int id,
+                     int creationDate,
+                     bool compressed);
+    ~OnexTreeZlibItem() override;
+    QWidget *getPreview() override;
+    QByteArray getHeader();
+    int getId();
+    int getCreationDate();
+    QString getDateAsString();
+    bool isCompressed();
+public slots:
+    void setHeader(const QString &header, bool update = false);
+    void setId(int id, bool update = false);
+    void setCreationDate(const QString &date, bool update = false);
+    void setCompressed(bool compressed, bool update = false);
+protected:
     int id;
     int creationDate;
     bool compressed;
     QByteArray header;
     FileInfo *generateInfos() override;
-
-public:
-    OnexTreeZlibItem(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
-                     bool compressed);
-    virtual QWidget *getPreview() override;
-    virtual FileInfo *getInfos() override;
-    int getId();
-    int getCreationDate();
-    QString getDateAsString();
-    bool isCompressed();
-    QByteArray getHeader();
-    virtual ~OnexTreeZlibItem();
-    
-
-public slots:
-    void setId(int id, bool update = false);
-    void setCreationDate(QString date, bool update = false);
-    void setCompressed(bool compressed, bool update = false);
-    void setHeader(QString header, bool update = false);
 };
 
 #endif // ONEXTREEZLIBITEM_H

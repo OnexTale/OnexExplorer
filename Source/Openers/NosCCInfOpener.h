@@ -6,11 +6,11 @@
 #include <QObject>
 
 class NosCCInfOpener : public QObject, public INosFileOpener {
-    Q_OBJECT
-    public:
+Q_OBJECT
+public:
     NosCCInfOpener();
-    virtual OnexTreeItem *decrypt(QFile &file);
-    virtual QByteArray encrypt(OnexTreeItem *item);
+    OnexTreeItem *decrypt(QFile &file);
+    QByteArray encrypt(OnexTreeItem *item);
 };
 
 #endif // NOSCCINFOPENER_H

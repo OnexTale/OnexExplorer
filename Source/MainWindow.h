@@ -15,57 +15,51 @@
 namespace Ui {
     class MainWindow;
 }
-
 class MainWindow : public QMainWindow {
-    Q_OBJECT
-
+Q_OBJECT
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() override;
     const QString VERSION = "v0.6.1";
-
-
 public slots:
-    void filterItems();
-    void onCustomMenuShow(const QPoint &point);
-    void clearMenu();
     void on_actionOpen_triggered();
     void on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *prev);
     void replaceInfo(FileInfo *info);
-    void on_actionClose_selected_triggered();
-    void on_actionExit_triggered();
-    void on_actionClose_all_triggered();
     void on_actionReplace_triggered();
     void on_actionExport_triggered();
     void on_actionExport_to_raw_triggered();
     void on_actionReplace_with_raw_triggered();
+    void on_actionSave_triggered();
+    void on_actionSave_as_triggered();
+    void filterItems();
+    void onCustomMenuShow(const QPoint &point);
+    void clearMenu();
+    void on_actionClose_selected_triggered();
+    void on_actionClose_all_triggered();
+    void on_actionExit_triggered();
     void on_actionAbout_triggered();
     void on_actionHelp_triggered();
-    void on_actionSave_as_triggered();
-
-private slots:
-    void on_actionSave_triggered();
-
 private:
     Ui::MainWindow *ui;
+    QMenu *contextMenu = nullptr;
     NosTextOpener textOpener;
     NosZlibOpener zlibOpener;
     NosCCInfOpener ccinfOpener;
-    QMenu *contextMenu = nullptr;
-
     QString inExportPath;
     QString nosPath;
-
-    void openFile(QString path);
-    void handleOpenResults(OnexTreeItem *item, QString path);
+    void openFile(const QString &path);
+    void handleOpenResults(OnexTreeItem *item, const QString &path);
     int hasValidHeader(QFile &file);
-
-    QString getSelectedDirectory(QString suggestion);
-    QString getOpenFile(QString suggestion, QString filter);
-    QString getSaveDirectory(QString suggestion, QString filter);
-
-    virtual void dropEvent(QDropEvent *e) override;
-    virtual void dragEnterEvent(QDragEnterEvent *e) override;
+    template<typename TreeFunction>
+    void fileOperationOnSelectedItems(TreeFunction treeFunction, QString &defaultPath, QString operationName, bool saveDialog, QString filter = QString());
+    QString getSelectedDirectory(const QString &suggestion);
+    QString getOpenFile(const QString &suggestion, const QString &filter);
+    QStringList getOpenFiles(const QString &suggestion, const QString &filter);
+    QString getSaveDirectory(const QString &suggestion, const QString &filter);
+    void dropEvent(QDropEvent *e) override;
+    void dragEnterEvent(QDragEnterEvent *e) override;
+    OnexTreeItem *getTreeRoot();
+    QString neatPath(QString path);
 };
 
 #endif // MAINWINDOW_H

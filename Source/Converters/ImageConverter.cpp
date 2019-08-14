@@ -6,57 +6,45 @@ QImage ImageConverter::convertGBAR4444(QByteArray &array, int width, int height,
 {
     qDebug() << "Opened GBAR4444 image.";
     QImage img(width, height, QImage::Format_ARGB32);
-
     img.fill(Qt::transparent);
-
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             uchar gb = array.at(startByte + y * 2 * width + x * 2);
             uchar ar = array.at(startByte + y * 2 * width + x * 2 + 1);
-
             uchar g = gb >> 4;
             uchar b = gb & 0xF;
             uchar a = ar >> 4;
             uchar r = ar & 0xF;
-
             img.setPixel(x, y, qRgba(r * 0x11, g * 0x11, b * 0x11, a * 0x11));
         }
     }
-
     return img;
 }
 
 QImage ImageConverter::convertBGRA8888(QByteArray &array, int width, int height, int startByte) {
     qDebug() << "Opened BGRA8888 image.";
     QImage img(width, height, QImage::Format_ARGB32);
-
     img.fill(Qt::transparent);
-
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             uchar b = array.at(startByte + y * 4 * width + x * 4);
             uchar g = array.at(startByte + y * 4 * width + x * 4 + 1);
             uchar r = array.at(startByte + y * 4 * width + x * 4 + 2);
             uchar a = array.at(startByte + y * 4 * width + x * 4 + 3);
-
             img.setPixel(x, y, qRgba(r, g, b, a));
         }
     }
-
     return img;
 }
 
 QImage ImageConverter::convertARGB555(QByteArray &array, int width, int height, int startByte) {
     qDebug() << "Opened ARGB555 image.";
     QImage img(width, height, QImage::Format_ARGB32);
-
     img.fill(Qt::transparent);
-
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             ushort bytes = qFromLittleEndian<qint16>(
-                reinterpret_cast<const uchar *>(array.mid(startByte + y * 2 * width + x * 2, 2).data()));
-
+                    reinterpret_cast<const uchar *>(array.mid(startByte + y * 2 * width + x * 2, 2).data()));
             uchar a = 255 * (bytes & 0x8000) >> 15; // 0x8000 = 0b1000000000000000
             uchar r = 8 * (bytes & 0x7C00) >> 10;   // 0x7C00 = 0b0111110000000000
             uchar g = 8 * (bytes & 0x3E0) >> 5;     // 0x3E0 = 0b0000001111100000
@@ -65,7 +53,6 @@ QImage ImageConverter::convertARGB555(QByteArray &array, int width, int height, 
             img.setPixel(x, y, qRgba(r, g, b, a));
         }
     }
-
     return img;
 }
 
@@ -73,7 +60,6 @@ QImage ImageConverter::convertNSTC(QByteArray &array, int width, int height, int
     qDebug() << "Opened NSTC image.";
     QImage img(width, height, QImage::Format_ARGB32);
     img.fill(Qt::transparent);
-
     for (int x = 0; x < width; ++x) {
         for (int y = 0; y < height; ++y) {
             uchar value = array.at(startByte + y * width + x);
@@ -83,7 +69,6 @@ QImage ImageConverter::convertNSTC(QByteArray &array, int width, int height, int
                 img.setPixel(x, y, colors[0xFF].rgb());
         }
     }
-
     return img.scaled(QSize(width * 2, height * 2));
 }
 
@@ -91,7 +76,6 @@ QImage ImageConverter::convertBGRA8888_INTERLACED(QByteArray &array, int width, 
     qDebug() << "Opened BGRA888_INTERLACED image.";
     QImage img(width, height, QImage::Format_ARGB32);
     img.fill(Qt::transparent);
-
     short num = 0, x = 0, y = 0;
     for (int i = 0; i < array.size() - startByte;) {
         uchar b = array.at(startByte + i++);
@@ -99,7 +83,6 @@ QImage ImageConverter::convertBGRA8888_INTERLACED(QByteArray &array, int width, 
         uchar r = array.at(startByte + i++);
         uchar a = array.at(startByte + i++);
         img.setPixel(x, y, qRgba(r, g, b, a));
-
         x++;
         if (x == (num + 256) || x == width) {
             x = num;
@@ -119,66 +102,51 @@ QImage ImageConverter::convertBARG4444(QByteArray &array, int width, int height,
 {
     qDebug() << "Opened BARG4444 image.";
     QImage img(width, height, QImage::Format_ARGB32);
-
     img.fill(Qt::transparent);
-
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             uchar ba = array.at(startByte + y * 2 * width + x * 2);
             uchar rg = array.at(startByte + y * 2 * width + x * 2 + 1);
-
             uchar b = ba >> 4;
             uchar a = ba & 0xF;
             uchar r = rg >> 4;
             uchar g = rg & 0xF;
-
             img.setPixel(x, y, qRgba(r * 0x11, g * 0x11, b * 0x11, a * 0x11));
         }
     }
-
     return img;
 }
 
-QImage ImageConverter::convertGrayscale(QByteArray& array, int width, int height, int startByte)
-{
-	//qDebug() << "Opened Grayscale image.";
-	QImage img(width, height, QImage::Format_ARGB32);
-
-	img.fill(Qt::transparent);
-
-	for (int y = 0; y < height; ++y)
-	{
-		for (int x = 0; x < width; ++x)
-		{
-			uchar gray = array.at(startByte + y * width + x);
-			img.setPixel(x, y, qRgba(gray, gray, gray, gray));
-		}
-	}
-
-	return img;
+QImage ImageConverter::convertGrayscale(QByteArray &array, int width, int height, int startByte) {
+    //qDebug() << "Opened Grayscale image.";
+    QImage img(width, height, QImage::Format_ARGB32);
+    img.fill(Qt::transparent);
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            uchar gray = array.at(startByte + y * width + x);
+            img.setPixel(x, y, qRgba(gray, gray, gray, gray));
+        }
+    }
+    return img;
 }
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////
 QByteArray ImageConverter::toGBAR4444(QImage &image) {
     qDebug() << "Replaced GBAR4444 image.";
     QByteArray data;
-
     for (int y = 0; y < image.height(); ++y) {
         for (int x = 0; x < image.width(); ++x) {
             QRgb currentPixel = image.pixel(x, y);
-
             uchar green = qGreen(currentPixel) / 0x11;
             uchar blue = qBlue(currentPixel) / 0x11;
             uchar alpha = qAlpha(currentPixel) / 0x11;
             uchar red = qRed(currentPixel) / 0x11;
-
             uchar gb = (green << 4) + blue;
             uchar ar = (alpha << 4) + red;
-
             data.push_back(gb);
             data.push_back(ar);
         }
     }
-
     return data;
 }
 
@@ -186,7 +154,6 @@ QByteArray ImageConverter::toNSTC(QImage &image) {
     qDebug() << "Replaced NSTC image.";
     QByteArray data;
     int i = 0, j = 0;
-
     for (int y = 0; y < image.height(); ++y) {
         for (int x = 0; x < image.width(); ++x) {
             QRgb currentPixel = image.pixel(x, y);
@@ -206,7 +173,6 @@ QByteArray ImageConverter::toNSTC(QImage &image) {
 QByteArray ImageConverter::toBGRA8888(QImage &image) {
     qDebug() << "Replaced BGRA8888 image.";
     QByteArray data;
-
     for (int y = 0; y < image.height(); ++y) {
         for (int x = 0; x < image.width(); ++x) {
             QRgb currentPixel = image.pixel(x, y);
@@ -214,14 +180,12 @@ QByteArray ImageConverter::toBGRA8888(QImage &image) {
             uchar red = qRed(currentPixel);
             uchar green = qGreen(currentPixel);
             uchar blue = qBlue(currentPixel);
-
             data.push_back(blue);
             data.push_back(green);
             data.push_back(red);
             data.push_back(alpha);
         }
     }
-
     return data;
 }
 
@@ -229,32 +193,26 @@ QByteArray ImageConverter::toARGB555(QImage &image) {
     qDebug() << "Replaced ARGB555 image.";
     // NOPE
     QByteArray data;
-
     for (int y = 0; y < image.height(); ++y) {
         for (int x = 0; x < image.width(); ++x) {
             QRgb currentPixel = image.pixel(x, y);
-
             uchar alpha = qAlpha(currentPixel) / 0xFF; // full alpha or gtfo
             uchar red = qRed(currentPixel) / 0x08;
             uchar green = qGreen(currentPixel) / 0x08;
             uchar blue = qBlue(currentPixel) / 0x08;
-
             ushort bytes = (alpha << 15) | (red << 10) | (green << 5) | (blue);
-
             uchar first = bytes >> 8;
             uchar second = bytes & 0xFF;
             data.push_back(second);
             data.push_back(first);
         }
     }
-
     return data;
 }
 
 QByteArray ImageConverter::toBGRA8888_INTERLACED(QImage &image) {
     qDebug() << "Replaced BGRA8888_INTERLACED image.";
     QByteArray data;
-
     short num = 0, x = 0, y = 0;
     for (int i = 0; i < image.width() * image.height(); i++) {
         QRgb currentPixel = image.pixel(x, y);
@@ -266,7 +224,6 @@ QByteArray ImageConverter::toBGRA8888_INTERLACED(QImage &image) {
         data.push_back(g);
         data.push_back(r);
         data.push_back(a);
-
         x++;
         if (x == (num + 256) || x == image.width()) {
             x = num;
@@ -278,7 +235,6 @@ QByteArray ImageConverter::toBGRA8888_INTERLACED(QImage &image) {
             x = num;
         }
     }
-
     return data;
 }
 
@@ -286,43 +242,33 @@ QByteArray ImageConverter::toBARG4444(QImage &image) {
     qDebug() << "Replaced BARG4444 image.";
     // only in 2k6 NSip, not tested, should work tho as its the same as GBAR4444 but different order.
     QByteArray data;
-
     for (int y = 0; y < image.height(); ++y) {
         for (int x = 0; x < image.width(); ++x) {
             QRgb currentPixel = image.pixel(x, y);
-
             uchar blue = qBlue(currentPixel) / 0x11;
             uchar alpha = qAlpha(currentPixel) / 0x11;
             uchar red = qRed(currentPixel) / 0x11;
             uchar green = qGreen(currentPixel) / 0x11;
-
             uchar ba = (blue << 4) + alpha;
             uchar rg = (red << 4) + green;
-
             data.push_back(ba);
             data.push_back(rg);
         }
     }
-
     return data;
 }
 
-QByteArray ImageConverter::toGrayscale(QImage &image)
-{
-	//qDebug() << "Replaced Grayscale image.";
-	QByteArray data;
-
-	for (int y = 0; y < image.height(); ++y)
-	{
-		for (int x = 0; x < image.width(); ++x)
-		{
-			QRgb currentPixel = image.pixel(x, y);
-			uchar gray = qGreen(currentPixel);
-			data.push_back(gray);
-		}
-	}
-
-	return data;
+QByteArray ImageConverter::toGrayscale(QImage &image) {
+    //qDebug() << "Replaced Grayscale image.";
+    QByteArray data;
+    for (int y = 0; y < image.height(); ++y) {
+        for (int x = 0; x < image.width(); ++x) {
+            QRgb currentPixel = image.pixel(x, y);
+            uchar gray = qGreen(currentPixel);
+            data.push_back(gray);
+        }
+    }
+    return data;
 }
 
 ImageConverter::ImageConverter() {

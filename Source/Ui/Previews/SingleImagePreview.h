@@ -14,21 +14,16 @@
 namespace Ui {
     class SingleImagePreview;
 }
-
 class SingleImagePreview : public QWidget {
-    Q_OBJECT
-
+Q_OBJECT
 public:
-    explicit SingleImagePreview(QImage image, QWidget *parent = 0);
-    ~SingleImagePreview();
-
+    explicit SingleImagePreview(const QImage &image, QWidget *parent = nullptr);
+    ~SingleImagePreview() override;
+private slots:
+    void onReplaced(const QImage &newImage);
 private:
     Ui::SingleImagePreview *ui;
     ImageConverter converter;
-    qint16 byteArrayToShort(QByteArray array);
-
-private slots:
-    void onReplaced(QImage newImage);
 };
 
 #endif // SINGLEIMAGEPREVIEW_H

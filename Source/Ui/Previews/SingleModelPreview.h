@@ -12,7 +12,6 @@ struct Mouse {
     int X;
     int Y;
 };
-
 struct Camera {
     float X;
     float Y;
@@ -22,23 +21,21 @@ struct Camera {
 };
 
 class SingleModelPreview : public QOpenGLWidget {
-    Q_OBJECT
+Q_OBJECT
 public:
-    SingleModelPreview(Model *model, QWidget *parent = 0);
-    ~SingleModelPreview();
-
-private:
-    Model *model;
-    Camera camera;
-    Mouse mouse;
-    void initializeGL();
-    void paintGL();
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void wheelEvent(QWheelEvent *event);
-
+    explicit SingleModelPreview(Model *model, QWidget *parent = nullptr);
+    ~SingleModelPreview() override;
 private slots:
     void onReplaced(Model *model);
+private:
+    Model *model;
+    Camera camera{};
+    Mouse mouse{};
+    void initializeGL() override;
+    void paintGL() override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 };
 
 #endif // SINGLEMODELPREVIEW_H

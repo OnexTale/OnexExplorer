@@ -1,5 +1,6 @@
 #ifndef OBJCONVERTER_H
 #define OBJCONVERTER_H
+
 #include "IModelConverter.h"
 #include <QByteArray>
 #include <QString>
@@ -8,15 +9,22 @@
 #include <QVector2D>
 #include <QVector3D>
 
-class ObjConverter : public IModelConverter {
-private:
-    QString generateObjFile(Model *model, QString name);
-    QString generateMtlFile(Model *model);
+struct Face {
+    int object;
+    int group;
+    QVector3D v;
+    QVector3D vt;
+    QVector3D vn;
+};
 
+class ObjConverter : public IModelConverter {
 public:
     ObjConverter();
-    Model *fromObj(QString obj);
+    Model *fromObj(const QString &obj);
     QStringList toObj(Model *model, QString name);
+private:
+    QString generateObjFile(Model *model, const QString &name);
+    QString generateMtlFile(Model *model);
 };
 
 #endif // OBJCONVERTER_H

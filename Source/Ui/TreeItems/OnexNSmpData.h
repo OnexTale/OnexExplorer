@@ -1,20 +1,20 @@
 #ifndef ONEXNSMPDATA_H
 #define ONEXNSMPDATA_H
+
 #include "../../Openers/NosZlibOpener.h"
 #include "OnexTreeZlibItem.h"
 
 class OnexNSmpData : public OnexTreeZlibItem {
-    Q_OBJECT
+Q_OBJECT
 public:
-    OnexNSmpData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate, bool compressed);
-    virtual QByteArray getContent() override;
-    virtual ~OnexNSmpData();
-    virtual QWidget *getPreview() override;
-
+    OnexNSmpData(const QByteArray &header, const QString &name, const QByteArray &content, NosZlibOpener *opener,
+                 int id, int creationDate,
+                 bool compressed);
+    ~OnexNSmpData() override;
+    QWidget *getPreview() override;
+    QByteArray getContent() override;
 public slots:
-    virtual int onExport(QString directory);
-    virtual int onReplace(QString directory);
-
+    int afterReplace(QByteArray content) override;
 signals:
     void replaceSignal(QList<QImage> *newImages);
 };

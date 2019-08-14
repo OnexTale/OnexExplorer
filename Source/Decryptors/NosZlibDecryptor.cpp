@@ -1,16 +1,11 @@
 #include "NosZlibDecryptor.h"
 
-NosZlibDecryptor::NosZlibDecryptor()
-{
+NosZlibDecryptor::NosZlibDecryptor() = default;
 
-}
-
-QByteArray NosZlibDecryptor::encrypt(QByteArray &array, int level)
-{
+QByteArray NosZlibDecryptor::encrypt(QByteArray &array, int level) {
     return qCompress(array, level);
 }
 
-QByteArray NosZlibDecryptor::decrypt(QByteArray &array)
-{
+QByteArray NosZlibDecryptor::decrypt(QByteArray &array) {
     return qUncompress(array);
 }

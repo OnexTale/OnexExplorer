@@ -18,7 +18,6 @@ public:
     QByteArray getHeader();
     int getId();
     int getCreationDate();
-    QString getDateAsString();
     bool isCompressed();
 public slots:
     void setHeader(const QString &header, bool update = false);
@@ -31,6 +30,7 @@ protected:
     bool compressed;
     QByteArray header;
     FileInfo *generateInfos() override;
+    QString getDateAsString();
 };
 
 #endif // ONEXTREEZLIBITEM_H

@@ -2,6 +2,7 @@
 #define NOSCCINFOPENER_H
 
 #include "INosFileOpener.h"
+#include "../Ui/OnexTreeItem.h"
 #include <QDebug>
 #include <QObject>
 
@@ -11,6 +12,8 @@ public:
     NosCCInfOpener();
     OnexTreeItem *decrypt(QFile &file);
     QByteArray encrypt(OnexTreeItem *item);
+private:
+    QString getTextureName(int index);
 };
 
 #endif // NOSCCINFOPENER_H

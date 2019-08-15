@@ -47,6 +47,8 @@ QString OnexTreeItem::getExportExtensionFilter() {
         return "DAT File (*.dat)";
     else if (getExportExtension() == ".obj")
         return "OBJ File (*.obj)";
+    else if (getExportExtension() == ".json")
+        return "JSON File (*.json)";
     return "All files (*.*)";
 }
 
@@ -136,6 +138,7 @@ int OnexTreeItem::onReplaceRaw(QString directory) {
 }
 
 int OnexTreeItem::afterReplace(QByteArray content) {
+    setContent(content);
     return 1;
 }
 

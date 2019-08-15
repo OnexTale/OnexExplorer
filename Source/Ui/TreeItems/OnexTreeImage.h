@@ -13,8 +13,8 @@ struct ImageResolution {
 class OnexTreeImage : public OnexTreeZlibItem {
 Q_OBJECT
 public:
-    OnexTreeImage(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
-                  bool compressed);
+    OnexTreeImage(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
+                  int creationDate, bool compressed);
     QWidget *getPreview() override;
     FileInfo *getInfos() override;
     QString getExportExtension() override;
@@ -29,7 +29,7 @@ public slots:
 signals:
     void replaceSignal(QImage newImage);
 protected:
-    static ImageConverter imageConverter;
+    static ImageConverter *imageConverter;
     FileInfo *generateInfos() override;
     int saveAsFile(const QString &path, QByteArray content = QByteArray()) override;
     virtual bool hasGoodResolution(int x, int y);

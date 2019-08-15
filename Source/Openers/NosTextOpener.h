@@ -15,8 +15,8 @@ public:
     OnexTreeItem *decrypt(QFile &file);
     QByteArray encrypt(OnexTreeItem *item);
 private:
-    NosTextDatFileDecryptor datDecryptor;
-    NosTextOthersFileDecryptor lstDecryptor;
+    NosTextDatFileDecryptor *datDecryptor;
+    NosTextOthersFileDecryptor *lstDecryptor;
 };
 
 #endif // NOSTEXTOPENER_H

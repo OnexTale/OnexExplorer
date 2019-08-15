@@ -23,7 +23,6 @@ private slots:
     void onReplaced(QList<QImage> *newImages);
 private:
     Ui::MultiImagePreview *ui;
-    ImageConverter converter;
     QList<QImage> *images;
     QImage generateImage();
     QPair<int, int> getResolution();

@@ -5,10 +5,10 @@ NosCCInfOpener::NosCCInfOpener() = default;
 OnexTreeItem *NosCCInfOpener::decrypt(QFile &file) {
     file.seek(0);
     QByteArray header = file.read(0x10);
-    int fileSize = readNextInt(file);
-    readNextInt(file);   //second time the same bytes, idk why
+    int fileSize = littleEndianConverter.readInt(file);
+    littleEndianConverter.readInt(file);   //second time the same bytes, idk why
     file.read(1);   //0x00
-    int fileAmount = readNextInt(file);
+    int fileAmount = littleEndianConverter.readInt(file);
     qDebug() << fileAmount;
     return nullptr;
 }

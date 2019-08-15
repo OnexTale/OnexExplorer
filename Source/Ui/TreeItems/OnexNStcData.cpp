@@ -9,21 +9,21 @@ OnexNStcData::~OnexNStcData() = default;
 
 QImage OnexNStcData::getImage() {
     ImageResolution resolution = this->getResolution();
-    return imageConverter.convertNSTC(content, resolution.x, resolution.y, 4);
+    return imageConverter->convertNSTC(content, resolution.x, resolution.y, 4);
 }
 
 ImageResolution OnexNStcData::getResolution() {
-    int x = fromLittleEndianToShort(content.mid(0, 2));
-    int y = fromLittleEndianToShort(content.mid(2, 2));
+    int x = opener->getLittleEndianConverter()->fromShort(content.mid(0, 2));
+    int y = opener->getLittleEndianConverter()->fromShort(content.mid(2, 2));
     return ImageResolution{x, y};
 }
 
 int OnexNStcData::afterReplace(QImage image) {
     QByteArray newContent;
-    newContent.push_back(fromShortToLittleEndian(image.width()));
-    newContent.push_back(fromShortToLittleEndian(image.height()));
+    newContent.push_back(opener->getLittleEndianConverter()->toShort(image.width()));
+    newContent.push_back(opener->getLittleEndianConverter()->toShort(image.height()));
     newContent.push_back(content.mid(4, 4));
-    newContent.push_back(imageConverter.toNSTC(image));
+    newContent.push_back(imageConverter->toNSTC(image));
     setContent(newContent);
     setWidth(image.width(), true);
     setHeight(image.height(), true);
@@ -33,13 +33,13 @@ int OnexNStcData::afterReplace(QImage image) {
 }
 
 void OnexNStcData::setWidth(int width, bool update) {
-    content.replace(0, 2, fromShortToLittleEndian(width));
+    content.replace(0, 2, opener->getLittleEndianConverter()->toShort(width));
     if (update)
             emit changeSignal("Width", width);
 }
 
 void OnexNStcData::setHeight(int height, bool update) {
-    content.replace(2, 2, fromShortToLittleEndian(height));
+    content.replace(2, 2, opener->getLittleEndianConverter()->toShort(height));
     if (update)
             emit changeSignal("Width", height);
 }

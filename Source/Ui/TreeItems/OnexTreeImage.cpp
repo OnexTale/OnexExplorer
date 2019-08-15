@@ -1,10 +1,12 @@
 #include "OnexTreeImage.h"
 
-ImageConverter OnexTreeImage::imageConverter = ImageConverter();
+ImageConverter *OnexTreeImage::imageConverter;
 
 OnexTreeImage::OnexTreeImage(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
                              int creationDate, bool compressed)
         : OnexTreeZlibItem(header, name, content, opener, id, creationDate, compressed) {
+    if (imageConverter == nullptr)
+        imageConverter = new ImageConverter(opener->getLittleEndianConverter());
 }
 
 QWidget *OnexTreeImage::getPreview() {

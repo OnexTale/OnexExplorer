@@ -1,7 +1,7 @@
 #include "OnexNSmpFrame.h"
 
-OnexNSmpFrame::OnexNSmpFrame(QByteArray header, QString name, QByteArray content, int width, int height, int xOrigin,
-                             int yOrigin, NosZlibOpener *opener, int id, int creationDate, bool compressed)
+OnexNSmpFrame::OnexNSmpFrame(QByteArray header, QString name, QByteArray content, int width, int height, int xOrigin, int yOrigin, NosZlibOpener *opener,
+                             int id, int creationDate, bool compressed)
         : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {
     this->width = width;
     this->height = height;
@@ -19,7 +19,7 @@ FileInfo *OnexNSmpFrame::getInfos() {
 
 QImage OnexNSmpFrame::getImage() {
     ImageResolution resolution = this->getResolution();
-    return imageConverter.convertGBAR4444(content, resolution.x, resolution.y);
+    return imageConverter->convertGBAR4444(content, resolution.x, resolution.y);
 }
 
 ImageResolution OnexNSmpFrame::getResolution() {
@@ -29,7 +29,7 @@ ImageResolution OnexNSmpFrame::getResolution() {
 int OnexNSmpFrame::afterReplace(QImage image) {
     setWidth(image.width(), true);
     setHeight(image.height(), true);
-    setContent(imageConverter.toGBAR4444(image));
+    setContent(imageConverter->toGBAR4444(image));
     emit OnexTreeImage::replaceSignal(this->getImage());
     return 1;
 }

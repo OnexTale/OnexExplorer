@@ -3,6 +3,7 @@
 
 #include <QFile>
 #include <QtEndian>
+#include "../Converters/LittleEndianConverter.h"
 
 class OnexTreeItem;
 
@@ -10,9 +11,9 @@ class INosFileOpener {
 public:
     virtual OnexTreeItem *decrypt(QFile &file) = 0;
     virtual QByteArray encrypt(OnexTreeItem *item) = 0;
+    LittleEndianConverter *getLittleEndianConverter();
 protected:
-    int readNextInt(QFile &file);
-    QByteArray writeNextInt(int number);
+    LittleEndianConverter littleEndianConverter;
     QString neatFileName(QString fileName);
 };
 

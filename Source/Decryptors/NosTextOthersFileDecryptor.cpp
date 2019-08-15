@@ -1,11 +1,11 @@
 #include "NosTextOthersFileDecryptor.h"
 
-NosTextOthersFileDecryptor::NosTextOthersFileDecryptor() = default;
+NosTextOthersFileDecryptor::NosTextOthersFileDecryptor(LittleEndianConverter *littleEndianConverter) {
+    this->littleEndianConverter = littleEndianConverter;
+}
 
 QByteArray NosTextOthersFileDecryptor::encrypt(QByteArray &array) {
-    QByteArray result;
-    result.resize(4);
-    qToLittleEndian<qint32>(array.size(), reinterpret_cast<uchar *>(result.data()));
+    QByteArray result = littleEndianConverter->toInt(array.size());
     for (auto &byte : array) {
         result.push_back(byte ^ 0x1);
     }
@@ -14,10 +14,10 @@ QByteArray NosTextOthersFileDecryptor::encrypt(QByteArray &array) {
 
 QByteArray NosTextOthersFileDecryptor::decrypt(QByteArray &array) {
     QByteArray result;
-    int lines = qFromLittleEndian<int>(array.mid(0, 4));
+    int lines = littleEndianConverter->fromInt(array.mid(0, 4));
     int pos = 4;
     for (int i = 0; i < lines; i++) {
-        int strLen = qFromLittleEndian<int>(array.mid(pos, 4));
+        int strLen = littleEndianConverter->fromInt(array.mid(pos, 4));
         pos += 4;
         QByteArray str = array.mid(pos, strLen);
         pos += strLen;

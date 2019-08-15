@@ -2,6 +2,7 @@
 #define NOSMODELCONVERTER_H
 
 #include "IModelConverter.h"
+#include "LittleEndianConverter.h"
 #include <QByteArray>
 #include <QString>
 #include <QVector2D>

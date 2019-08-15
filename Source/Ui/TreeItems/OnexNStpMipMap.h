@@ -6,8 +6,8 @@
 class OnexNStpMipMap : public OnexTreeImage {
 Q_OBJECT
 public:
-    OnexNStpMipMap(QByteArray header, QString name, QByteArray content, int width, int height, int format,
-                   NosZlibOpener *opener, int id, int creationDate, bool compressed);
+    OnexNStpMipMap(QByteArray header, QString name, QByteArray content, int width, int height, int format, NosZlibOpener *opener,
+                   int id, int creationDate, bool compressed);
 
     ~OnexNStpMipMap() override;
     QImage getImage() override;

@@ -3,7 +3,9 @@
 #include <QStringList>
 #include <QtEndian>
 
-ObjConverter::ObjConverter() = default;
+ObjConverter::ObjConverter() {
+    this->littleEndianConverter = new LittleEndianConverter();
+}
 
 Model *ObjConverter::fromObj(const QString &obj) {
     QVector<QVector3D> fileVertices;

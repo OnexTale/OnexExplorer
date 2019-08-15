@@ -1,6 +1,7 @@
 #include "ImageConverter.h"
 #include <QDebug>
 
+
 QImage ImageConverter::convertGBAR4444(QByteArray &array, int width, int height, int startByte)
 /// GBAR = ARGB (endianness)
 {
@@ -43,8 +44,7 @@ QImage ImageConverter::convertARGB555(QByteArray &array, int width, int height, 
     img.fill(Qt::transparent);
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            ushort bytes = qFromLittleEndian<qint16>(
-                    reinterpret_cast<const uchar *>(array.mid(startByte + y * 2 * width + x * 2, 2).data()));
+            ushort bytes = littleEndianConverter->fromShort(array.mid(startByte + y * 2 * width + x * 2, 2).data());
             uchar a = 255 * (bytes & 0x8000) >> 15; // 0x8000 = 0b1000000000000000
             uchar r = 8 * (bytes & 0x7C00) >> 10;   // 0x7C00 = 0b0111110000000000
             uchar g = 8 * (bytes & 0x3E0) >> 5;     // 0x3E0 = 0b0000001111100000
@@ -271,7 +271,7 @@ QByteArray ImageConverter::toGrayscale(QImage &image) {
     return data;
 }
 
-ImageConverter::ImageConverter() {
+ImageConverter::ImageConverter(LittleEndianConverter *littleEndianConverter) : littleEndianConverter(littleEndianConverter) {
     colors[0x0] = qRgb(255, 255, 255);
     colors[0x1] = qRgb(100, 100, 100);
     colors[0x2] = qRgb(100, 150, 100);

@@ -7,8 +7,7 @@ class OnexNStpData : public OnexTreeImage {
 Q_OBJECT
 public:
     OnexNStpData(const QByteArray &header, const QString &name, const QByteArray &content, NosZlibOpener *opener,
-                 int id, int creationDate,
-                 bool compressed);
+                 int id, int creationDate, bool compressed);
 
     ~OnexNStpData() override;
     QByteArray getContent() override;

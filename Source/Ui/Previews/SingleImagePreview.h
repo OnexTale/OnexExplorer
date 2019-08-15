@@ -23,7 +23,6 @@ private slots:
     void onReplaced(const QImage &newImage);
 private:
     Ui::SingleImagePreview *ui;
-    ImageConverter converter;
 };
 
 #endif // SINGLEIMAGEPREVIEW_H

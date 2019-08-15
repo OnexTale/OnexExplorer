@@ -12,7 +12,7 @@ public:
     QByteArray encrypt(QByteArray &array);
     QByteArray decrypt(QByteArray &array);
 private:
-    const std::array<unsigned char, 16> cryptoArray;
+    std::array<unsigned char, 16> cryptoArray;
     std::vector<unsigned char> getMask(QByteArray &array);
 };
 

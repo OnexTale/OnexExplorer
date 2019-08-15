@@ -6,6 +6,7 @@
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
+#include "LittleEndianConverter.h"
 
 struct ModelAnimationPositionFrame {
     int timestamp;
@@ -44,12 +45,7 @@ struct Model {
 
 class IModelConverter {
 protected:
-    short fromLittleEndianToShort(QByteArray array);
-    int fromLittleEndianToInt(QByteArray array);
-    float fromLittleEndianToFloat(QByteArray array);
-    QByteArray fromShortToLittleEndian(short number);
-    QByteArray fromIntToLittleEndian(int number);
-    QByteArray fromFloatToLittleEndian(float number);
+    LittleEndianConverter *littleEndianConverter;
 };
 
 #endif // IMODELCONVERTER_H

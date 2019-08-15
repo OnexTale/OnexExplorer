@@ -5,6 +5,7 @@
 #include <QImage>
 #include <QMap>
 #include <QtEndian>
+#include "LittleEndianConverter.h"
 
 class ImageConverter {
 public:
@@ -22,9 +23,10 @@ public:
     QByteArray toBGRA8888_INTERLACED(QImage &image);
     QByteArray toBARG4444(QImage &image);
     QByteArray toGrayscale(QImage &image);
-    ImageConverter();
+    explicit ImageConverter(LittleEndianConverter *littleEndianConverter);
 private:
     QMap<int, QColor> colors;
+    LittleEndianConverter *littleEndianConverter;
 };
 
 #endif // IMAGECONVERTER_H

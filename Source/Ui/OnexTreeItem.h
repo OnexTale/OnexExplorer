@@ -9,6 +9,7 @@
 #include <QtEndian>
 #include "../Openers/INosFileOpener.h"
 #include "FileInfo.h"
+#include "../Converters/LittleEndianConverter.h"
 
 class OnexTreeItem : public QObject, public QTreeWidgetItem {
 Q_OBJECT
@@ -23,12 +24,6 @@ public:
     int getContentSize();
     virtual QString getExportExtension();
     QString getExportExtensionFilter();
-    short fromLittleEndianToShort(QByteArray array);
-    int fromLittleEndianToInt(QByteArray array);
-    float fromLittleEndianToFloat(QByteArray array);
-    QByteArray fromShortToLittleEndian(short number);
-    QByteArray fromIntToLittleEndian(int number);
-    QByteArray fromFloatToLittleEndian(float number);
 public slots:
     virtual void setName(QString name);
     virtual int onExportAsOriginal(QString path);

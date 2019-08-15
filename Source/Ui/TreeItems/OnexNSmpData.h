@@ -8,8 +8,7 @@ class OnexNSmpData : public OnexTreeZlibItem {
 Q_OBJECT
 public:
     OnexNSmpData(const QByteArray &header, const QString &name, const QByteArray &content, NosZlibOpener *opener,
-                 int id, int creationDate,
-                 bool compressed);
+                 int id, int creationDate, bool compressed);
     ~OnexNSmpData() override;
     QWidget *getPreview() override;
     QByteArray getContent() override;

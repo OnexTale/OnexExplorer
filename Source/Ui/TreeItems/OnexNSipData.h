@@ -6,8 +6,8 @@
 class OnexNSipData : public OnexTreeImage {
 Q_OBJECT
 public:
-    OnexNSipData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
-                 bool compressed);
+    OnexNSipData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
+                 int creationDate, bool compressed);
     ~OnexNSipData() override;
     QImage getImage() override;
     ImageResolution getResolution() override;

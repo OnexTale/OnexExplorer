@@ -6,7 +6,8 @@
 #include <QLabel>
 #include <QLineEdit>
 
-OnexTreeText::OnexTreeText(const QString &name, NosTextOpener *opener, int fileNumber, int isDat, QByteArray content)
+OnexTreeText::OnexTreeText(const QString &name, NosTextOpener *opener, int fileNumber, int isDat,
+                           QByteArray content)
         : OnexTreeItem(name, opener, content), fileNumber(fileNumber), isDat(isDat) {
 }
 

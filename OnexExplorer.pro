@@ -25,7 +25,7 @@ SOURCES += \
     Source/main.cpp \
     Source/MainWindow.cpp \
     Source/Converters/ImageConverter.cpp \
-    Source/Converters/IModelConverter.cpp \
+    Source/Converters/LittleEndianConverter.cpp \
     Source/Converters/NosModelConverter.cpp \
     Source/Converters/ObjConverter.cpp \
     Source/Decryptors/NosTextDatFileDecryptor.cpp \
@@ -59,6 +59,7 @@ HEADERS  += \
     Source/MainWindow.h \
     Source/NosEnumTypes.h \
     Source/Converters/ImageConverter.h \
+    Source/Converters/LittleEndianConverter.h \
     Source/Converters/IModelConverter.h \
     Source/Converters/NosModelConverter.h \
     Source/Converters/ObjConverter.h \

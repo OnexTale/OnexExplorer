@@ -1,8 +1,8 @@
 #include "OnexNStpMipMap.h"
 #include "OnexNStpData.h"
 
-OnexNStpMipMap::OnexNStpMipMap(QByteArray header, QString name, QByteArray content, int width, int height, int format,
-                               NosZlibOpener *opener, int id, int creationDate, bool compressed)
+OnexNStpMipMap::OnexNStpMipMap(QByteArray header, QString name, QByteArray content, int width, int height, int format, NosZlibOpener *opener,
+                               int id, int creationDate, bool compressed)
         : OnexTreeImage(header, name, content, opener, id, creationDate, compressed), width(width), height(height),
           format(format) {
 }
@@ -13,13 +13,13 @@ QImage OnexNStpMipMap::getImage() {
     ImageResolution resolution = this->getResolution();
     int format = this->getFormat();
     if (format == 0)
-        return imageConverter.convertGBAR4444(content, resolution.x, resolution.y);
+        return imageConverter->convertGBAR4444(content, resolution.x, resolution.y);
     else if (format == 1)
-        return imageConverter.convertARGB555(content, resolution.x, resolution.y);
+        return imageConverter->convertARGB555(content, resolution.x, resolution.y);
     else if (format == 2)
-        return imageConverter.convertBGRA8888(content, resolution.x, resolution.y);
+        return imageConverter->convertBGRA8888(content, resolution.x, resolution.y);
     else if (format == 3 || format == 4)
-        return imageConverter.convertGrayscale(content, resolution.x, resolution.y);
+        return imageConverter->convertGrayscale(content, resolution.x, resolution.y);
     else {
         qDebug().noquote().nospace() << "Unknown format! (" << format << ")";
         return QImage(resolution.x, resolution.y, QImage::Format_Invalid);
@@ -50,13 +50,13 @@ int OnexNStpMipMap::afterReplace(QImage image) {
     }
     QByteArray newContent;
     if (format == 0)
-        newContent.push_back(imageConverter.toGBAR4444(image));
+        newContent.push_back(imageConverter->toGBAR4444(image));
     else if (format == 1)
-        newContent.push_back(imageConverter.toARGB555(image));
+        newContent.push_back(imageConverter->toARGB555(image));
     else if (format == 2)
-        newContent.push_back(imageConverter.toBGRA8888(image));
+        newContent.push_back(imageConverter->toBGRA8888(image));
     else if (format == 3 || format == 4)
-        newContent.push_back(imageConverter.toGrayscale(image));
+        newContent.push_back(imageConverter->toGrayscale(image));
     setContent(newContent);
     setWidth(image.width(), true);
     setHeight(image.height(), true);

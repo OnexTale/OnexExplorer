@@ -12,7 +12,7 @@ OnexTreeItem *NosCCInfOpener::decrypt(QFile &file) {
     QByteArray header = file.read(0xC);
     int creationDate = littleEndianConverter.readInt(file);
 
-    OnexNSmnData *item = new OnexNSmnData(header, neatFileName(file.fileName()), creationDate, this);
+    OnexNSmnData *item = new OnexNSmnData(neatFileName(file.fileName()), creationDate, this, header);
     bool playerInfos = item->getName().contains("NSpn");
 
     int fileSize = littleEndianConverter.readInt(file);
@@ -59,7 +59,7 @@ OnexTreeItem *NosCCInfOpener::decrypt(QFile &file) {
         jo.insert("parts", parts);
 
         QByteArray array = QJsonDocument(jo).toJson();
-        item->addChild(new OnexNSmnData(header, QString::number(i), creationDate, this, array));
+        item->addChild(new OnexNSmnData(QString::number(i), creationDate, this, array));
     }
     return item;
 }
@@ -108,7 +108,7 @@ QByteArray NosCCInfOpener::encrypt(OnexTreeItem *item) {
         }
     }
 
-    head.append(nsmnItem->getHeader());
+    head.append(nsmnItem->getContent());
     head.append(littleEndianConverter.toInt(nsmnItem->getCreationDate()));
     head.append(littleEndianConverter.toInt(content.size())); // fileSize
     head.append(littleEndianConverter.toInt(content.size())); // fileSize

@@ -7,15 +7,13 @@ class OnexNSmnData : public OnexJsonTreeItem {
 Q_OBJECT
 
 public:
-    OnexNSmnData(QByteArray header, QString name, int creationDate, INosFileOpener *opener, QByteArray content = QByteArray());
-    QByteArray getHeader();
+    OnexNSmnData(const QString &name, int creationDate, INosFileOpener *opener, QByteArray content);
     int getCreationDate();
 public slots:
-    void setHeader(QString QString, bool update = false);
     void setCreationDate(const QString &date, bool update = false);
 protected:
-    QByteArray header;
     int creationDate;
+    void loadJson(QJsonArray array) override;
     FileInfo *generateInfos() override;
     QString getDateAsString();
 };

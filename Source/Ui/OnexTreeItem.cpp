@@ -52,6 +52,8 @@ QString OnexTreeItem::getExportExtensionFilter() {
         return "DAT File (*.dat)";
     else if (getExportExtension() == ".obj")
         return "OBJ File (*.obj)";
+    else if (getExportExtension() == ".json")
+        return "JSON File (*.json)";
     return "All files (*.*)";
 }
 
@@ -128,7 +130,6 @@ int OnexTreeItem::onReplace(QString directory) {
         QMessageBox::critical(nullptr, "Woops", "Couldn't open " + path);
         return 0;
     }
-
 }
 
 int OnexTreeItem::onReplaceRaw(QString directory) {

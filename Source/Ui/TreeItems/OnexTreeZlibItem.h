@@ -18,7 +18,6 @@ public:
     FileInfo *getInfos() override;
     int getId();
     int getCreationDate();
-    QString getDateAsString();
     bool isCompressed();
 public slots:
     void setName(QString name) override;
@@ -30,6 +29,7 @@ protected:
     int creationDate;
     bool compressed;
     FileInfo *generateInfos() override;
+    QString getDateAsString();
 };
 
 #endif // ONEXTREEZLIBITEM_H

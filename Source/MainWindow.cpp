@@ -269,8 +269,7 @@ void MainWindow::on_actionClose_selected_triggered() {
 
 void MainWindow::on_actionClose_all_triggered() {
     QMessageBox::StandardButton message =
-            QMessageBox::question(this, "", "Close all items? All unsaved changes will be lost!",
-                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+            QMessageBox::question(this, "", "Close all items? All unsaved changes will be lost!");
     if (message == QMessageBox::Yes) {
         ui->treeWidget->clear();
     }
@@ -278,8 +277,7 @@ void MainWindow::on_actionClose_all_triggered() {
 
 void MainWindow::on_actionExit_triggered() {
     QMessageBox::StandardButton message =
-            QMessageBox::question(this, "", "Exit program? All unsaved changes will be lost!",
-                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+            QMessageBox::question(this, "", "Exit program? All unsaved changes will be lost!");
     if (message == QMessageBox::Yes)
         QApplication::quit();
 }

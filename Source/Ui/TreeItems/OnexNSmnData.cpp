@@ -5,6 +5,12 @@ OnexNSmnData::OnexNSmnData(const QString &name, int creationDate, INosFileOpener
 
 }
 
+FileInfo *OnexNSmnData::getInfos() {
+    if (!hasParent())
+        return generateInfos();
+    return nullptr;
+}
+
 int OnexNSmnData::getCreationDate() {
     return creationDate;
 }
@@ -38,17 +44,12 @@ void OnexNSmnData::setCreationDate(const QString &date, bool update) {
 }
 
 FileInfo *OnexNSmnData::generateInfos() {
-    auto *infos = new FileInfo(); //OnexTreeItem::generateInfos();
+    auto *infos = OnexTreeItem::generateInfos();
     if (!hasParent()) {
         connect(infos->addStringLineEdit("Header", getContent()), &QLineEdit::textChanged,
                 [=](const QString &value) { setContent(value.toLocal8Bit()); });
         connect(infos->addStringLineEdit("Date", getDateAsString()), &QLineEdit::textChanged,
                 [=](const QString &value) { setCreationDate(value); });
     }
-    connect(this, SIGNAL(changeSignal(QString, QString)), infos, SLOT(update(QString, QString)));
-    connect(this, SIGNAL(changeSignal(QString, int)), infos, SLOT(update(QString, int)));
-    connect(this, SIGNAL(changeSignal(QString, float)), infos, SLOT(update(QString, float)));
-    connect(this, SIGNAL(changeSignal(QString, bool)), infos, SLOT(update(QString, bool)));
-
     return infos;
 }

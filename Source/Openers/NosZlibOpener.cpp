@@ -80,28 +80,32 @@ QByteArray NosZlibOpener::encrypt(OnexTreeItem *item) {
     return result;
 }
 
-OnexTreeItem *NosZlibOpener::createItemFromHeader(QByteArray header, const QString &name, QByteArray &array, int fileId,
+OnexTreeItem *NosZlibOpener::getEmptyItem(const QByteArray &header) {
+    return createItemFromHeader(header, "", QByteArray());
+}
+
+OnexTreeItem *NosZlibOpener::createItemFromHeader(QByteArray header, const QString &name, const QByteArray &array, int fileId,
                                                   int creationDate, bool compressed) {
     int headerNumber = getNTHeaderNumber(header);
     switch (headerNumber) {
         case NSipData:
-            return new OnexNSipData(header, name, array, this, fileId, creationDate, compressed);
+            return new OnexNSipData(name, array, this, fileId, creationDate, compressed);
         case NS4BbData:
-            return new OnexNS4BbData(header, name, array, this, fileId, creationDate, compressed);
+            return new OnexNS4BbData(name, array, this, fileId, creationDate, compressed);
         case NStcData:
-            return new OnexNStcData(header, name, array, this, fileId, creationDate, compressed);
+            return new OnexNStcData(name, array, this, fileId, creationDate, compressed);
         case NStpData:
         case NStpeData:
         case NStpuData:
-            return new OnexNStpData(header, name, array, this, fileId, creationDate, compressed);
+            return new OnexNStpData(name, array, this, fileId, creationDate, compressed);
         case NSmpData:
         case NSppData:
-            return new OnexNSmpData(header, name, array, this, fileId, creationDate, compressed);
+            return new OnexNSmpData(name, array, this, fileId, creationDate, compressed);
         case NStgData:
         case NStgeData:
-            return new OnexNStgData(header, name, array, this, fileId, creationDate, compressed);
+            return new OnexNStgData(name, array, this, fileId, creationDate, compressed);
         default:
-            return new OnexTreeZlibItem(header, name, array, this, fileId, creationDate, compressed);
+            return new OnexTreeZlibItem(name, array, this, fileId, creationDate, compressed);
     }
 }
 
@@ -109,9 +113,9 @@ int NosZlibOpener::getNTHeaderNumber(QByteArray &array) {
     if (array.mid(0, 7) == "NT Data")
         return array.mid(8, 2).toInt();
     else if (array.mid(0, 10) == "32GBS V1.0")
-        return 101;
+        return NS4BbData;
     else if (array.mid(0, 10) == "ITEMS V1.0")
-        return 103;
+        return NSipData2006;
     else
         return 199;
 }

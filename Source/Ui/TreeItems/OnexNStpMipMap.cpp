@@ -1,13 +1,30 @@
 #include "OnexNStpMipMap.h"
 #include "OnexNStpData.h"
 
-OnexNStpMipMap::OnexNStpMipMap(QByteArray header, QString name, QByteArray content, int width, int height, int format, NosZlibOpener *opener,
+OnexNStpMipMap::OnexNStpMipMap(QString name, QByteArray content, int width, int height, int format, NosZlibOpener *opener,
                                int id, int creationDate, bool compressed)
-        : OnexTreeImage(header, name, content, opener, id, creationDate, compressed), width(width), height(height),
-          format(format) {
+        : OnexTreeImage(name, content, opener, id, creationDate, compressed), width(width), height(height), format(format) {
+    setFlags(this->flags() & (~Qt::ItemIsEditable));
 }
 
 OnexNStpMipMap::~OnexNStpMipMap() = default;
+
+int OnexNStpMipMap::onReplace(QString directory) {
+    QString path = getCorrectPath(directory);
+    QFile file(path);
+    if (file.open(QIODevice::ReadOnly))
+        return OnexTreeImage::afterReplace(file.readAll());
+    else {
+        auto *parent = static_cast<OnexTreeItem *>(QTreeWidgetItem::parent());
+        QString parentPath = path.mid(0, path.lastIndexOf("/") + 1) + parent->getName() + ".png";
+        QFile pfile(parentPath);
+        if (pfile.open(QIODevice::ReadOnly))
+            pfile.close();
+        else
+            QMessageBox::critical(nullptr, "Woops", "Couldn't open " + path);
+        return 0;
+    }
+}
 
 QImage OnexNStpMipMap::getImage() {
     ImageResolution resolution = this->getResolution();
@@ -62,6 +79,7 @@ int OnexNStpMipMap::afterReplace(QImage image) {
     setHeight(image.height(), true);
 
     emit OnexTreeImage::replaceSignal(this->getImage());
+    emit replaceInfo(generateInfos());
     return 1;
 }
 
@@ -84,9 +102,5 @@ void OnexNStpMipMap::setFormat(uint8_t format, bool update) {
 }
 
 FileInfo *OnexNStpMipMap::generateInfos() {
-    FileInfo *infos = OnexTreeImage::generateInfos();
-    connect(infos->addIntLineEdit("Format", getFormat()), &QLineEdit::textChanged,
-            [=](const QString &value) { setFormat(value.toInt()); });
-    return infos;
+    return OnexTreeItem::generateInfos();
 }
-

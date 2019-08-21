@@ -11,12 +11,13 @@
 class NosZlibOpener : public INosFileOpener {
 public:
     NosZlibOpener();
-    OnexTreeItem *decrypt(QFile &file);
-    QByteArray encrypt(OnexTreeItem *item);
+    OnexTreeItem *decrypt(QFile &file) override;
+    QByteArray encrypt(OnexTreeItem *item) override;
+    OnexTreeItem *getEmptyItem(const QByteArray &header) override;
 private:
     static const int NOS_HEADER_SIZE = 0x10;
     NosZlibDecryptor decryptor;
-    OnexTreeItem *createItemFromHeader(QByteArray header, const QString &name, QByteArray &array, int fileId = -1,
+    OnexTreeItem *createItemFromHeader(QByteArray header, const QString &name, const QByteArray &array, int fileId = -1,
                                        int creationDate = 0, bool compressed = false);
     int getNTHeaderNumber(QByteArray &array);
     QByteArray toBigEndian(qint32 value);

@@ -1,8 +1,10 @@
 #include "OnexNStcData.h"
 
-OnexNStcData::OnexNStcData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
+OnexNStcData::OnexNStcData(QString name, QByteArray content, NosZlibOpener *opener, int id,
                            int creationDate, bool compressed)
-        : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {
+        : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
+    if (content.isEmpty())
+        this->content = QByteArrayLiteral("\x00\x00\x00\x00\x00\x00\x00\x00");
 }
 
 OnexNStcData::~OnexNStcData() = default;
@@ -22,13 +24,13 @@ int OnexNStcData::afterReplace(QImage image) {
     QByteArray newContent;
     newContent.push_back(opener->getLittleEndianConverter()->toShort(image.width()));
     newContent.push_back(opener->getLittleEndianConverter()->toShort(image.height()));
-    newContent.push_back(content.mid(4, 4));
     newContent.push_back(imageConverter->toNSTC(image));
     setContent(newContent);
     setWidth(image.width(), true);
     setHeight(image.height(), true);
 
     emit OnexTreeImage::replaceSignal(this->getImage());
+    emit replaceInfo(generateInfos());
     return 1;
 }
 

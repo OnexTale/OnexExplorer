@@ -1,13 +1,16 @@
 #include "OnexNStpData.h"
 #include "OnexNStpMipMap.h"
 
-OnexNStpData::OnexNStpData(const QByteArray &header, const QString &name, const QByteArray &content, NosZlibOpener *opener,
+OnexNStpData::OnexNStpData(const QString &name, QByteArray content, NosZlibOpener *opener,
 
                            int id, int creationDate, bool compressed)
-        : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {
+        : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
+    if (content.isEmpty())
+        this->content = QByteArrayLiteral("\x00\x00\x00\x00\x00\x00\x00\x00");
     if (id == -1)
         return;
-    generateMipMap();
+    if (getFileAmount() > 0)
+        generateMipMap(true);
 }
 
 OnexNStpData::~OnexNStpData() = default;
@@ -54,11 +57,25 @@ int OnexNStpData::getFormat() {
     return content.at(4);
 }
 
+bool OnexNStpData::getSmoothScaling() {
+    return content.at(5);
+}
+
+bool OnexNStpData::getUnknownValue() {
+    return content.at(6);
+}
+
 int OnexNStpData::getFileAmount() {
     return content.at(7);
 }
 
 int OnexNStpData::afterReplace(QImage image) {
+    if (image.isNull()) {
+        emit OnexTreeImage::replaceSignal(this->getImage());
+        return 0;
+    }
+
+    qDebug() << getFileAmount();
     int format = this->getFormat();
     if (format < 0 || format > 4) {
         QMessageBox::critical(nullptr, "Woops", "Format of " + name + "is not supported!");
@@ -79,8 +96,12 @@ int OnexNStpData::afterReplace(QImage image) {
     setContent(newContent);
     setWidth(image.width(), true);
     setHeight(image.height(), true);
+    qDebug() << getFileAmount();
+    generateMipMap(getFileAmount() != 0);
+
 
     emit OnexTreeImage::replaceSignal(this->getImage());
+    emit replaceInfo(generateInfos());
     return 1;
 }
 
@@ -100,17 +121,59 @@ void OnexNStpData::setFormat(uint8_t format, bool update) {
     content[4] = format;
     if (update)
             emit changeSignal("Format", format);
+    for (int i = 0; i < childCount(); i++) {
+        auto *item = static_cast<OnexNStpMipMap *>(child(i));
+        item->setFormat(format, update);
+    }
+}
+
+void OnexNStpData::setSmoothScaling(bool smooth, bool update) {
+    content[5] = smooth;
+    if (update)
+            emit changeSignal("SmoothScaling", smooth);
+}
+
+void OnexNStpData::setUnknownValue(bool unkown, bool update) {
+    content[6] = unkown;
+    if (update)
+            emit changeSignal("Unknown", unkown);
+}
+
+void OnexNStpData::setFileAmount(uint8_t value, bool update) {
+    content[7] = value;
+    if (update)
+            emit changeSignal("MipMap", value != 0);
 }
 
 FileInfo *OnexNStpData::generateInfos() {
     FileInfo *infos = OnexTreeImage::generateInfos();
-    connect(infos->addIntLineEdit("Format", getFormat()), &QLineEdit::textChanged,
-            [=](const QString &value) { setFormat(value.toInt()); });
+    const QStringList formats = {"ARGB4444", "ARGB1555 ", "ARGB8888", "Grayscale_1", "Grayscale_2"};
+    connect(infos->addSelection("Format", formats, getFormat()), QOverload<int>::of(&QComboBox::currentIndexChanged),
+            [=](const int &value) { setFormat(value); });
+    connect(infos->addCheckBox("SmoothScaling", getSmoothScaling()), &QCheckBox::clicked,
+            [=](const bool value) { setSmoothScaling(value); });
+    connect(infos->addCheckBox("Unknown", getUnknownValue()), &QCheckBox::clicked,
+            [=](const bool value) { setUnknownValue(value); });
+    connect(infos->addCheckBox("MipMap", getFileAmount() != 0), &QCheckBox::clicked,
+            [=](const bool value) { generateMipMap(value); });
     return infos;
 }
 
-void OnexNStpData::generateMipMap() {
-    int amount = getFileAmount();
+void OnexNStpData::generateMipMap(bool generate) {
+    this->takeChildren();
+
+    if (!generate) {
+        setFileAmount(0);
+        return;
+    }
+
+    int amount = 0;
+    int x = getResolution().x;
+    while (x >= 2) {
+        x /= 2;
+        amount++;
+    }
+
     ImageResolution res = getResolution();
     int format = getFormat();
     int offset = 8;
@@ -122,11 +185,41 @@ void OnexNStpData::generateMipMap() {
             nextOffset += res.x * res.y * 4;
         else
             nextOffset += res.x * res.y;
-        this->addChild(new OnexNStpMipMap(header, name + "_" + QString::number(res.x) + "x" + QString::number(res.y),
-                                          content.mid(offset, nextOffset - offset), res.x, res.y, format, (NosZlibOpener *) opener, id,
-                                          creationDate, compressed));
+
+        if (nextOffset >= content.size()) {
+            QImage subImage = getImage();
+            subImage = subImage.scaled(res.x, res.y, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            QByteArray subContent;
+            if (format == 0)
+                subContent = imageConverter->toGBAR4444(subImage);
+            else if (format == 1)
+                subContent = imageConverter->toARGB555(subImage);
+            else if (format == 2)
+                subContent = imageConverter->toBGRA8888(subImage);
+            else if (format == 3 || format == 4)
+                subContent = imageConverter->toGrayscale(subImage);
+
+            this->addChild(new OnexNStpMipMap(name + "_" + QString::number(res.x) + "x" + QString::number(res.y),
+                                              subContent, res.x, res.y, format, (NosZlibOpener *) opener, id, creationDate, compressed));
+        } else {
+            this->addChild(new OnexNStpMipMap(name + "_" + QString::number(res.x) + "x" + QString::number(res.y),
+                                              content.mid(offset, nextOffset - offset), res.x, res.y, format, (NosZlibOpener *) opener, id,
+                                              creationDate, compressed));
+        }
         offset = nextOffset;
         res.x /= 2;
         res.y /= 2;
     }
+
+    setFileAmount(amount);
+}
+
+void OnexNStpData::setName(QString name) {
+    OnexTreeZlibItem::setName(name);
+    QList<QTreeWidgetItem *> childList = takeChildren();
+    for (int i = 0; i < childList.size(); i++) {
+        auto *item = static_cast<OnexNStpMipMap *>(childList.at(i));
+        item->OnexTreeItem::setName(name + "_" + QString::number(item->getWidth()) + "x" + QString::number(item->getHeight()));
+    }
+    addChildren(childList);
 }

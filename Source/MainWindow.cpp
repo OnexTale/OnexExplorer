@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
+#include "Ui/TreeItems/OnexNSmpData.h"
 #include <QScrollArea>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -7,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->setAcceptDrops(true);
     this->setWindowTitle(QString("OnexExplorer %1 [Beta]").arg(VERSION));
     ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->treeWidget, SIGNAL(itemChanged(QTreeWidgetItem * , int)), this,
+            SLOT(itemEdited(QTreeWidgetItem * , int)));
     connect(ui->filterInput, SIGNAL(textChanged(QString)), this, SLOT(filterItems()));
     connect(ui->filterInput, SIGNAL(returnPressed()), this, SLOT(filterItems()));
     connect(ui->treeWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onCustomMenuShow(QPoint)));
@@ -27,6 +30,7 @@ void MainWindow::on_actionOpen_triggered() {
             openFile(file);
     }
     filterItems();
+    ui->treeWidget->sortItems(0, Qt::AscendingOrder);
 }
 
 void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *prev) {
@@ -34,7 +38,7 @@ void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTre
     delete ui->previewLayout->takeAt(1)->widget();
     delete ui->previewLayout->takeAt(0)->widget();
     QWidget *previewWindow;
-    QWidget *infoWindow;
+    FileInfo *infoWindow;
     auto *scrollArea = new QScrollArea();
     auto *item = dynamic_cast<OnexTreeItem *>(current);
     if (item == nullptr) {
@@ -49,17 +53,20 @@ void MainWindow::on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTre
         previewWindow->setMaximumSize(0, 0);
     }
     if (infoWindow) {
+        connect(infoWindow, SIGNAL(replaceFile()), this, SLOT(on_actionReplace_triggered()));
+        connect(infoWindow, SIGNAL(replaceRawFile()), this, SLOT(on_actionReplace_with_raw_triggered()));
         connect(infoWindow, SIGNAL(updateInfo(FileInfo * )), this, SLOT(replaceInfo(FileInfo * )));
         scrollArea->setWidget(infoWindow);
         scrollArea->setMinimumWidth(250);
         scrollArea->setMaximumWidth(250);
     } else {
-        infoWindow = new QWidget();
+        infoWindow = new FileInfo();
         scrollArea->setMaximumSize(0, 0);
         infoWindow->setMaximumSize(0, 0);
     }
+
     ui->previewLayout->addWidget(previewWindow, 0, 0);
-    ui->previewLayout->addWidget(scrollArea, 0, 1);
+    ui->previewLayout->addWidget(scrollArea, 0, 1, Qt::AlignRight);
 }
 
 void MainWindow::replaceInfo(FileInfo *info) {
@@ -97,6 +104,51 @@ void MainWindow::on_actionSave_triggered() {
     }
 }
 
+void MainWindow::on_addButton_clicked() {
+    if (ui->treeWidget->currentItem()) {
+        OnexTreeItem *item = static_cast<OnexTreeItem *>(ui->treeWidget->currentItem());
+        OnexTreeItem *root = item;
+        while (root->hasParent()) {
+            root = static_cast<OnexTreeItem *>(root->QTreeWidgetItem::parent());
+        }
+        if (root->getContent().mid(0, 10) == "NT Data 06") {
+            QMessageBox::warning(nullptr, "Ups", "This isn't implemented yet!");
+            return;
+        }
+
+        OnexTreeItem *emptyItem;
+        if (root->getContent().mid(0, 10) == "NT Data 17" || root->getContent().mid(0, 10) == "NT Data 14") {
+            if (item->hasParent()) {
+                if (item->childCount() == 0) {
+                    item = static_cast<OnexTreeItem *>(item->QTreeWidgetItem::parent());
+                }
+                if (item->childCount() > 0) {
+                    auto nsmp = static_cast<OnexNSmpData *>(item);
+                    emptyItem = nsmp->addFrame();
+                }
+            } else {
+                emptyItem = getOpener(root->getContent())->getEmptyItem(root->getContent());
+                item->insertChild(item->indexOfChild(ui->treeWidget->currentItem()) + 1, emptyItem);
+                auto nsmp = static_cast<OnexNSmpData *>(emptyItem);
+                nsmp->addFrame();
+            }
+        } else {
+            emptyItem = getOpener(root->getContent())->getEmptyItem(root->getContent());
+            root->insertChild(root->indexOfChild(ui->treeWidget->currentItem()) + 1, emptyItem);
+        }
+
+        ui->treeWidget->setCurrentItem(emptyItem);
+        ui->treeWidget->scrollToItem(emptyItem);
+        ui->treeWidget->editItem(emptyItem);
+    } else {
+        QMessageBox::information(nullptr, tr("Info"), tr("Select .NOS file first"));
+    }
+}
+
+void MainWindow::on_deleteButton_clicked() {
+    on_actionClose_selected_triggered();
+}
+
 void MainWindow::on_actionSave_as_triggered() {
     OnexTreeItem *root = getTreeRoot();
     if (root != nullptr) {
@@ -116,7 +168,7 @@ void MainWindow::filterItems() {
         for (int j = 0; j < ui->treeWidget->topLevelItem(i)->childCount(); j++)
             ui->treeWidget->topLevelItem(i)->child(j)->setHidden(true);
     }
-    QList<QTreeWidgetItem *> matches = ui->treeWidget->findItems(searched, Qt::MatchStartsWith | Qt::MatchRecursive);
+    QList<QTreeWidgetItem *> matches = ui->treeWidget->findItems(searched, Qt::MatchContains | Qt::MatchRecursive);
     for (QTreeWidgetItem *m : matches) {
         if (m->parent() && m->parent()->isHidden()) {
             m->parent()->setHidden(false);
@@ -167,6 +219,11 @@ void MainWindow::onCustomMenuShow(const QPoint &point) {
         auto *replaceRawAction = new QAction(QObject::tr("Replace with raw"), contextMenu);
         contextMenu->addAction(replaceRawAction);
         QObject::connect(replaceRawAction, SIGNAL(triggered(bool)), this, SLOT(on_actionReplace_with_raw_triggered()));
+        if (item->flags() & Qt::ItemIsEditable) {
+            QAction *editAction = new QAction(QObject::tr("Rename"), contextMenu);
+            contextMenu->addAction(editAction);
+            QObject::connect(editAction, SIGNAL(triggered(bool)), this, SLOT(on_actionRename_triggered()));
+        }
         auto *deleteAction = new QAction(QObject::tr("Delete"), contextMenu);
         contextMenu->addAction(deleteAction);
         QObject::connect(deleteAction, SIGNAL(triggered(bool)), this, SLOT(on_actionClose_selected_triggered()));
@@ -187,12 +244,27 @@ void MainWindow::clearMenu() {
 
 void MainWindow::on_actionClose_selected_triggered() {
     QList<QTreeWidgetItem *> selectedItems = ui->treeWidget->selectedItems();
+    if (selectedItems.size() == 0)
+        return;
+    int topItems = ui->treeWidget->topLevelItemCount();
+    QTreeWidgetItem *next = ui->treeWidget->itemBelow(selectedItems.last());
     for (auto &item : selectedItems) {
-        if (item->parent() && item->parent()->childCount() == 1) {
-            delete item->parent();
-        } else
+        if (item->parent() != nullptr && item->parent()->childCount() == 1 && !selectedItems.contains(item->parent())) {
+            item = item->parent();
+        }
+        if (item->parent())
             delete item;
+        else {
+            QMessageBox::StandardButton message = QMessageBox::question(this, "", "Close .NOS Archive?",
+                                                                        QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+            if (message == QMessageBox::Yes) {
+                ui->treeWidget->setCurrentItem(item, 0);
+                delete item;
+            }
+        }
     }
+    if (topItems == ui->treeWidget->topLevelItemCount())
+        ui->treeWidget->setCurrentItem(next, 0);
 }
 
 void MainWindow::on_actionClose_all_triggered() {
@@ -238,33 +310,39 @@ void MainWindow::on_actionHelp_triggered() {
                                 "<br>Or add me on Discord: Pumbaa98#6817"));
 }
 
+void MainWindow::on_actionRename_triggered() {
+    ui->treeWidget->editItem(ui->treeWidget->currentItem());
+}
+
+void MainWindow::itemEdited(QTreeWidgetItem *item, int column) {
+    OnexTreeItem *e = static_cast<OnexTreeItem *>(item);
+    e->setName(e->text(column));
+    ui->treeWidget->sortItems(0, Qt::AscendingOrder);
+    ui->treeWidget->scrollToItem(item);
+}
+
 void MainWindow::openFile(const QString &path) {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly))
         return;
-    if (hasValidHeader(file) == 1)
-        handleOpenResults(zlibOpener.decrypt(file), path);
-    else if (hasValidHeader(file) == 2)
-        handleOpenResults(ccinfOpener.decrypt(file), path);
-    else
-        handleOpenResults(textOpener.decrypt(file), path);
+    QByteArray header = file.read(0x0B);
+    handleOpenResults(getOpener(header)->decrypt(file), path);
     file.close();
 }
 
 void MainWindow::handleOpenResults(OnexTreeItem *item, const QString &path) {
     item->setData(0, Qt::UserRole, path);
+    item->setFlags(item->flags() & (~Qt::ItemIsEditable));
     ui->treeWidget->addTopLevelItem(item);
     item->setExpanded(true);
 }
 
-int MainWindow::hasValidHeader(QFile &file) {
-    file.seek(0);
-    QByteArray header = file.read(0x0B);
+INosFileOpener *MainWindow::getOpener(const QByteArray &header) {
     if (header.mid(0, 7) == "NT Data" || header.mid(0, 10) == "32GBS V1.0" || header.mid(0, 10) == "ITEMS V1.0")
-        return 1;
+        return &zlibOpener;
     else if (header.mid(0, 11) == "CCINF V1.20")
-        return 2;
-    return 0;
+        return &ccinfOpener;
+    return &textOpener;
 }
 
 template<typename TreeFunction>
@@ -287,7 +365,7 @@ void MainWindow::fileOperationOnSelectedItems(TreeFunction treeFunction, QString
         path = getSelectedDirectory(defaultPath);
     if (path.isEmpty())
         return;
-    defaultPath = path;
+    defaultPath = neatPath(path);
 
     for (auto &s: selectedItems) {
         auto *item = dynamic_cast<OnexTreeItem *>(s);
@@ -352,5 +430,5 @@ OnexTreeItem *MainWindow::getTreeRoot() {
 }
 
 QString MainWindow::neatPath(QString path) {
-    return path.mid(0, path.lastIndexOf("/") + 1) + "/";
+    return path.mid(0, path.lastIndexOf("/") + 1);
 }

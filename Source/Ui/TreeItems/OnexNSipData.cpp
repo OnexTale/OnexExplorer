@@ -1,8 +1,10 @@
 #include "OnexNSipData.h"
 
-OnexNSipData::OnexNSipData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
+OnexNSipData::OnexNSipData(QString name, QByteArray content, NosZlibOpener *opener, int id,
                            int creationDate, bool compressed)
-        : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {
+        : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
+    if (content.isEmpty())
+        this->content = QByteArrayLiteral("\x01\x00\x00\x00\x00\x00\x00\x00\x00\x0D\x00\x00\x00");
 }
 
 OnexNSipData::~OnexNSipData() = default;
@@ -36,6 +38,7 @@ int OnexNSipData::afterReplace(QImage image) {
     setHeight(image.height(), true);
 
     emit OnexTreeImage::replaceSignal(this->getImage());
+    emit replaceInfo(generateInfos());
     return 1;
 }
 

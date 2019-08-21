@@ -1,8 +1,10 @@
 #include "OnexNS4BbData.h"
 
-OnexNS4BbData::OnexNS4BbData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
+OnexNS4BbData::OnexNS4BbData(QString name, QByteArray content, NosZlibOpener *opener, int id,
                              int creationDate, bool compressed)
-        : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {
+        : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
+    if (content.isEmpty())
+        this->content = QByteArrayLiteral("\x00\x00\x00\x00");
 }
 
 OnexNS4BbData::~OnexNS4BbData() = default;
@@ -28,6 +30,7 @@ int OnexNS4BbData::afterReplace(QImage image) {
     setHeight(image.height(), true);
 
     emit OnexTreeImage::replaceSignal(this->getImage());
+    emit replaceInfo(generateInfos());
     return 1;
 }
 

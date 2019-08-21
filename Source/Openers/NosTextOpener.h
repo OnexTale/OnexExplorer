@@ -14,6 +14,7 @@ public:
     NosTextOpener();
     OnexTreeItem *decrypt(QFile &file);
     QByteArray encrypt(OnexTreeItem *item);
+    OnexTreeItem *getEmptyItem(const QByteArray &header) override;
 private:
     NosTextDatFileDecryptor *datDecryptor;
     NosTextOthersFileDecryptor *lstDecryptor;

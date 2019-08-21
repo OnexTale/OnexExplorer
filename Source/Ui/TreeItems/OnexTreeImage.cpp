@@ -2,9 +2,9 @@
 
 ImageConverter *OnexTreeImage::imageConverter;
 
-OnexTreeImage::OnexTreeImage(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
+OnexTreeImage::OnexTreeImage(QString name, QByteArray content, NosZlibOpener *opener, int id,
                              int creationDate, bool compressed)
-        : OnexTreeZlibItem(header, name, content, opener, id, creationDate, compressed) {
+        : OnexTreeZlibItem(name, content, opener, id, creationDate, compressed) {
     if (imageConverter == nullptr)
         imageConverter = new ImageConverter(opener->getLittleEndianConverter());
 }
@@ -17,12 +17,9 @@ QWidget *OnexTreeImage::getPreview() {
     return imagePreview;
 }
 
-FileInfo *OnexTreeImage::getInfos() {
-    if (!hasParent())
-        return nullptr;
-    FileInfo *infos = generateInfos();
-    connect(this, SIGNAL(replaceInfo(FileInfo * )), infos, SLOT(replace(FileInfo * )));
-    return infos;
+bool OnexTreeImage::isEmpty() {
+    ImageResolution ir = getResolution();
+    return ir.x == 0 && ir.y == 0;
 }
 
 QString OnexTreeImage::getExportExtension() {
@@ -44,7 +41,7 @@ int OnexTreeImage::afterReplace(QByteArray content) {
         QMessageBox::critical(nullptr, "Woops", "Couldn't read image " + name);
         return 0;
     }
-    if (!hasGoodResolution(image.width(), image.height())) {
+    if (!hasGoodResolution(image.width(), image.height()) && !(this->getResolution().x == 0 && this->getResolution().y == 0)) {
         QMessageBox::StandardButton reply = QMessageBox::question(
                 nullptr, "Resolution changed",
                 "The resolution of the image " + name + " doesn't match!\nDo you want to replace it anyway?");
@@ -57,10 +54,8 @@ int OnexTreeImage::afterReplace(QByteArray content) {
 FileInfo *OnexTreeImage::generateInfos() {
     FileInfo *infos = OnexTreeZlibItem::generateInfos();
     ImageResolution ir = getResolution();
-    connect(infos->addIntLineEdit("Width", ir.x), &QLineEdit::textChanged,
-            [=](const QString &value) { setWidth(value.toInt()); });
-    connect(infos->addIntLineEdit("Height", ir.y), &QLineEdit::textChanged,
-            [=](const QString &value) { setHeight(value.toInt()); });
+    infos->addIntLineEdit("Width", ir.x)->setDisabled(true);
+    infos->addIntLineEdit("Height", ir.y)->setDisabled(true);
     return infos;
 }
 

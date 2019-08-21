@@ -6,7 +6,7 @@
 class OnexNStpData : public OnexTreeImage {
 Q_OBJECT
 public:
-    OnexNStpData(const QByteArray &header, const QString &name, const QByteArray &content, NosZlibOpener *opener,
+    OnexNStpData(const QString &name, QByteArray content, NosZlibOpener *opener,
                  int id, int creationDate, bool compressed);
 
     ~OnexNStpData() override;
@@ -14,15 +14,21 @@ public:
     QImage getImage() override;
     ImageResolution getResolution() override;
     int getFormat();
+    bool getSmoothScaling();
+    bool getUnknownValue();
     int getFileAmount();
 public slots:
+    void setName(QString name);
     int afterReplace(QImage image) override;
     void setWidth(int width, bool update = false) override;
     void setHeight(int height, bool update = false) override;
     void setFormat(uint8_t format, bool update = false);
+    void setSmoothScaling(bool smooth, bool update = false);
+    void setUnknownValue(bool unkown, bool update = false);
+    void setFileAmount(uint8_t format, bool update = false);
 protected:
     FileInfo *generateInfos() override;
-    void generateMipMap();
+    void generateMipMap(bool generate);
 };
 
 #endif // ONEXNSTPDATA_H

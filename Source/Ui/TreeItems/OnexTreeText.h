@@ -8,7 +8,7 @@ class NosTextOpener;
 class OnexTreeText : public OnexTreeItem {
 Q_OBJECT
 public:
-    OnexTreeText(const QString &name, NosTextOpener *opener, int fileNumber = 0, int isDat = 0,
+    OnexTreeText(const QString &name, NosTextOpener *opener, int fileNumber = 0, int isCompressed = 0,
                  QByteArray content = QByteArray());
     ~OnexTreeText() override;
     QWidget *getPreview() override;
@@ -18,12 +18,12 @@ public:
 public slots:
     int afterReplace(QByteArray content) override;
     void setFileNumber(int number, bool update = false);
-    void setIsDat(bool isDat, bool update = false);
+    void setIsDat(bool isCompressed, bool update = false);
 signals:
     void replaceSignal(QByteArray text);
 protected:
     int fileNumber;
-    int isDat;
+    int isCompressed;
     FileInfo *generateInfos() override;
 };
 

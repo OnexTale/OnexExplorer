@@ -4,9 +4,9 @@
 ObjConverter OnexNStgData::objConverter = ObjConverter();
 NosModelConverter OnexNStgData::nosModelConverter = NosModelConverter();
 
-OnexNStgData::OnexNStgData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
+OnexNStgData::OnexNStgData(QString name, QByteArray content, NosZlibOpener *opener, int id,
                            int creationDate, bool compressed)
-        : OnexTreeZlibItem(header, name, content, opener, id, creationDate, compressed) {
+        : OnexTreeZlibItem(name, content, opener, id, creationDate, compressed) {
     model = nullptr;
 }
 
@@ -18,21 +18,13 @@ QWidget *OnexNStgData::getPreview() {
     if (model == nullptr) {
         model = nosModelConverter.fromBinary(content);
     }
-    QVector<QVector3D> faces;
-    for (const ModelGroup &mg : model->groups) {
-        faces.append(mg.faces);
-    }
     auto *modelPreview = new SingleModelPreview(model);
     connect(this, SIGNAL(replaceSignal(Model * )), modelPreview, SLOT(onReplaced(Model * )));
-    return modelPreview;
-}
 
-FileInfo *OnexNStgData::getInfos() {
-    if (!hasParent())
-        return nullptr;
-    FileInfo *infos = generateInfos();
-    connect(this, SIGNAL(replaceInfo(FileInfo * )), infos, SLOT(replace(FileInfo * )));
-    return infos;
+    auto *wrapper = new QWidget();
+    wrapper->setLayout(new QGridLayout());
+    wrapper->layout()->addWidget(modelPreview);
+    return wrapper;
 }
 
 QByteArray OnexNStgData::getContent() {
@@ -46,7 +38,7 @@ QByteArray OnexNStgData::getContent() {
 
 int OnexNStgData::saveAsFile(const QString &path, QByteArray content) {
     if (model == nullptr) {
-        model = nosModelConverter.fromBinary(content);
+        model = nosModelConverter.fromBinary(this->content);
     }
     QStringList obj = objConverter.toObj(model, name);
 
@@ -67,8 +59,7 @@ int OnexNStgData::afterReplace(QByteArray content) {
     model->uvScale = scale;
 
     emit replaceSignal(this->model);
-    FileInfo *newInfo = generateInfos();
-    emit replaceInfo(newInfo);
+    emit replaceInfo(generateInfos());
     return 1;
 }
 

@@ -1,10 +1,13 @@
 #include "OnexTreeZlibItem.h"
+#include <QDate>
 
-OnexTreeZlibItem::OnexTreeZlibItem(QByteArray header, const QString &name, QByteArray content, NosZlibOpener *opener,
+OnexTreeZlibItem::OnexTreeZlibItem(const QString &name, QByteArray content, NosZlibOpener *opener,
                                    int id,
                                    int creationDate, bool compressed)
-        : OnexTreeItem(name, opener, content), header(header), id(id), creationDate(creationDate),
+        : OnexTreeItem(name, opener, content), id(id), creationDate(creationDate),
           compressed(compressed) {
+    if (creationDate == 0)
+        setCreationDate(QDate::currentDate().toString("dd/MM/yyyy"), true);
 }
 
 
@@ -12,10 +15,6 @@ OnexTreeZlibItem::~OnexTreeZlibItem() = default;
 
 QWidget *OnexTreeZlibItem::getPreview() {
     return nullptr;
-}
-
-QByteArray OnexTreeZlibItem::getHeader() {
-    return header;
 }
 
 int OnexTreeZlibItem::getId() {
@@ -37,14 +36,14 @@ bool OnexTreeZlibItem::isCompressed() {
     return compressed;
 }
 
-void OnexTreeZlibItem::setHeader(const QString &header, bool update) {
-    this->header = header.toLocal8Bit();
-    if (update)
-            emit changeSignal("Header", header);
+void OnexTreeZlibItem::setName(QString name) {
+    OnexTreeItem::setName(name);
+    setId(name.toInt(), true);
 }
 
 void OnexTreeZlibItem::setId(int id, bool update) {
     this->id = id;
+    OnexTreeItem::setName(QString::number(id));
     if (update)
             emit changeSignal("ID", id);
 }
@@ -54,9 +53,9 @@ void OnexTreeZlibItem::setCreationDate(const QString &date, bool update) {
     if (parts.size() != 3)
         this->creationDate = 0;
     else {
-        int year = parts[0].toInt() << 0x10;
-        int month = parts[1].toInt() << 0x08;
-        int day = parts[2].toInt();
+        int year = parts[2].toInt(nullptr, 16) << 0x10;
+        int month = parts[1].toInt(nullptr, 16) << 0x08;
+        int day = parts[0].toInt(nullptr, 16);
         this->creationDate = year + month + day;
     }
     if (update)
@@ -70,18 +69,28 @@ void OnexTreeZlibItem::setCompressed(bool compressed, bool update) {
 }
 
 FileInfo *OnexTreeZlibItem::generateInfos() {
-    auto *infos = new FileInfo();
-    connect(infos->addIntLineEdit("ID", getId()), &QLineEdit::textChanged,
-            [=](const QString &value) { setId(value.toInt()); });
-    infos->addIntLineEdit("Size", getContentSize())->setEnabled(false);
-    infos->addStringLineEdit("Header", getHeader())->setEnabled(false);
-    connect(infos->addStringLineEdit("Date", getDateAsString()), &QLineEdit::textChanged,
-            [=](const QString &value) { setCreationDate(value); });
-    connect(infos->addCheckBox("isCompressed", isCompressed()), &QCheckBox::clicked,
-            [=](const bool value) { setCompressed(value); });
-    connect(this, SIGNAL(changeSignal(QString, QString)), infos, SLOT(update(QString, QString)));
-    connect(this, SIGNAL(changeSignal(QString, int)), infos, SLOT(update(QString, int)));
-    connect(this, SIGNAL(changeSignal(QString, float)), infos, SLOT(update(QString, float)));
-    connect(this, SIGNAL(changeSignal(QString, bool)), infos, SLOT(update(QString, bool)));
+    auto *infos = OnexTreeItem::generateInfos();
+    if (!hasParent()) {
+        connect(infos->addStringLineEdit("Header", getContent()), &QLineEdit::textChanged,
+                [=](const QString &value) { setContent(value.toLocal8Bit()); });
+    } else {
+        connect(infos->addIntLineEdit("ID", getId()), &QLineEdit::textChanged,
+                [=](const QString &value) { setId(value.toInt()); });
+        connect(infos->addStringLineEdit("Date", getDateAsString()), &QLineEdit::textChanged,
+                [=](const QString &value) { setCreationDate(value); });
+        connect(infos->addCheckBox("isCompressed", isCompressed()), &QCheckBox::clicked,
+                [=](const bool value) { setCompressed(value); });
+    }
+    return infos;
+}
+
+FileInfo *OnexTreeZlibItem::getInfos() {
+    FileInfo *infos;
+    if (!hasParent())
+        infos = OnexTreeZlibItem::generateInfos();
+    else
+        infos = generateInfos();
+    if (infos != nullptr)
+        connect(this, SIGNAL(replaceInfo(FileInfo * )), infos, SLOT(replace(FileInfo * )));
     return infos;
 }

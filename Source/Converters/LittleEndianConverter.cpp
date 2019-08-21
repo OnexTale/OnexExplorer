@@ -10,7 +10,7 @@ int LittleEndianConverter::fromInt(QByteArray array) {
 }
 
 float LittleEndianConverter::fromFloat(QByteArray array) {
-    return qFromLittleEndian<qfloat16>(reinterpret_cast<const uchar *>(array.data()));
+    return qFromLittleEndian<float>(reinterpret_cast<const uchar *>(array.data()));
 }
 
 QByteArray LittleEndianConverter::toShort(short number) {
@@ -30,7 +30,7 @@ QByteArray LittleEndianConverter::toInt(int number) {
 QByteArray LittleEndianConverter::toFloat(float number) {
     QByteArray writeArray;
     writeArray.resize(4);
-    qToLittleEndian<qfloat16>(number, reinterpret_cast<uchar *>(writeArray.data()));
+    qToLittleEndian<float>(number, reinterpret_cast<uchar *>(writeArray.data()));
     return writeArray;
 }
 

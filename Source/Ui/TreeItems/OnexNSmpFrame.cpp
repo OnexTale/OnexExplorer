@@ -1,8 +1,9 @@
 #include "OnexNSmpFrame.h"
 
-OnexNSmpFrame::OnexNSmpFrame(QByteArray header, QString name, QByteArray content, int width, int height, int xOrigin, int yOrigin, NosZlibOpener *opener,
+OnexNSmpFrame::OnexNSmpFrame(QString name, QByteArray content, int width, int height, int xOrigin, int yOrigin, NosZlibOpener *opener,
                              int id, int creationDate, bool compressed)
-        : OnexTreeImage(header, name, content, opener, id, creationDate, compressed) {
+        : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
+    setFlags(this->flags() & (~Qt::ItemIsEditable));
     this->width = width;
     this->height = height;
     this->xOrigin = xOrigin;
@@ -31,6 +32,9 @@ int OnexNSmpFrame::afterReplace(QImage image) {
     setHeight(image.height(), true);
     setContent(imageConverter->toGBAR4444(image));
     emit OnexTreeImage::replaceSignal(this->getImage());
+    FileInfo *newInfo = generateInfos();
+    emit replaceInfo(newInfo);
+    emit replaceInfo(generateInfos());
     return 1;
 }
 
@@ -48,6 +52,10 @@ int OnexNSmpFrame::getXOrigin() {
 
 int OnexNSmpFrame::getYOrigin() {
     return yOrigin;
+}
+
+void OnexNSmpFrame::setId(int id, bool update) {
+    this->id = id;
 }
 
 void OnexNSmpFrame::setWidth(int width, bool update) {
@@ -74,9 +82,10 @@ void OnexNSmpFrame::setYOrigin(int yOrigin, bool update) {
             emit changeSignal("y-Origin", yOrigin);
 }
 
-
 FileInfo *OnexNSmpFrame::generateInfos() {
-    FileInfo *infos = OnexTreeImage::generateInfos();
+    FileInfo *infos = OnexTreeItem::generateInfos();
+    infos->addIntLineEdit("Width", getWidth())->setDisabled(true);
+    infos->addIntLineEdit("Height", getHeight())->setDisabled(true);
     connect(infos->addIntLineEdit("x-Origin", getXOrigin()), &QLineEdit::textChanged,
             [=](const QString &value) { setXOrigin(value.toInt()); });
     connect(infos->addIntLineEdit("y-Origin", getYOrigin()), &QLineEdit::textChanged,

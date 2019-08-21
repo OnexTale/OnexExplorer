@@ -7,7 +7,7 @@ NosTextOpener::NosTextOpener() {
 
 OnexTreeItem *NosTextOpener::decrypt(QFile &file) {
     file.seek(0);
-    auto *item = new OnexTreeText(neatFileName(file.fileName()), this, 0, 0, QByteArray());
+    auto *item = new OnexTreeText(neatFileName(file.fileName()), this);
     int fileAmount = littleEndianConverter.readInt(file);
     for (int i = 0; i < fileAmount; ++i) {
         int fileNumber = littleEndianConverter.readInt(file);
@@ -55,4 +55,8 @@ QByteArray NosTextOpener::encrypt(OnexTreeItem *item) {
         result.push_back(encrypted);
     }
     return result;
+}
+
+OnexTreeItem *NosTextOpener::getEmptyItem(const QByteArray &header) {
+    return new OnexTreeText("", this);
 }

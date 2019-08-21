@@ -16,3 +16,7 @@ OnexTreeItem *NosCCInfOpener::decrypt(QFile &file) {
 QByteArray NosCCInfOpener::encrypt(OnexTreeItem *item) {
     return QByteArray();
 }
+
+OnexTreeItem *NosCCInfOpener::getEmptyItem(const QByteArray &header) {
+    return nullptr;
+}

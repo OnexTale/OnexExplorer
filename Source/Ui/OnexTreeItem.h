@@ -22,6 +22,7 @@ public:
     virtual QString getName();
     virtual QByteArray getContent();
     int getContentSize();
+    virtual bool isEmpty();
     virtual QString getExportExtension();
     QString getExportExtensionFilter();
 public slots:
@@ -43,9 +44,10 @@ protected:
     QByteArray content;
     QString name;
     INosFileOpener *opener;
-    virtual FileInfo *generateInfos() = 0;
+    virtual FileInfo *generateInfos();
     virtual int saveAsFile(const QString &path, QByteArray content = QByteArray());
     QString getCorrectPath(QString input, QString extension = QString());
+    bool operator<(const QTreeWidgetItem &other) const override;
 };
 
 #endif // ONEXTREEITEM_H

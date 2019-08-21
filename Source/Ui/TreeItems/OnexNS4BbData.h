@@ -6,7 +6,7 @@
 class OnexNS4BbData : public OnexTreeImage {
 Q_OBJECT
 public:
-    OnexNS4BbData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
+    OnexNS4BbData(QString name, QByteArray content, NosZlibOpener *opener, int id,
                   int creationDate, bool compressed);
     ~OnexNS4BbData() override;
     QImage getImage() override;

@@ -11,6 +11,7 @@ public:
     NosCCInfOpener();
     OnexTreeItem *decrypt(QFile &file);
     QByteArray encrypt(OnexTreeItem *item);
+    OnexTreeItem *getEmptyItem(const QByteArray &header) override;
 };
 
 #endif // NOSCCINFOPENER_H

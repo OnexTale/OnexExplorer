@@ -11,11 +11,10 @@
 class OnexNStgData : public OnexTreeZlibItem {
 Q_OBJECT
 public:
-    OnexNStgData(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
+    OnexNStgData(QString name, QByteArray content, NosZlibOpener *opener, int id,
                  int creationDate, bool compressed);
     ~OnexNStgData() override;
     QWidget *getPreview() override;
-    FileInfo *getInfos() override;
     QByteArray getContent() override;
     int saveAsFile(const QString &path, QByteArray content = QByteArray()) override;
     QString getExportExtension() override;

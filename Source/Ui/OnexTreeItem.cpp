@@ -3,6 +3,7 @@
 OnexTreeItem::OnexTreeItem(const QString &name, INosFileOpener *opener, QByteArray content)
         : name(name), opener(opener), content(content) {
     this->setText(0, name);
+    this->setFlags(this->flags() | Qt::ItemIsEditable);
 }
 
 OnexTreeItem::~OnexTreeItem() = default;
@@ -32,6 +33,10 @@ int OnexTreeItem::getContentSize() {
     return content.size();
 }
 
+bool OnexTreeItem::isEmpty() {
+    return getContent().isEmpty();
+}
+
 QString OnexTreeItem::getExportExtension() {
     return "";
 }
@@ -52,6 +57,7 @@ QString OnexTreeItem::getExportExtensionFilter() {
 
 void OnexTreeItem::setName(QString name) {
     this->name = name;
+    setText(0, name);
 }
 
 void OnexTreeItem::setContent(QByteArray content) {
@@ -103,25 +109,26 @@ int OnexTreeItem::onExportAsOriginal(QString path) {
 }
 
 int OnexTreeItem::onReplace(QString directory) {
+    int count = 0;
     if (this->childCount() > 0) {
-        int count = 0;
         for (int i = 0; i < this->childCount(); i++) {
             auto *item = dynamic_cast<OnexTreeItem *>(this->child(i));
             count += item->onReplace(directory);
         }
         if (hasParent())
             afterReplace(QByteArray());
-        return count;
-    } else {
-        QString path = getCorrectPath(directory);
-        QFile file(path);
-        if (file.open(QIODevice::ReadOnly))
-            return afterReplace(file.readAll());
-        else {
-            QMessageBox::critical(nullptr, "Woops", "Couldn't open " + path);
-            return 0;
-        }
     }
+    if (count > 0)
+        return count;
+    QString path = getCorrectPath(directory);
+    QFile file(path);
+    if (file.open(QIODevice::ReadOnly))
+        return afterReplace(file.readAll());
+    else {
+        QMessageBox::critical(nullptr, "Woops", "Couldn't open " + path);
+        return 0;
+    }
+
 }
 
 int OnexTreeItem::onReplaceRaw(QString directory) {
@@ -136,6 +143,7 @@ int OnexTreeItem::onReplaceRaw(QString directory) {
 }
 
 int OnexTreeItem::afterReplace(QByteArray content) {
+    emit replaceInfo(generateInfos());
     return 1;
 }
 
@@ -151,6 +159,22 @@ QString OnexTreeItem::getCorrectPath(QString input, QString extension) {
     return input;
 }
 
+FileInfo *OnexTreeItem::generateInfos() {
+    FileInfo *infos = new FileInfo();
+    if (hasParent() && isEmpty()) {
+        infos->addReplaceButton("Load from File");
+        infos->addReplaceRawButton("Load from raw File");
+    } else if (hasParent()) {
+        infos->addReplaceButton("Replace");
+        infos->addReplaceRawButton("Replace with raw");
+    }
+    connect(this, SIGNAL(changeSignal(QString, QString)), infos, SLOT(update(QString, QString)));
+    connect(this, SIGNAL(changeSignal(QString, int)), infos, SLOT(update(QString, int)));
+    connect(this, SIGNAL(changeSignal(QString, float)), infos, SLOT(update(QString, float)));
+    connect(this, SIGNAL(changeSignal(QString, bool)), infos, SLOT(update(QString, bool)));
+    return infos;
+}
+
 int OnexTreeItem::saveAsFile(const QString &path, QByteArray content) {
     QFile file(path);
     if (file.open(QIODevice::WriteOnly)) {
@@ -159,4 +183,18 @@ int OnexTreeItem::saveAsFile(const QString &path, QByteArray content) {
         return 1;
     }
     return 0;
+}
+
+bool OnexTreeItem::operator<(const QTreeWidgetItem &other) const {
+    int column = treeWidget()->sortColumn();
+    static QRegExp regExp("^(\\d*)_(\\d*)x(\\d*)$");
+
+    bool t1IsInt;
+    bool t2IsInt;
+    int t1 = text(column).toInt(&t1IsInt);
+    int t2 = other.text(column).toInt(&t2IsInt);
+    if (t1IsInt && t2IsInt || regExp.exactMatch(text(column)))
+        return t1 < t2;
+    else
+        return text(column).toLower() < other.text(column).toLower();
 }

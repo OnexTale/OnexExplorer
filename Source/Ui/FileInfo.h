@@ -6,6 +6,8 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QWidget>
+#include <QPushButton>
+#include <QComboBox>
 
 class FileInfo : public QWidget {
 Q_OBJECT
@@ -16,6 +18,9 @@ public:
     QLineEdit *addIntLineEdit(const QString &title, int value);
     QLineEdit *addFloatLineEdit(const QString &title, float value);
     QCheckBox *addCheckBox(const QString &title, bool checked);
+    QComboBox *addSelection(const QString &title, const QStringList &items, int value);
+    QPushButton *addReplaceButton(const QString &title);
+    QPushButton *addReplaceRawButton(const QString &title);
 public slots:
     void update(const QString &title, const QString &value);
     void update(const QString &title, int value);
@@ -24,6 +29,8 @@ public slots:
     void replace(FileInfo *newInfo);
 signals:
     void updateInfo(FileInfo *info);
+    void replaceFile();
+    void replaceRawFile();
 private:
     int rows;
 };

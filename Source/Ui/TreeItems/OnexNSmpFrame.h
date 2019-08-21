@@ -6,7 +6,7 @@
 class OnexNSmpFrame : public OnexTreeImage {
 Q_OBJECT
 public:
-    OnexNSmpFrame(QByteArray header, QString name, QByteArray content, int width, int height, int xOrigin, int yOrigin, NosZlibOpener *opener,
+    OnexNSmpFrame(QString name, QByteArray content, int width, int height, int xOrigin, int yOrigin, NosZlibOpener *opener,
                   int id, int creationDate, bool compressed);
     ~OnexNSmpFrame() override;
     FileInfo *getInfos() override;
@@ -17,6 +17,7 @@ public:
     int getXOrigin();
     int getYOrigin();
 public slots:
+    void setId(int id, bool update = false) override;
     int afterReplace(QImage image) override;
     void setWidth(int width, bool update = false) override;
     void setHeight(int height, bool update = false) override;

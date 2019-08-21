@@ -13,10 +13,10 @@ struct ImageResolution {
 class OnexTreeImage : public OnexTreeZlibItem {
 Q_OBJECT
 public:
-    OnexTreeImage(QByteArray header, QString name, QByteArray content, NosZlibOpener *opener, int id,
+    OnexTreeImage(QString name, QByteArray content, NosZlibOpener *opener, int id,
                   int creationDate, bool compressed);
     QWidget *getPreview() override;
-    FileInfo *getInfos() override;
+    bool isEmpty() override;
     QString getExportExtension() override;
     virtual QImage getImage() = 0;
     virtual ImageResolution getResolution() = 0;

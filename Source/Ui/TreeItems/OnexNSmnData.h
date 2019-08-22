@@ -8,7 +8,6 @@ Q_OBJECT
 
 public:
     OnexNSmnData(const QString &name, int creationDate, INosFileOpener *opener, QByteArray content);
-    FileInfo *getInfos() override;
     int getCreationDate();
 public slots:
     void setCreationDate(const QString &date, bool update = false);

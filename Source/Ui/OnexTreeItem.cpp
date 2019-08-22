@@ -9,8 +9,6 @@ OnexTreeItem::OnexTreeItem(const QString &name, INosFileOpener *opener, QByteArr
 OnexTreeItem::~OnexTreeItem() = default;
 
 FileInfo *OnexTreeItem::getInfos() {
-    if (!hasParent())
-        return nullptr;
     FileInfo *infos = generateInfos();
     if (infos != nullptr)
         connect(this, SIGNAL(replaceInfo(FileInfo * )), infos, SLOT(replace(FileInfo * )));

@@ -1,3 +1,4 @@
+#include <QtCore/QDate>
 #include "NosTextOpener.h"
 
 NosTextOpener::NosTextOpener() {
@@ -23,6 +24,16 @@ OnexTreeItem *NosTextOpener::decrypt(QFile &file) {
             decryptedArray = lstDecryptor->decrypt(fileContent);
         item->addChild(new OnexTreeText(stringName, this, fileNumber, isDat, decryptedArray));
     }
+
+    if (file.bytesAvailable() == 12) {
+        file.seek(file.pos() + 8);
+        if (file.read(4) == QByteArrayLiteral("\xEE\x3E\x32\x01")) {
+            file.seek(file.pos() - 12);
+            QString time = readOLETIME(file.read(8));
+            item->setTime(time, true);
+        }
+    }
+
     return item;
 }
 
@@ -54,9 +65,36 @@ QByteArray NosTextOpener::encrypt(OnexTreeItem *item) {
         result.push_back(littleEndianConverter.toInt(encrypted.size()));
         result.push_back(encrypted);
     }
+
+    QByteArray time = generateOLETIME();
+    result.push_back(time);
+    result.push_back(QByteArrayLiteral("\xEE\x3E\x32\x01"));
+
+    auto *text = static_cast<OnexTreeText *>(item);
+    text->setTime(readOLETIME(time), true);
+
     return result;
 }
 
 OnexTreeItem *NosTextOpener::getEmptyItem(const QByteArray &header) {
     return new OnexTreeText("", this);
+}
+
+QByteArray NosTextOpener::generateOLETIME() {
+    QDateTime dt = QDateTime::currentDateTime();
+    dt.setTimeSpec(Qt::TimeSpec::UTC);
+    double variant = ((dt.toSecsSinceEpoch() + 2208988800) / 86400.0) + 2.00001;
+    QByteArray writeArray;
+    writeArray.resize(8);
+    qToLittleEndian<double>(variant, reinterpret_cast<uchar *>(writeArray.data()));
+    return writeArray;
+}
+
+QString NosTextOpener::readOLETIME(QByteArray array) {
+    double variant = qFromLittleEndian<double>(reinterpret_cast<const uchar *>(array.data()));
+    unsigned long unixTime = -2208988800 + ((variant - 2.00001) * 86400);
+    QDateTime dt;
+    dt.setTimeSpec(Qt::TimeSpec::UTC);
+    dt.setSecsSinceEpoch(unixTime);
+    return dt.toString("dd/MM/yyyy hh:mm:ss");
 }

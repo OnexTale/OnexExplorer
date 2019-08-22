@@ -9,7 +9,6 @@ public:
     OnexNSmpFrame(QString name, QByteArray content, int width, int height, int xOrigin, int yOrigin, NosZlibOpener *opener,
                   int id, int creationDate, bool compressed);
     ~OnexNSmpFrame() override;
-    FileInfo *getInfos() override;
     QImage getImage() override;
     ImageResolution getResolution() override;
     int getWidth();

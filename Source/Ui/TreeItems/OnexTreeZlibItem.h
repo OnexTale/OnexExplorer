@@ -15,7 +15,6 @@ public:
                      int creationDate, bool compressed);
     ~OnexTreeZlibItem() override;
     QWidget *getPreview() override;
-    FileInfo *getInfos() override;
     int getId();
     int getCreationDate();
     bool isCompressed();

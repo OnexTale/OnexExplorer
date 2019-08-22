@@ -19,11 +19,13 @@ public slots:
     int afterReplace(QByteArray content) override;
     void setFileNumber(int number, bool update = false);
     void setIsDat(bool isCompressed, bool update = false);
+    void setTime(QString time, bool update = false);
 signals:
     void replaceSignal(QByteArray text);
 protected:
     int fileNumber;
     int isCompressed;
+    QString time;
     FileInfo *generateInfos() override;
 };
 

@@ -68,9 +68,11 @@ void OnexNSipData::setCenterY(int center, bool update) {
 
 FileInfo *OnexNSipData::generateInfos() {
     FileInfo *infos = OnexTreeImage::generateInfos();
-    connect(infos->addIntLineEdit("Center-X", getCenter().x), &QLineEdit::textChanged,
-            [=](const QString &value) { setCenterY(value.toInt()); });
-    connect(infos->addIntLineEdit("Center-Y", getCenter().y), &QLineEdit::textChanged,
-            [=](const QString &value) { setCenterX(value.toInt()); });
+    if (hasParent()) {
+        connect(infos->addIntLineEdit("Center-X", getCenter().x), &QLineEdit::textChanged,
+                [=](const QString &value) { setCenterY(value.toInt()); });
+        connect(infos->addIntLineEdit("Center-Y", getCenter().y), &QLineEdit::textChanged,
+                [=](const QString &value) { setCenterX(value.toInt()); });
+    }
     return infos;
 }

@@ -53,9 +53,11 @@ int OnexTreeImage::afterReplace(QByteArray content) {
 
 FileInfo *OnexTreeImage::generateInfos() {
     FileInfo *infos = OnexTreeZlibItem::generateInfos();
-    ImageResolution ir = getResolution();
-    infos->addIntLineEdit("Width", ir.x)->setDisabled(true);
-    infos->addIntLineEdit("Height", ir.y)->setDisabled(true);
+    if (hasParent()) {
+        ImageResolution ir = getResolution();
+        infos->addIntLineEdit("Width", ir.x)->setDisabled(true);
+        infos->addIntLineEdit("Height", ir.y)->setDisabled(true);
+    }
     return infos;
 }
 

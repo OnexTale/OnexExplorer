@@ -12,12 +12,6 @@ OnexNSmpFrame::OnexNSmpFrame(QString name, QByteArray content, int width, int he
 
 OnexNSmpFrame::~OnexNSmpFrame() = default;
 
-FileInfo *OnexNSmpFrame::getInfos() {
-    FileInfo *infos = generateInfos();
-    connect(this, SIGNAL(replaceInfo(FileInfo * )), infos, SLOT(replace(FileInfo * )));
-    return infos;
-}
-
 QImage OnexNSmpFrame::getImage() {
     ImageResolution resolution = this->getResolution();
     return imageConverter->convertGBAR4444(content, resolution.x, resolution.y);
@@ -84,11 +78,13 @@ void OnexNSmpFrame::setYOrigin(int yOrigin, bool update) {
 
 FileInfo *OnexNSmpFrame::generateInfos() {
     FileInfo *infos = OnexTreeItem::generateInfos();
-    infos->addIntLineEdit("Width", getWidth())->setDisabled(true);
-    infos->addIntLineEdit("Height", getHeight())->setDisabled(true);
-    connect(infos->addIntLineEdit("x-Origin", getXOrigin()), &QLineEdit::textChanged,
-            [=](const QString &value) { setXOrigin(value.toInt()); });
-    connect(infos->addIntLineEdit("y-Origin", getYOrigin()), &QLineEdit::textChanged,
-            [=](const QString &value) { setYOrigin(value.toInt()); });
+    if (hasParent()) {
+        infos->addIntLineEdit("Width", getWidth())->setDisabled(true);
+        infos->addIntLineEdit("Height", getHeight())->setDisabled(true);
+        connect(infos->addIntLineEdit("x-Origin", getXOrigin()), &QLineEdit::textChanged,
+                [=](const QString &value) { setXOrigin(value.toInt()); });
+        connect(infos->addIntLineEdit("y-Origin", getYOrigin()), &QLineEdit::textChanged,
+                [=](const QString &value) { setYOrigin(value.toInt()); });
+    }
     return infos;
 }

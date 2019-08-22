@@ -137,33 +137,36 @@ void OnexNStgData::setUVScale(float scale, bool update) {
 
 FileInfo *OnexNStgData::generateInfos() {
     FileInfo *infos = OnexTreeZlibItem::generateInfos();
-    for (int i = 0; i < model->objects.size(); i++) {
-        connect(infos->addFloatLineEdit("UV-Scale", model->uvScale),
-                &QLineEdit::textChanged, [=](const QString &value) { setUVScale(value.toFloat()); });
-        connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-x-Position", model->objects[i].position.x()),
-                &QLineEdit::textChanged, [=](const QString &value) { setXPosition(i, value.toFloat()); });
-        connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-y-Position", model->objects[i].position.y()),
-                &QLineEdit::textChanged, [=](const QString &value) { setYPosition(i, value.toFloat()); });
-        connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-z-Position", model->objects[i].position.z()),
-                &QLineEdit::textChanged, [=](const QString &value) { setZPosition(i, value.toFloat()); });
-        connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-x-Rotation", model->objects[i].rotation.x()),
-                &QLineEdit::textChanged, [=](const QString &value) { setXRotation(i, value.toFloat()); });
-        connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-y-Rotation", model->objects[i].rotation.y()),
-                &QLineEdit::textChanged, [=](const QString &value) { setYRotation(i, value.toFloat()); });
-        connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-z-Rotation", model->objects[i].rotation.z()),
-                &QLineEdit::textChanged, [=](const QString &value) { setZRotation(i, value.toFloat()); });
-        connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-w-Rotation", model->objects[i].rotation.w()),
-                &QLineEdit::textChanged, [=](const QString &value) { setWRotation(i, value.toFloat()); });
-        connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-x-Scale", model->objects[i].scale.x()),
-                &QLineEdit::textChanged, [=](const QString &value) { setXScale(i, value.toFloat()); });
-        connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-y-Scale", model->objects[i].scale.y()),
-                &QLineEdit::textChanged, [=](const QString &value) { setYScale(i, value.toFloat()); });
-        connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-z-Scale", model->objects[i].scale.z()),
-                &QLineEdit::textChanged, [=](const QString &value) { setZScale(i, value.toFloat()); });
+    if (hasParent()) {
+        for (int i = 0; i < model->objects.size(); i++) {
+            connect(infos->addFloatLineEdit("UV-Scale", model->uvScale),
+                    &QLineEdit::textChanged, [=](const QString &value) { setUVScale(value.toFloat()); });
+            connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-x-Position", model->objects[i].position.x()),
+                    &QLineEdit::textChanged, [=](const QString &value) { setXPosition(i, value.toFloat()); });
+            connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-y-Position", model->objects[i].position.y()),
+                    &QLineEdit::textChanged, [=](const QString &value) { setYPosition(i, value.toFloat()); });
+            connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-z-Position", model->objects[i].position.z()),
+                    &QLineEdit::textChanged, [=](const QString &value) { setZPosition(i, value.toFloat()); });
+            connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-x-Rotation", model->objects[i].rotation.x()),
+                    &QLineEdit::textChanged, [=](const QString &value) { setXRotation(i, value.toFloat()); });
+            connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-y-Rotation", model->objects[i].rotation.y()),
+                    &QLineEdit::textChanged, [=](const QString &value) { setYRotation(i, value.toFloat()); });
+            connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-z-Rotation", model->objects[i].rotation.z()),
+                    &QLineEdit::textChanged, [=](const QString &value) { setZRotation(i, value.toFloat()); });
+            connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-w-Rotation", model->objects[i].rotation.w()),
+                    &QLineEdit::textChanged, [=](const QString &value) { setWRotation(i, value.toFloat()); });
+            connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-x-Scale", model->objects[i].scale.x()),
+                    &QLineEdit::textChanged, [=](const QString &value) { setXScale(i, value.toFloat()); });
+            connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-y-Scale", model->objects[i].scale.y()),
+                    &QLineEdit::textChanged, [=](const QString &value) { setYScale(i, value.toFloat()); });
+            connect(infos->addFloatLineEdit("O-" + QString::number(i) + "-z-Scale", model->objects[i].scale.z()),
+                    &QLineEdit::textChanged, [=](const QString &value) { setZScale(i, value.toFloat()); });
+        }
+        for (int i = 0; i < model->groups.size(); i++) {
+            connect(infos->addIntLineEdit("Texture-" + QString::number(i), model->groups[i].texture),
+                    &QLineEdit::textChanged, [=](const QString &newValue) { setTexture(i, newValue.toInt()); });
+        }
     }
-    for (int i = 0; i < model->groups.size(); i++) {
-        connect(infos->addIntLineEdit("Texture-" + QString::number(i), model->groups[i].texture),
-                &QLineEdit::textChanged, [=](const QString &newValue) { setTexture(i, newValue.toInt()); });
-    }
+
     return infos;
 }

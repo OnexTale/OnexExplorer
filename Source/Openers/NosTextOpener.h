@@ -18,6 +18,8 @@ public:
 private:
     NosTextDatFileDecryptor *datDecryptor;
     NosTextOthersFileDecryptor *lstDecryptor;
+    QByteArray generateOLETIME();
+    QString readOLETIME(QByteArray array);
 };
 
 #endif // NOSTEXTOPENER_H

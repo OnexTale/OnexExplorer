@@ -83,14 +83,3 @@ FileInfo *OnexTreeZlibItem::generateInfos() {
     }
     return infos;
 }
-
-FileInfo *OnexTreeZlibItem::getInfos() {
-    FileInfo *infos;
-    if (!hasParent())
-        infos = OnexTreeZlibItem::generateInfos();
-    else
-        infos = generateInfos();
-    if (infos != nullptr)
-        connect(this, SIGNAL(replaceInfo(FileInfo * )), infos, SLOT(replace(FileInfo * )));
-    return infos;
-}

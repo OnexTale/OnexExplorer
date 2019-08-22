@@ -6,8 +6,7 @@
 #include <QLabel>
 #include <QLineEdit>
 
-OnexTreeText::OnexTreeText(const QString &name, NosTextOpener *opener, int fileNumber, int isCompressed,
-                           QByteArray content)
+OnexTreeText::OnexTreeText(const QString &name, NosTextOpener *opener, int fileNumber, int isCompressed, QByteArray content)
         : OnexTreeItem(name, opener, content), fileNumber(fileNumber), isCompressed(isCompressed) {
 }
 
@@ -55,13 +54,23 @@ void OnexTreeText::setIsDat(bool isCompressed, bool update) {
             emit changeSignal("isCompressed", isCompressed);
 }
 
+void OnexTreeText::setTime(QString time, bool update) {
+    this->time = time;
+    if (update)
+            emit changeSignal("Last Edit", time);
+}
+
 FileInfo *OnexTreeText::generateInfos() {
-    if (!hasParent())
-        return nullptr;
-    auto *infos = OnexTreeItem::generateInfos();
-    connect(infos->addIntLineEdit("Filenumber", getFileNumber()), &QLineEdit::textChanged,
-            [=](const QString &value) { setFileNumber(value.toInt()); });
-    connect(infos->addCheckBox("isCompressed", getIsDat()), &QCheckBox::clicked, [=](const bool value) { setIsDat(value); });
+    FileInfo *infos;
+    if (!hasParent()) {
+        infos = new FileInfo();
+        infos->addStringLineEdit("Last Edit", time)->setEnabled(false);
+    } else {
+        infos = OnexTreeItem::generateInfos();
+        connect(infos->addIntLineEdit("Filenumber", getFileNumber()), &QLineEdit::textChanged,
+                [=](const QString &value) { setFileNumber(value.toInt()); });
+        connect(infos->addCheckBox("isCompressed", getIsDat()), &QCheckBox::clicked, [=](const bool value) { setIsDat(value); });
+    }
     connect(this, SIGNAL(changeSignal(QString, QString)), infos, SLOT(update(QString, QString)));
     connect(this, SIGNAL(changeSignal(QString, int)), infos, SLOT(update(QString, int)));
     connect(this, SIGNAL(changeSignal(QString, float)), infos, SLOT(update(QString, float)));

@@ -147,15 +147,17 @@ void OnexNStpData::setFileAmount(uint8_t value, bool update) {
 
 FileInfo *OnexNStpData::generateInfos() {
     FileInfo *infos = OnexTreeImage::generateInfos();
-    const QStringList formats = {"ARGB4444", "ARGB1555 ", "ARGB8888", "Grayscale_1", "Grayscale_2"};
-    connect(infos->addSelection("Format", formats, getFormat()), QOverload<int>::of(&QComboBox::currentIndexChanged),
-            [=](const int &value) { setFormat(value); });
-    connect(infos->addCheckBox("SmoothScaling", getSmoothScaling()), &QCheckBox::clicked,
-            [=](const bool value) { setSmoothScaling(value); });
-    connect(infos->addCheckBox("Unknown", getUnknownValue()), &QCheckBox::clicked,
-            [=](const bool value) { setUnknownValue(value); });
-    connect(infos->addCheckBox("MipMap", getFileAmount() != 0), &QCheckBox::clicked,
-            [=](const bool value) { generateMipMap(value); });
+    if (hasParent()) {
+        const QStringList formats = {"ARGB4444", "ARGB1555 ", "ARGB8888", "Grayscale_1", "Grayscale_2"};
+        connect(infos->addSelection("Format", formats, getFormat()), QOverload<int>::of(&QComboBox::currentIndexChanged),
+                [=](const int &value) { setFormat(value); });
+        connect(infos->addCheckBox("SmoothScaling", getSmoothScaling()), &QCheckBox::clicked,
+                [=](const bool value) { setSmoothScaling(value); });
+        connect(infos->addCheckBox("Unknown", getUnknownValue()), &QCheckBox::clicked,
+                [=](const bool value) { setUnknownValue(value); });
+        connect(infos->addCheckBox("MipMap", getFileAmount() != 0), &QCheckBox::clicked,
+                [=](const bool value) { generateMipMap(value); });
+    }
     return infos;
 }
 

@@ -5,12 +5,6 @@ OnexNSmnData::OnexNSmnData(const QString &name, int creationDate, INosFileOpener
 
 }
 
-FileInfo *OnexNSmnData::getInfos() {
-    if (!hasParent())
-        return generateInfos();
-    return nullptr;
-}
-
 int OnexNSmnData::getCreationDate() {
     return creationDate;
 }
@@ -45,7 +39,7 @@ void OnexNSmnData::setCreationDate(const QString &date, bool update) {
 
 FileInfo *OnexNSmnData::generateInfos() {
     auto *infos = OnexTreeItem::generateInfos();
-    if (!hasParent()) {
+    if (hasParent()) {
         connect(infos->addStringLineEdit("Header", getContent()), &QLineEdit::textChanged,
                 [=](const QString &value) { setContent(value.toLocal8Bit()); });
         connect(infos->addStringLineEdit("Date", getDateAsString()), &QLineEdit::textChanged,

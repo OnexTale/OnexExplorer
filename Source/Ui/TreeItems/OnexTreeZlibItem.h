@@ -14,7 +14,6 @@ public:
     OnexTreeZlibItem(const QString &name, QByteArray content, NosZlibOpener *opener, int id,
                      int creationDate, bool compressed);
     ~OnexTreeZlibItem() override;
-    QWidget *getPreview() override;
     int getId();
     int getCreationDate();
     bool isCompressed();

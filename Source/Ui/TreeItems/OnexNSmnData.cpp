@@ -1,6 +1,10 @@
 #include "OnexNSmnData.h"
+#include "../Previews/SingleTextFilePreview.h"
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
-OnexNSmnData::OnexNSmnData(const QString &name, int creationDate, INosFileOpener *opener, QByteArray content) : OnexJsonTreeItem(name, opener, content),
+OnexNSmnData::OnexNSmnData(const QString &name, int creationDate, INosFileOpener *opener, QByteArray content) : OnexTreeItem(name, opener, content),
                                                                                                                 creationDate(creationDate) {
 
 }
@@ -39,11 +43,69 @@ void OnexNSmnData::setCreationDate(const QString &date, bool update) {
 
 FileInfo *OnexNSmnData::generateInfos() {
     auto *infos = OnexTreeItem::generateInfos();
-    if (hasParent()) {
+    if (!hasParent()) {
         connect(infos->addStringLineEdit("Header", getContent()), &QLineEdit::textChanged,
                 [=](const QString &value) { setContent(value.toLocal8Bit()); });
         connect(infos->addStringLineEdit("Date", getDateAsString()), &QLineEdit::textChanged,
                 [=](const QString &value) { setCreationDate(value); });
     }
     return infos;
+}
+
+QWidget *OnexNSmnData::getPreview() {
+    if (!hasParent())
+        return nullptr;
+    auto *textPreview = new SingleTextFilePreview(content);
+    connect(this, SIGNAL(replaceSignal(QByteArray)), textPreview, SLOT(onReplaced(QByteArray)));
+    return textPreview;
+}
+
+QString OnexNSmnData::getExportExtension() {
+    return ".json";
+}
+
+int OnexNSmnData::onExport(QString directory) {
+    if (!hasParent()) {
+        QMessageBox::StandardButton message = QMessageBox::question(nullptr, "Export?", "Export all items together as one JSON?");
+        if (message == QMessageBox::Yes) {
+            QJsonArray fullJson;
+            for (int i = 0; i < childCount(); i++) {
+                auto *ct = static_cast<OnexNSmnData *>(child(i));
+                QJsonObject jo = QJsonDocument::fromJson(ct->getContent()).object();
+                fullJson.append(jo);
+            }
+            saveAsFile(directory + name + ".json", QJsonDocument(fullJson).toJson());
+            return 1;
+        } else {
+            return OnexTreeItem::onExport(directory);
+        }
+    }
+    return OnexTreeItem::onExport(directory);
+}
+
+int OnexNSmnData::onReplace(QString directory) {
+    if (!hasParent()) {
+        QMessageBox::StandardButton message = QMessageBox::question(nullptr, "Replace?", "Replace all items together from one JSON?");
+        if (message == QMessageBox::Yes) {
+            QString path = directory + name + ".json";
+            QFile file(path);
+            if (file.open(QIODevice::ReadOnly)) {
+                QJsonArray fullJson = QJsonDocument::fromJson(file.readAll()).array();
+                file.close();
+                takeChildren().clear();
+                loadJson(fullJson);
+                return childCount();
+            } else {
+                QMessageBox::critical(nullptr, "Woops", "Couldn't open " + path);
+                return 0;
+            }
+        }
+    }
+    return OnexTreeItem::onReplace(directory);
+}
+
+int OnexNSmnData::afterReplace(QByteArray content) {
+    setContent(content);
+    emit replaceSignal(this->getContent());
+    return 1;
 }

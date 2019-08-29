@@ -5,6 +5,7 @@
 #include "../Ui/TreeItems/OnexNStcData.h"
 #include "../Ui/TreeItems/OnexNStpData.h"
 #include "../Ui/TreeItems/OnexNStgData.h"
+#include "../Ui/TreeItems/OnexNSmcData.h"
 #include "../Ui/TreeItems/OnexTreeZlibItem.h"
 
 NosZlibOpener::NosZlibOpener() = default;
@@ -104,6 +105,9 @@ OnexTreeItem *NosZlibOpener::createItemFromHeader(QByteArray header, const QStri
         case NStgData:
         case NStgeData:
             return new OnexNStgData(name, array, this, fileId, creationDate, compressed);
+        case NSmcData:
+        case NSpcData:
+            return static_cast<OnexTreeZlibItem *>(new OnexNSmcData(name, array, this, fileId, creationDate, compressed));
         default:
             return new OnexTreeZlibItem(name, array, this, fileId, creationDate, compressed);
     }

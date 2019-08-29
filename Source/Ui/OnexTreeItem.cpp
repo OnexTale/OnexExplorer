@@ -8,6 +8,10 @@ OnexTreeItem::OnexTreeItem(const QString &name, INosFileOpener *opener, QByteArr
 
 OnexTreeItem::~OnexTreeItem() = default;
 
+QWidget *OnexTreeItem::getPreview() {
+    return nullptr;
+}
+
 FileInfo *OnexTreeItem::getInfos() {
     FileInfo *infos = generateInfos();
     if (infos != nullptr)

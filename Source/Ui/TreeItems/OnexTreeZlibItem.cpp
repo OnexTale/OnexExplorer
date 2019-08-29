@@ -13,10 +13,6 @@ OnexTreeZlibItem::OnexTreeZlibItem(const QString &name, QByteArray content, NosZ
 
 OnexTreeZlibItem::~OnexTreeZlibItem() = default;
 
-QWidget *OnexTreeZlibItem::getPreview() {
-    return nullptr;
-}
-
 int OnexTreeZlibItem::getId() {
     return id;
 }

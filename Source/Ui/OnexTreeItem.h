@@ -16,7 +16,7 @@ Q_OBJECT
 public:
     OnexTreeItem(const QString &name, INosFileOpener *opener, QByteArray content = QByteArray());
     ~OnexTreeItem() override;
-    virtual QWidget *getPreview() = 0;
+    virtual QWidget *getPreview();
     virtual FileInfo *getInfos();
     bool hasParent();
     virtual QString getName();

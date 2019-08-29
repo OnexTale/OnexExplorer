@@ -42,7 +42,6 @@ set(SOURCES
         Source/Ui/Previews/SingleModelPreview.cpp
         Source/Ui/TreeItems/OnexTreeImage.cpp
         Source/Ui/TreeItems/OnexTreeText.cpp
-        Source/Ui/TreeItems/OnexJsonTreeItem.cpp
         Source/Ui/TreeItems/OnexTreeZlibItem.cpp
         Source/Ui/TreeItems/OnexNSipData.cpp
         Source/Ui/TreeItems/OnexNS4BbData.cpp
@@ -53,6 +52,7 @@ set(SOURCES
         Source/Ui/TreeItems/OnexNSmpFrame.cpp
         Source/Ui/TreeItems/OnexNStgData.cpp
         Source/Ui/TreeItems/OnexNSmnData.cpp
+        Source/Ui/TreeItems/OnexNSmcData.cpp
         )
 
 set(MOC_HEADERS
@@ -78,7 +78,6 @@ set(MOC_HEADERS
         Source/Ui/Previews/SingleModelPreview.h
         Source/Ui/TreeItems/OnexTreeImage.h
         Source/Ui/TreeItems/OnexTreeText.h
-        Source/Ui/TreeItems/OnexJsonTreeItem.h
         Source/Ui/TreeItems/OnexTreeZlibItem.h
         Source/Ui/TreeItems/OnexNSipData.h
         Source/Ui/TreeItems/OnexNS4BbData.h
@@ -89,6 +88,7 @@ set(MOC_HEADERS
         Source/Ui/TreeItems/OnexNSmpFrame.h
         Source/Ui/TreeItems/OnexNStgData.h
         Source/Ui/TreeItems/OnexNSmnData.h
+        Source/Ui/TreeItems/OnexNSmcData.h
         )
 
 set(UIS

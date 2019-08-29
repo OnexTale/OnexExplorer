@@ -20,7 +20,7 @@ Q_OBJECT
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
-    const QString VERSION = "v0.6.3";
+    const QString VERSION = "v0.6.5";
 public slots:
     void on_actionOpen_triggered();
     void on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *prev);

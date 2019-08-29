@@ -1,8 +1,8 @@
 # OnexExplorer #
 
-OnexExplorer is an open-source tool for unpacking and repacking .NOS data files from game called NosTale. It can open almost all .NOS files and show the data stored in them. Our software works on Qt 5.5+ with OpenGl.
+OnexExplorer is an open-source tool for unpacking and repacking .NOS data files from game called NosTale. It can open almost all .NOS files and allows to view the Content, export and replace it and even add own Content to them. Our software works on Qt 5.5+ with OpenGl.
 
-[<img src="https://discordapp.com/api/guilds/274663521596342273/widget.png?style=shield">](https://discord.gg/VARTAuY)
+Client Modding Discord:  [<img src="https://discordapp.com/api/guilds/590958760374042657/widget.png?style=shield">](https://discord.gg/t73Ayca)
 
 
 ## Currently supported archives ##
@@ -19,18 +19,19 @@ OnexExplorer is an open-source tool for unpacking and repacking .NOS data files 
 - NStcData (Map Grids)
 - NSmpData (Monster-related sprites)
 - NSppData (Player-related sprites)
+- NSmnData (Mob-related sprite infos)
+- NSpnData (Player-related sprite infos)
+- NSmcData (Monster-related animation kits)
+- NSpcData (Player-related animation kits)
 - NStgData (3D Models)
 - NStgeData (3D VFX models)
+
 
 **Other files will be added in future updates.**
 
 
 ## Unsupported archives ##
 
-- NSmnData (Mob-related sprite infos)
-- NSpnData (Player-related sprite infos)
-- NSmcData (Monster-related animation kits)
-- NSpcData (Player-related animation kits)
 - NStuData (Map configs)
 - NSeffData (VFX configs)
 - NStsData

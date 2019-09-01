@@ -56,11 +56,13 @@ QByteArray NosTextOpener::encrypt(OnexTreeItem *item) {
             splited = currentItem->getContent().split(0xA);
             encrypted.push_back(littleEndianConverter.toInt(splited.size() - 1));
         }
-        for (int line = 0; line < splited.size() - 1; ++line) {
+        for (auto &line : splited) {
+            if (line.isEmpty())
+                continue;
             if (currentItem->getIsDat() || currentItem->getName().endsWith(".dat"))
-                encrypted.push_back(datDecryptor->encrypt(splited[line]));
+                encrypted.push_back(datDecryptor->encrypt(line));
             else
-                encrypted.push_back(lstDecryptor->encrypt(splited[line]));
+                encrypted.push_back(lstDecryptor->encrypt(line));
         }
         result.push_back(littleEndianConverter.toInt(encrypted.size()));
         result.push_back(encrypted);

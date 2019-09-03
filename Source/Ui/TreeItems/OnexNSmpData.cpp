@@ -4,7 +4,7 @@
 
 OnexNSmpData::OnexNSmpData(const QString &name, QByteArray content, NosZlibOpener *opener,
                            int id, int creationDate, bool compressed)
-        : OnexTreeZlibItem(name, content, opener, id, creationDate, compressed) {
+        : OnexTreeZlibItem(name, opener, content, id, creationDate, compressed) {
     if (content.isEmpty())
         this->content = QByteArray(0x0);
     if (id == -1)
@@ -18,6 +18,20 @@ OnexNSmpData::OnexNSmpData(const QString &name, QByteArray content, NosZlibOpene
         int offset = opener->getLittleEndianConverter()->fromInt(content.mid(9 + i * 12, 4));
         QByteArray subContent = content.mid(offset, (width * 2 * height));
         addFrame(subContent, width, height, xOrigin, yOrigin);
+    }
+}
+
+OnexNSmpData::OnexNSmpData(QJsonObject jo, NosZlibOpener *opener, const QString &directory) : OnexTreeZlibItem(jo["ID"].toString(), opener) {
+    this->content = QByteArrayLiteral("\x00");
+    setId(jo["ID"].toInt(), true);
+    setCreationDate(jo["Date"].toString(), true);
+    setCompressed(jo["isCompressed"].toBool(), true);
+
+    QJsonArray contentArray = jo["content"].toArray();
+
+    for (auto &&i : contentArray) {
+        QJsonObject frameJo = i.toObject();
+        this->addChild(new OnexNSmpFrame(name + "_" + QString::number(this->childCount()), frameJo, opener, directory));
     }
 }
 

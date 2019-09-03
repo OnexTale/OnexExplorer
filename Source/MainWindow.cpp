@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "Ui/TreeItems/OnexNSmpData.h"
 #include <QScrollArea>
+#include <QJsonDocument>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -98,7 +99,10 @@ void MainWindow::on_actionExport_to_raw_triggered() {
 void MainWindow::on_actionSave_triggered() {
     OnexTreeItem *root = getTreeRoot();
     if (root != nullptr) {
-        root->onExportAsOriginal(root->data(0, Qt::UserRole).toString());
+        if (root->data(0, Qt::UserRole).toString().isEmpty())
+            on_actionSave_as_triggered();
+        else
+            root->onExportAsOriginal(root->data(0, Qt::UserRole).toString());
     } else {
         QMessageBox::information(nullptr, tr("Info"), tr("Select .NOS file first"));
     }
@@ -154,12 +158,47 @@ void MainWindow::on_actionSave_as_triggered() {
     if (root != nullptr) {
         if (nosPath.isNull())
             nosPath = neatPath(root->data(0, Qt::UserRole).toString());
-        QString path = getSaveDirectory(nosPath + root->getName(), "NOS Archive (*.NOS)");
+        QString path = getSaveFile(nosPath + root->getName(), "NOS Archive (*.NOS)");
         nosPath = neatPath(path);
         root->onExportAsOriginal(path);
     } else {
         QMessageBox::information(nullptr, tr("Info"), tr("Select .NOS file first"));
     }
+}
+
+void MainWindow::on_actionExport_with_config_triggered() {
+    OnexTreeItem *root = getTreeRoot();
+    if (root != nullptr) {
+        QString directory = getSelectedDirectory(inExportPath);
+        if (directory.isEmpty())
+            return;
+        inExportPath = directory;
+        int count = root->onExport(directory);
+        QByteArray output = QJsonDocument(root->generateConfig()).toJson();
+        QFile file(directory + root->getName() + ".json");
+        if (file.open(QIODevice::WriteOnly)) {
+            file.write(output);
+            file.close();
+            QMessageBox::information(this, "End of operation", "Exported " + QString::number(count) + " file(s).");
+        } else {
+            QMessageBox::critical(nullptr, tr("Error!"), tr(QString("Couldn't open " + directory + root->getName() + ".json for writing!").toLocal8Bit()));
+        }
+    } else {
+        QMessageBox::information(nullptr, tr("Info"), tr("Select .NOS file first"));
+    }
+}
+
+void MainWindow::on_actionImport_from_config_triggered() {
+    QString path = getOpenFile(inExportPath, "JSON File (*.json)");
+    if (path.isEmpty())
+        return;
+    inExportPath = neatPath(path);
+
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly))
+        return;
+    handleOpenResults(jsonOpener.load(file, neatPath(path)), "");
+    file.close();
 }
 
 void MainWindow::filterItems() {
@@ -196,6 +235,9 @@ void MainWindow::onCustomMenuShow(const QPoint &point) {
         auto *exportAllAction = new QAction(QObject::tr("Export"), contextMenu);
         contextMenu->addAction(exportAllAction);
         QObject::connect(exportAllAction, SIGNAL(triggered(bool)), this, SLOT(on_actionExport_triggered()));
+        auto *exportWithConfigAction = new QAction(QObject::tr("Export with Config"), contextMenu);
+        contextMenu->addAction(exportWithConfigAction);
+        QObject::connect(exportWithConfigAction, SIGNAL(triggered(bool)), this, SLOT(on_actionExport_with_config_triggered()));
         auto *exportOriginalAction = new QAction(QObject::tr("Export as .NOS"), contextMenu);
         contextMenu->addAction(exportOriginalAction);
         QObject::connect(exportOriginalAction, SIGNAL(triggered(bool)), this, SLOT(on_actionSave_as_triggered()));
@@ -329,6 +371,8 @@ void MainWindow::openFile(const QString &path) {
 }
 
 void MainWindow::handleOpenResults(OnexTreeItem *item, const QString &path) {
+    if (item == nullptr)
+        return;
     item->setData(0, Qt::UserRole, path);
     item->setFlags(item->flags() & (~Qt::ItemIsEditable));
     ui->treeWidget->addTopLevelItem(item);
@@ -356,7 +400,7 @@ void MainWindow::fileOperationOnSelectedItems(TreeFunction treeFunction, QString
     if (selectedItems.size() == 1 && selectedItems.at(0)->childCount() == 0) {
         auto *item = dynamic_cast<OnexTreeItem *>(selectedItems.at((0)));
         if (saveDialog)
-            path = getSaveDirectory(defaultPath + item->getName(), filter.isEmpty() ? item->getExportExtensionFilter() : filter);
+            path = getSaveFile(defaultPath + item->getName(), filter.isEmpty() ? item->getExportExtensionFilter() : filter);
         else
             path = getOpenFile(defaultPath + item->getName(), filter.isEmpty() ? item->getExportExtensionFilter() : filter);
     } else
@@ -397,7 +441,7 @@ QStringList MainWindow::getOpenFiles(const QString &suggestion, const QString &f
     return selectedFiles;
 }
 
-QString MainWindow::getSaveDirectory(const QString &suggestion, const QString &filter) {
+QString MainWindow::getSaveFile(const QString &suggestion, const QString &filter) {
     return QFileDialog::getSaveFileName(nullptr, tr("Save as..."), suggestion, filter);
 }
 

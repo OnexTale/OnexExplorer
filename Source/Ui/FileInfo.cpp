@@ -9,32 +9,20 @@ FileInfo::FileInfo(QWidget *parent) : QWidget(parent) {
 }
 
 QLineEdit *FileInfo::addStringLineEdit(const QString &title, const QString &value) {
-    auto *label = new QLabel(title);
-    label->setMinimumWidth(50);
-    grid->addWidget(label, rows, 0);
-    auto *input = new QLineEdit(value);
-    grid->addWidget(input, rows, 1);
-    rows++;
+    auto *input = addLineEdit(title, value);
+    input->setProperty("type", "QString");
     return input;
 }
 
 QLineEdit *FileInfo::addIntLineEdit(const QString &title, int value) {
-    auto *label = new QLabel(title);
-    label->setMinimumWidth(50);
-    grid->addWidget(label, rows, 0);
-    auto *input = new QLineEdit(QString::number(value));
-    grid->addWidget(input, rows, 1);
-    rows++;
+    auto *input = addLineEdit(title, QString::number(value));
+    input->setProperty("type", "Integer");
     return input;
 }
 
 QLineEdit *FileInfo::addFloatLineEdit(const QString &title, float value) {
-    auto *label = new QLabel(title);
-    label->setMinimumWidth(50);
-    grid->addWidget(label, rows, 0);
-    auto *input = new QLineEdit(QString::number(value));
-    grid->addWidget(input, rows, 1);
-    rows++;
+    auto *input = addLineEdit(title, QString::number(value));
+    input->setProperty("type", "Float");
     return input;
 }
 
@@ -121,4 +109,52 @@ void FileInfo::update(const QString &title, bool value) {
 
 void FileInfo::replace(FileInfo *info) {
     emit updateInfo(info);
+}
+
+QJsonObject FileInfo::toJson() {
+    QJsonObject jo;
+
+    for (int i = 0; i < grid->rowCount(); i++) {
+        if (grid->itemAtPosition(i, 0) == nullptr)
+            continue;
+        if (dynamic_cast<QLabel *>(grid->itemAtPosition(i, 0)->widget()) != nullptr) {
+            if (grid->itemAtPosition(i, 1) == nullptr)
+                continue;
+            QString key = dynamic_cast<QLabel *>(grid->itemAtPosition(i, 0)->widget())->text();
+            if (key == "Width" || key == "Height")
+                continue;
+            if (dynamic_cast<QLineEdit *>(grid->itemAtPosition(i, 1)->widget()) != nullptr) {
+                auto *lineEdit = dynamic_cast<QLineEdit *>(grid->itemAtPosition(i, 1)->widget());
+                if (key == "Header")
+                    jo[key] = QString(lineEdit->text().toLocal8Bit().toHex());
+                else if (lineEdit->property("type") == "QString")
+                    jo[key] = lineEdit->text();
+                else if (lineEdit->property("type") == "Integer")
+                    jo[key] = lineEdit->text().toInt();
+                else if (lineEdit->property("type") == "Float")
+                    jo[key] = lineEdit->text().toFloat();
+            } else if (dynamic_cast<QComboBox *>(grid->itemAtPosition(i, 1)->widget()) != nullptr) {
+                auto *box = dynamic_cast<QComboBox *>(grid->itemAtPosition(i, 1)->widget());
+                int value = box->currentIndex();
+                jo[key] = value;
+            }
+        } else if (dynamic_cast<QCheckBox *>(grid->itemAtPosition(i, 0)->widget()) != nullptr) {
+            auto *box = dynamic_cast<QCheckBox *>(grid->itemAtPosition(i, 0)->widget());
+            QString key = box->text();
+            bool value = box->isChecked();
+            jo[key] = value;
+        }
+    }
+    return jo;
+}
+
+QLineEdit *FileInfo::addLineEdit(const QString &title, const QString &value) {
+    auto *label = new QLabel(title);
+    label->setMinimumWidth(50);
+    grid->addWidget(label, rows, 0);
+    auto *input = new QLineEdit(value);
+    input->setMaximumWidth(120);
+    grid->addWidget(input, rows, 1);
+    rows++;
+    return input;
 }

@@ -47,10 +47,10 @@ QByteArray NosTextOpener::encrypt(OnexTreeItem *item) {
         result.push_back(littleEndianConverter.toInt(currentItem->getFileNumber()));
         result.push_back(littleEndianConverter.toInt(currentItem->getName().size()));
         result.push_back(currentItem->getName().toLocal8Bit());
-        result.push_back(littleEndianConverter.toInt(currentItem->getIsDat()));
+        result.push_back(littleEndianConverter.toInt(currentItem->getIsCompressed()));
         QList<QByteArray> splited;
         QByteArray encrypted;
-        if (currentItem->getIsDat() || currentItem->getName().endsWith(".dat")) {
+        if (currentItem->getIsCompressed() || currentItem->getName().endsWith(".dat")) {
             splited = currentItem->getContent().split(0xD);
         } else {
             splited = currentItem->getContent().split(0xA);
@@ -59,7 +59,7 @@ QByteArray NosTextOpener::encrypt(OnexTreeItem *item) {
         for (auto &line : splited) {
             if (line.isEmpty())
                 continue;
-            if (currentItem->getIsDat() || currentItem->getName().endsWith(".dat"))
+            if (currentItem->getIsCompressed() || currentItem->getName().endsWith(".dat"))
                 encrypted.push_back(datDecryptor->encrypt(line));
             else
                 encrypted.push_back(lstDecryptor->encrypt(line));

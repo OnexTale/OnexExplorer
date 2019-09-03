@@ -3,7 +3,7 @@
 
 OnexNStpMipMap::OnexNStpMipMap(QString name, QByteArray content, int width, int height, int format, NosZlibOpener *opener,
                                int id, int creationDate, bool compressed)
-        : OnexTreeImage(name, content, opener, id, creationDate, compressed), width(width), height(height), format(format) {
+        : OnexTreeImage(name, opener, content, id, creationDate, compressed), width(width), height(height), format(format) {
     setFlags(this->flags() & (~Qt::ItemIsEditable));
 }
 

@@ -109,7 +109,7 @@ OnexTreeItem *NosZlibOpener::createItemFromHeader(QByteArray header, const QStri
         case NSpcData:
             return static_cast<OnexTreeZlibItem *>(new OnexNSmcData(name, array, this, fileId, creationDate, compressed));
         default:
-            return new OnexTreeZlibItem(name, array, this, fileId, creationDate, compressed);
+            return new OnexTreeZlibItem(name, this, array, fileId, creationDate, compressed);
     }
 }
 

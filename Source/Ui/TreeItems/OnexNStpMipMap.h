@@ -7,8 +7,8 @@ class OnexNStpMipMap : public OnexTreeImage {
 Q_OBJECT
 public:
     OnexNStpMipMap(QString name, QByteArray content, int width, int height, int format, NosZlibOpener *opener,
-                   int id, int creationDate, bool compressed);
-
+                   int id = -1, int creationDate = 0, bool compressed = false);
+    OnexNStpMipMap(QJsonObject jo, NosZlibOpener *opener, const QString &directory);
     ~OnexNStpMipMap() override;
     int onReplace(QString directory) override;
     QImage getImage() override;

@@ -2,9 +2,17 @@
 
 OnexNS4BbData::OnexNS4BbData(QString name, QByteArray content, NosZlibOpener *opener, int id,
                              int creationDate, bool compressed)
-        : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
+        : OnexTreeImage(name, opener, content, id, creationDate, compressed) {
     if (content.isEmpty())
         this->content = QByteArrayLiteral("\x00\x00\x00\x00");
+}
+
+OnexNS4BbData::OnexNS4BbData(QJsonObject jo, NosZlibOpener *opener, const QString &directory) : OnexTreeImage(jo["ID"].toString(), opener) {
+    this->content = QByteArrayLiteral("\x00\x00\x00\x00");
+    setId(jo["ID"].toInt(), true);
+    setCreationDate(jo["Date"].toString(), true);
+    setCompressed(jo["isCompressed"].toBool(), true);
+    onReplace(directory + jo["path"].toString());
 }
 
 OnexNS4BbData::~OnexNS4BbData() = default;

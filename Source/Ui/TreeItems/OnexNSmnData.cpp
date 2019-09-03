@@ -44,8 +44,7 @@ void OnexNSmnData::setCreationDate(const QString &date, bool update) {
 FileInfo *OnexNSmnData::generateInfos() {
     auto *infos = OnexTreeItem::generateInfos();
     if (!hasParent()) {
-        connect(infos->addStringLineEdit("Header", getContent()), &QLineEdit::textChanged,
-                [=](const QString &value) { setContent(value.toLocal8Bit()); });
+        infos->addStringLineEdit("Header", getContent())->setEnabled(false);
         connect(infos->addStringLineEdit("Date", getDateAsString()), &QLineEdit::textChanged,
                 [=](const QString &value) { setCreationDate(value); });
     }

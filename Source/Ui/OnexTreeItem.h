@@ -34,6 +34,7 @@ public slots:
     virtual int onReplace(QString directory);
     virtual int onReplaceRaw(QString directory);
     virtual int afterReplace(QByteArray content);
+    virtual QJsonObject generateConfig();
 signals:
     void changeSignal(QString title, QString value);
     void changeSignal(QString title, int value);

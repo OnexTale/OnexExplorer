@@ -10,6 +10,16 @@ OnexTreeText::OnexTreeText(const QString &name, NosTextOpener *opener, int fileN
         : OnexTreeItem(name, opener, content), fileNumber(fileNumber), isCompressed(isCompressed) {
 }
 
+OnexTreeText::OnexTreeText(const QString &name, NosTextOpener *opener, const QString &time) : OnexTreeItem(name, opener, QByteArray()), fileNumber(0),
+                                                                                              isCompressed(0), time(time) {
+}
+
+OnexTreeText::OnexTreeText(QJsonObject jo, NosTextOpener *opener, const QString &directory) : OnexTreeItem(jo["Name"].toString(), opener) {
+    setFileNumber(jo["Filenumber"].toInt(), true);
+    setIsCompressed(jo["isCompressed"].toBool());
+    onReplace(directory + jo["path"].toString());
+}
+
 OnexTreeText::~OnexTreeText() = default;
 
 QWidget *OnexTreeText::getPreview() {
@@ -31,7 +41,7 @@ int OnexTreeText::getFileNumber() const {
     return fileNumber;
 }
 
-int OnexTreeText::getIsDat() const {
+int OnexTreeText::getIsCompressed() const {
     return isCompressed;
 }
 
@@ -48,7 +58,7 @@ void OnexTreeText::setFileNumber(int fileNumber, bool update) {
             emit changeSignal("Filenumber", fileNumber);
 }
 
-void OnexTreeText::setIsDat(bool isCompressed, bool update) {
+void OnexTreeText::setIsCompressed(bool isCompressed, bool update) {
     this->isCompressed = isCompressed;
     if (update)
             emit changeSignal("isCompressed", isCompressed);
@@ -61,15 +71,16 @@ void OnexTreeText::setTime(QString time, bool update) {
 }
 
 FileInfo *OnexTreeText::generateInfos() {
-    FileInfo *infos;
+    FileInfo *infos = OnexTreeItem::generateInfos();
     if (!hasParent()) {
-        infos = new FileInfo();
         infos->addStringLineEdit("Last Edit", time)->setEnabled(false);
     } else {
         infos = OnexTreeItem::generateInfos();
+        connect(infos->addStringLineEdit("Name", text(0)), &QLineEdit::textChanged,
+                [=](const QString &value) { setText(0, value); });
         connect(infos->addIntLineEdit("Filenumber", getFileNumber()), &QLineEdit::textChanged,
                 [=](const QString &value) { setFileNumber(value.toInt()); });
-        connect(infos->addCheckBox("isCompressed", getIsDat()), &QCheckBox::clicked, [=](const bool value) { setIsDat(value); });
+        connect(infos->addCheckBox("isCompressed", getIsCompressed()), &QCheckBox::clicked, [=](const bool value) { setIsCompressed(value); });
     }
     connect(this, SIGNAL(changeSignal(QString, QString)), infos, SLOT(update(QString, QString)));
     connect(this, SIGNAL(changeSignal(QString, int)), infos, SLOT(update(QString, int)));

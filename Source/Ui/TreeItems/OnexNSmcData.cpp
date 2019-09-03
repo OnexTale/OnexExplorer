@@ -5,7 +5,14 @@
 #include <QJsonArray>
 
 OnexNSmcData::OnexNSmcData(const QString &name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
-                           bool compressed) : OnexTreeZlibItem(name, content, opener, id, creationDate, compressed) {
+                           bool compressed) : OnexTreeZlibItem(name, opener, content, id, creationDate, compressed) {
+}
+
+OnexNSmcData::OnexNSmcData(QJsonObject jo, NosZlibOpener *opener, const QString &directory) : OnexTreeZlibItem(jo["ID"].toString(), opener) {
+    setId(jo["ID"].toInt(), true);
+    setCreationDate(jo["Date"].toString(), true);
+    setCompressed(jo["isCompressed"].toBool(), true);
+    onReplace(directory + jo["path"].toString());
 }
 
 OnexNSmcData::~OnexNSmcData() = default;

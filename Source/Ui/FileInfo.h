@@ -8,12 +8,14 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QComboBox>
+#include <QJsonObject>
+#include <QJsonArray>
 
 class FileInfo : public QWidget {
 Q_OBJECT
 public:
     QGridLayout *grid;
-    FileInfo(QWidget *parent = nullptr);
+    explicit FileInfo(QWidget *parent = nullptr);
     QLineEdit *addStringLineEdit(const QString &title, const QString &value);
     QLineEdit *addIntLineEdit(const QString &title, int value);
     QLineEdit *addFloatLineEdit(const QString &title, float value);
@@ -21,6 +23,7 @@ public:
     QComboBox *addSelection(const QString &title, const QStringList &items, int value);
     QPushButton *addReplaceButton(const QString &title);
     QPushButton *addReplaceRawButton(const QString &title);
+    QJsonObject toJson();
 public slots:
     void update(const QString &title, const QString &value);
     void update(const QString &title, int value);
@@ -33,6 +36,7 @@ signals:
     void replaceRawFile();
 private:
     int rows;
+    QLineEdit *addLineEdit(const QString &title, const QString &value);
 };
 
 #endif // FILEINFO_H

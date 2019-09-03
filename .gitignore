@@ -53,3 +53,5 @@ OnexExplorer
 *.NOS
 
 freeglut/*
+
+*.xmi

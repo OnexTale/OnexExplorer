@@ -7,8 +7,9 @@
 class OnexNSmcData : public OnexTreeZlibItem {
 Q_OBJECT
 public:
-    OnexNSmcData(const QString &name, QByteArray content, NosZlibOpener *opener, int id, int creationDate,
-                 bool compressed);
+    OnexNSmcData(const QString &name, QByteArray content, NosZlibOpener *opener, int id = -1, int creationDate = 0,
+                 bool compressed = false);
+    OnexNSmcData(QJsonObject jo, NosZlibOpener *opener, const QString &directory);
     ~OnexNSmcData() override;
     QWidget *getPreview() override;
     QString getExportExtension() override;

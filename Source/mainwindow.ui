@@ -198,8 +198,10 @@
                     <string>Tools</string>
                 </property>
                 <addaction name="actionExport"/>
-                <addaction name="actionExport_to_raw"/>
                 <addaction name="actionReplace"/>
+                <addaction name="actionExport_with_config"/>
+                <addaction name="actionImport_from_config"/>
+                <addaction name="actionExport_to_raw"/>
                 <addaction name="actionReplace_with_raw"/>
                 <addaction name="actionRename"/>
                 <addaction name="separator"/>
@@ -331,6 +333,25 @@
             </property>
             <property name="shortcut">
                 <string>F2</string>
+            </property>
+        </action>
+        <action name="actionExport_with_config">
+            <property name="text">
+                <string>Export with config</string>
+            </property>
+            <property name="toolTip">
+                <string>Export content with a config for external usage</string>
+            </property>
+        </action>
+        <action name="actionImport_from_config">
+            <property name="text">
+                <string>Import from config</string>
+            </property>
+            <property name="toolTip">
+                <string>Import content defined in a Config</string>
+            </property>
+            <property name="shortcut">
+                <string>Ctrl+Shift+O</string>
             </property>
         </action>
     </widget>

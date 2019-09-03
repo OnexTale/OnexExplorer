@@ -150,6 +150,25 @@ int OnexTreeItem::afterReplace(QByteArray content) {
     return 1;
 }
 
+QJsonObject OnexTreeItem::generateConfig() {
+    QJsonObject jo = generateInfos()->toJson();
+
+    if (childCount() > 0) {
+        QJsonArray contentArray;
+        for (int i = 0; i < childCount(); i++) {
+            auto item = static_cast<OnexTreeItem *>(child(i));
+            contentArray.append(item->generateConfig());
+        }
+        jo["content"] = contentArray;
+    } else {
+        QString path = this->getName();
+        if (!path.endsWith(getExportExtension()))
+            path += getExportExtension();
+        jo["path"] = path;
+    }
+    return jo;
+}
+
 QString OnexTreeItem::getCorrectPath(QString input, QString extension) {
     if (extension.isEmpty())
         extension = getExportExtension();
@@ -164,6 +183,7 @@ QString OnexTreeItem::getCorrectPath(QString input, QString extension) {
 
 FileInfo *OnexTreeItem::generateInfos() {
     FileInfo *infos = new FileInfo();
+
     if (hasParent() && isEmpty()) {
         infos->addReplaceButton("Load from File");
         infos->addReplaceRawButton("Load from raw File");
@@ -171,6 +191,10 @@ FileInfo *OnexTreeItem::generateInfos() {
         infos->addReplaceButton("Replace");
         infos->addReplaceRawButton("Replace with raw");
     }
+    if (!hasParent()) {
+        infos->addStringLineEdit("Archive", text(0))->setEnabled(false);
+    }
+
     connect(this, SIGNAL(changeSignal(QString, QString)), infos, SLOT(update(QString, QString)));
     connect(this, SIGNAL(changeSignal(QString, int)), infos, SLOT(update(QString, int)));
     connect(this, SIGNAL(changeSignal(QString, float)), infos, SLOT(update(QString, float)));

@@ -7,7 +7,8 @@ class OnexNSmpFrame : public OnexTreeImage {
 Q_OBJECT
 public:
     OnexNSmpFrame(QString name, QByteArray content, int width, int height, int xOrigin, int yOrigin, NosZlibOpener *opener,
-                  int id, int creationDate, bool compressed);
+                  int id = -1, int creationDate = 0, bool compressed = false);
+    OnexNSmpFrame(QString name, QJsonObject jo, NosZlibOpener *opener, const QString &directory);
     ~OnexNSmpFrame() override;
     QImage getImage() override;
     ImageResolution getResolution() override;

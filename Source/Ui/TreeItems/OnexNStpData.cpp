@@ -4,13 +4,54 @@
 OnexNStpData::OnexNStpData(const QString &name, QByteArray content, NosZlibOpener *opener,
 
                            int id, int creationDate, bool compressed)
-        : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
+        : OnexTreeImage(name, opener, content, id, creationDate, compressed) {
     if (content.isEmpty())
         this->content = QByteArrayLiteral("\x00\x00\x00\x00\x00\x00\x00\x00");
     if (id == -1)
         return;
     if (getFileAmount() > 0)
         generateMipMap(true);
+}
+
+OnexNStpData::OnexNStpData(QJsonObject jo, NosZlibOpener *opener, const QString &directory) : OnexTreeImage(jo["ID"].toString(), opener) {
+    this->content = QByteArrayLiteral("\x00\x00\x00\x00\x00\x00\x00\x00");
+    setId(jo["ID"].toInt(), true);
+    setCreationDate(jo["Date"].toString(), true);
+    setCompressed(jo["isCompressed"].toBool(), true);
+    setFormat(jo["Format"].toInt());
+    setSmoothScaling(jo["SmoothScaling"].toBool(), true);
+    setUnknownValue(jo["Unknown"].toBool(), true);
+    bool mip = jo["MipMap"].toBool();
+
+    if (mip) {
+        int amount = 0;
+        int x = getResolution().x;
+        while (x >= 2) {
+            x /= 2;
+            amount++;
+        }
+        setFileAmount(amount);
+    }
+
+    if (!jo["path"].toString().isEmpty())
+        onReplace(directory + jo["path"].toString());
+
+    if (getFileAmount() > 0) {
+        ImageResolution res = getResolution();
+        int format = getFormat();
+        for (auto &&child : jo["content"].toArray()) {
+            OnexTreeItem *item = new OnexNStpMipMap(name + "_" + QString::number(res.x) + "x" + QString::number(res.y),
+                                                    QByteArray(), res.x, res.y, format, (NosZlibOpener *) opener, id,
+                                                    creationDate, compressed);
+            this->addChild(item);
+            item->onReplace(directory + child.toObject()["path"].toString());
+            res.x /= 2;
+            res.y /= 2;
+        }
+        if (childCount() == 0)
+            generateMipMap(true);
+    }
+
 }
 
 OnexNStpData::~OnexNStpData() = default;

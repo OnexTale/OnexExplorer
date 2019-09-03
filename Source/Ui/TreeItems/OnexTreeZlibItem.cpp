@@ -1,9 +1,7 @@
 #include "OnexTreeZlibItem.h"
 #include <QDate>
 
-OnexTreeZlibItem::OnexTreeZlibItem(const QString &name, QByteArray content, NosZlibOpener *opener,
-                                   int id,
-                                   int creationDate, bool compressed)
+OnexTreeZlibItem::OnexTreeZlibItem(const QString &name, NosZlibOpener *opener, QByteArray content, int id, int creationDate, bool compressed)
         : OnexTreeItem(name, opener, content), id(id), creationDate(creationDate),
           compressed(compressed) {
     if (creationDate == 0)
@@ -66,9 +64,8 @@ void OnexTreeZlibItem::setCompressed(bool compressed, bool update) {
 
 FileInfo *OnexTreeZlibItem::generateInfos() {
     auto *infos = OnexTreeItem::generateInfos();
-    if (!hasParent()) {
-        connect(infos->addStringLineEdit("Header", getContent()), &QLineEdit::textChanged,
-                [=](const QString &value) { setContent(value.toLocal8Bit()); });
+    if (getId() == -1) {
+        infos->addStringLineEdit("Header", QString::fromUtf8(getContent(), getContent().size()))->setEnabled(false);
     } else {
         connect(infos->addIntLineEdit("ID", getId()), &QLineEdit::textChanged,
                 [=](const QString &value) { setId(value.toInt()); });

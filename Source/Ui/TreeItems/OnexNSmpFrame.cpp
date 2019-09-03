@@ -2,12 +2,18 @@
 
 OnexNSmpFrame::OnexNSmpFrame(QString name, QByteArray content, int width, int height, int xOrigin, int yOrigin, NosZlibOpener *opener,
                              int id, int creationDate, bool compressed)
-        : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
+        : OnexTreeImage(name, opener, content, id, creationDate, compressed) {
     setFlags(this->flags() & (~Qt::ItemIsEditable));
     this->width = width;
     this->height = height;
     this->xOrigin = xOrigin;
     this->yOrigin = yOrigin;
+}
+
+OnexNSmpFrame::OnexNSmpFrame(QString name, QJsonObject jo, NosZlibOpener *opener, const QString &directory) : OnexTreeImage(name, opener) {
+    setXOrigin(jo["x-Origin"].toInt(), true);
+    setYOrigin(jo["y-Origin"].toInt(), true);
+    onReplace(directory + jo["path"].toString());
 }
 
 OnexNSmpFrame::~OnexNSmpFrame() = default;

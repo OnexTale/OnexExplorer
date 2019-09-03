@@ -2,9 +2,8 @@
 
 ImageConverter *OnexTreeImage::imageConverter;
 
-OnexTreeImage::OnexTreeImage(QString name, QByteArray content, NosZlibOpener *opener, int id,
-                             int creationDate, bool compressed)
-        : OnexTreeZlibItem(name, content, opener, id, creationDate, compressed) {
+OnexTreeImage::OnexTreeImage(QString name, NosZlibOpener *opener, QByteArray content, int id, int creationDate, bool compressed)
+        : OnexTreeZlibItem(name, opener, content, id, creationDate, compressed) {
     if (imageConverter == nullptr)
         imageConverter = new ImageConverter(opener->getLittleEndianConverter());
 }

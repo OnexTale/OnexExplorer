@@ -11,8 +11,7 @@
 class OnexTreeZlibItem : public OnexTreeItem {
 Q_OBJECT
 public:
-    OnexTreeZlibItem(const QString &name, QByteArray content, NosZlibOpener *opener, int id,
-                     int creationDate, bool compressed);
+    OnexTreeZlibItem(const QString &name, NosZlibOpener *opener, QByteArray content = QByteArray(), int id = -1, int creationDate = 0, bool compressed = false);
     ~OnexTreeZlibItem() override;
     int getId();
     int getCreationDate();

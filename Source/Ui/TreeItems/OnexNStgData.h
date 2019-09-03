@@ -11,8 +11,9 @@
 class OnexNStgData : public OnexTreeZlibItem {
 Q_OBJECT
 public:
-    OnexNStgData(QString name, QByteArray content, NosZlibOpener *opener, int id,
-                 int creationDate, bool compressed);
+    OnexNStgData(QString name, QByteArray content, NosZlibOpener *opener, int id = -1,
+                 int creationDate = 0, bool compressed = false);
+    OnexNStgData(QJsonObject jo, NosZlibOpener *opener, const QString &directory);
     ~OnexNStgData() override;
     QWidget *getPreview() override;
     QByteArray getContent() override;

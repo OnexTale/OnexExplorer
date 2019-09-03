@@ -11,6 +11,7 @@
 #include <QFileDialog>
 #include <QMainWindow>
 #include <QMimeData>
+#include <Source/Openers/JsonConfigOpener.h>
 
 namespace Ui {
     class MainWindow;
@@ -31,6 +32,8 @@ public slots:
     void on_actionReplace_with_raw_triggered();
     void on_actionSave_triggered();
     void on_actionSave_as_triggered();
+    void on_actionExport_with_config_triggered();
+    void on_actionImport_from_config_triggered();
     void on_addButton_clicked();
     void on_deleteButton_clicked();
     void filterItems();
@@ -49,6 +52,7 @@ private:
     NosTextOpener textOpener;
     NosZlibOpener zlibOpener;
     NosCCInfOpener ccinfOpener;
+    JsonConfigOpener jsonOpener;
     QString inExportPath;
     QString nosPath;
     void openFile(const QString &path);
@@ -59,7 +63,7 @@ private:
     QString getSelectedDirectory(const QString &suggestion);
     QString getOpenFile(const QString &suggestion, const QString &filter);
     QStringList getOpenFiles(const QString &suggestion, const QString &filter);
-    QString getSaveDirectory(const QString &suggestion, const QString &filter);
+    QString getSaveFile(const QString &suggestion, const QString &filter);
     void dropEvent(QDropEvent *e) override;
     void dragEnterEvent(QDragEnterEvent *e) override;
     OnexTreeItem *getTreeRoot();

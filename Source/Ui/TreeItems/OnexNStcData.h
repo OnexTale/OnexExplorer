@@ -6,8 +6,9 @@
 class OnexNStcData : public OnexTreeImage {
 Q_OBJECT
 public:
-    OnexNStcData(QString name, QByteArray content, NosZlibOpener *opener, int id,
-                 int creationDate, bool compressed);
+    OnexNStcData(QString name, QByteArray content, NosZlibOpener *opener, int id = -1,
+                 int creationDate = 0, bool compressed = false);
+    OnexNStcData(QJsonObject jo, NosZlibOpener *opener, const QString &directory);
     ~OnexNStcData() override;
     QImage getImage() override;
     ImageResolution getResolution() override;

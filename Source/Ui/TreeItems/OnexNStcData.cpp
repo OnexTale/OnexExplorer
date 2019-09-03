@@ -2,9 +2,17 @@
 
 OnexNStcData::OnexNStcData(QString name, QByteArray content, NosZlibOpener *opener, int id,
                            int creationDate, bool compressed)
-        : OnexTreeImage(name, content, opener, id, creationDate, compressed) {
+        : OnexTreeImage(name, opener, content, id, creationDate, compressed) {
     if (content.isEmpty())
         this->content = QByteArrayLiteral("\x00\x00\x00\x00\x00\x00\x00\x00");
+}
+
+OnexNStcData::OnexNStcData(QJsonObject jo, NosZlibOpener *opener, const QString &directory) : OnexTreeImage(jo["ID"].toString(), opener) {
+    this->content = QByteArrayLiteral("\x00\x00\x00\x00\x00\x00\x00\x00");
+    setId(jo["ID"].toInt(), true);
+    setCreationDate(jo["Date"].toString(), true);
+    setCompressed(jo["isCompressed"].toBool(), true);
+    onReplace(directory + jo["path"].toString());
 }
 
 OnexNStcData::~OnexNStcData() = default;
@@ -50,4 +58,3 @@ bool OnexNStcData::hasGoodResolution(int x, int y) {
     ImageResolution currentResolution = this->getResolution();
     return (x / 2 == currentResolution.x && y / 2 == currentResolution.y);
 }
-

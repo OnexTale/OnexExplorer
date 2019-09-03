@@ -6,8 +6,30 @@ NosModelConverter OnexNStgData::nosModelConverter = NosModelConverter();
 
 OnexNStgData::OnexNStgData(QString name, QByteArray content, NosZlibOpener *opener, int id,
                            int creationDate, bool compressed)
-        : OnexTreeZlibItem(name, content, opener, id, creationDate, compressed) {
+        : OnexTreeZlibItem(name, opener, content, id, creationDate, compressed) {
     model = nullptr;
+}
+
+OnexNStgData::OnexNStgData(QJsonObject jo, NosZlibOpener *opener, const QString &directory) : OnexTreeZlibItem(jo["ID"].toString(), opener) {
+    model = new Model();
+    setId(jo["ID"].toInt(), true);
+    setCreationDate(jo["Date"].toString(), true);
+    setCompressed(jo["isCompressed"].toBool(), true);
+    model->uvScale = jo["UV-Scale"].toDouble();
+    onReplace(directory + jo["path"].toString());
+
+    for (int i = 0; i < model->objects.size(); i++) {
+        model->objects[i].position.setX(jo["O-" + QString::number(i) + "-x-Position"].toDouble());
+        model->objects[i].position.setY(jo["O-" + QString::number(i) + "-y-Position"].toDouble());
+        model->objects[i].position.setZ(jo["O-" + QString::number(i) + "-z-Position"].toDouble());
+        model->objects[i].rotation.setX(jo["O-" + QString::number(i) + "-x-Rotation"].toDouble());
+        model->objects[i].rotation.setY(jo["O-" + QString::number(i) + "-y-Rotation"].toDouble());
+        model->objects[i].rotation.setZ(jo["O-" + QString::number(i) + "-z-Rotation"].toDouble());
+        model->objects[i].rotation.setW(jo["O-" + QString::number(i) + "-w-Rotation"].toDouble());
+        model->objects[i].scale.setX(jo["O-" + QString::number(i) + "-x-Scale"].toDouble());
+        model->objects[i].scale.setY(jo["O-" + QString::number(i) + "-y-Scale"].toDouble());
+        model->objects[i].scale.setZ(jo["O-" + QString::number(i) + "-z-Scale"].toDouble());
+    }
 }
 
 OnexNStgData::~OnexNStgData() = default;

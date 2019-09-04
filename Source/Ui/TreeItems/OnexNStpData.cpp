@@ -229,7 +229,7 @@ void OnexNStpData::generateMipMap(bool generate) {
         else
             nextOffset += res.x * res.y;
 
-        if (nextOffset >= content.size()) {
+        if (nextOffset > content.size()) {
             QImage subImage = getImage();
             subImage = subImage.scaled(res.x, res.y, Qt::KeepAspectRatio, Qt::SmoothTransformation);
             QByteArray subContent;

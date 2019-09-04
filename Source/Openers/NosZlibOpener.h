@@ -6,7 +6,6 @@
 #include "../NosEnumTypes.h"
 #include "INosFileOpener.h"
 #include <QDebug>
-#include <iostream>
 
 class NosZlibOpener : public INosFileOpener {
 public:
@@ -21,6 +20,7 @@ private:
                                        int creationDate = 0, bool compressed = false);
     int getNTHeaderNumber(QByteArray &array);
     QByteArray toBigEndian(qint32 value);
+    bool containsName(OnexTreeItem *item, QString searched);
 };
 
 #endif // NOSZLIBOPENER_H

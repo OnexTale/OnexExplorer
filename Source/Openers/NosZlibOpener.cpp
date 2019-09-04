@@ -6,7 +6,6 @@
 #include "../Ui/TreeItems/OnexNStpData.h"
 #include "../Ui/TreeItems/OnexNStgData.h"
 #include "../Ui/TreeItems/OnexNSmcData.h"
-#include "../Ui/TreeItems/OnexTreeZlibItem.h"
 
 NosZlibOpener::NosZlibOpener() = default;
 
@@ -31,7 +30,16 @@ OnexTreeItem *NosZlibOpener::decrypt(QFile &file) {
             data.push_front(bigEndian);
             data = decryptor.decrypt(data);
         }
-        item->addChild(createItemFromHeader(header, QString::number(id), data, id, creationDate, isCompressed));
+
+        QString name = QString::number(id);
+        if (containsName(item, name)) {
+            int a = 2;
+            while (containsName(item, name + "_" + QString::number(a)))
+                a++;
+            name = name + "_" + QString::number(a);
+        }
+
+        item->addChild(createItemFromHeader(header, name, data, id, creationDate, isCompressed));
         file.seek(previousOffset);
     }
     return item;
@@ -129,4 +137,12 @@ QByteArray NosZlibOpener::toBigEndian(qint32 value) {
     result.resize(4);
     qToBigEndian(value, reinterpret_cast<uchar *>(result.data()));
     return result;
+}
+
+bool NosZlibOpener::containsName(OnexTreeItem *item, QString searched) {
+    for (int c = 0; c < item->childCount(); c++) {
+        if (item->child(c)->text(0) == searched)
+            return true;
+    }
+    return false;
 }

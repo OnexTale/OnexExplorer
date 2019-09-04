@@ -52,13 +52,15 @@ QByteArray NosTextOpener::encrypt(OnexTreeItem *item) {
         QByteArray encrypted;
         if (currentItem->getIsCompressed() || currentItem->getName().endsWith(".dat")) {
             splited = currentItem->getContent().split(0xD);
+            if (splited[splited.size() - 1].isEmpty())
+                splited = splited.mid(0, splited.size() - 1);
         } else {
             splited = currentItem->getContent().split(0xA);
-            encrypted.push_back(littleEndianConverter.toInt(splited.size() - 1));
+            if (splited[splited.size() - 1].isEmpty())
+                splited = splited.mid(0, splited.size() - 1);
+            encrypted.push_back(littleEndianConverter.toInt(splited.size()));
         }
         for (auto &line : splited) {
-            if (line.isEmpty())
-                continue;
             if (currentItem->getIsCompressed() || currentItem->getName().endsWith(".dat"))
                 encrypted.push_back(datDecryptor->encrypt(line));
             else

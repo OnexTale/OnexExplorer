@@ -223,5 +223,6 @@ bool OnexTreeItem::operator<(const QTreeWidgetItem &other) const {
     if (t1IsInt && t2IsInt || regExp.exactMatch(text(column)))
         return t1 < t2;
     else
-        return text(column).toLower() < other.text(column).toLower();
+        return false;
+//        return text(column).toLower() < other.text(column).toLower();
 }

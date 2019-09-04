@@ -29,6 +29,7 @@ protected:
     int isCompressed;
     QString time;
     FileInfo *generateInfos() override;
+    QString getEncoding();
 };
 
 #endif // ONEXTREETEXT_H

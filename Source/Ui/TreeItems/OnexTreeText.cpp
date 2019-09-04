@@ -25,7 +25,7 @@ OnexTreeText::~OnexTreeText() = default;
 QWidget *OnexTreeText::getPreview() {
     if (!hasParent())
         return nullptr;
-    auto *textPreview = new SingleTextFilePreview(content);
+    auto *textPreview = new SingleTextFilePreview(content, getEncoding());
     connect(this, SIGNAL(replaceSignal(QByteArray)), textPreview, SLOT(onReplaced(QByteArray)));
     return textPreview;
 }
@@ -87,4 +87,20 @@ FileInfo *OnexTreeText::generateInfos() {
     connect(this, SIGNAL(changeSignal(QString, float)), infos, SLOT(update(QString, float)));
     connect(this, SIGNAL(changeSignal(QString, bool)), infos, SLOT(update(QString, bool)));
     return infos;
+}
+
+QString OnexTreeText::getEncoding() {
+    QRegExp rx = QRegExp("^_code_\\w{2}_\\w*\\.txt$");
+    int match = rx.indexIn(getName());
+    if (match == -1)
+        return "EUC-KR";
+    QString region = getName().mid(6, 2);
+    if (region == "de" || region == "pl" || region == "it" || region == "cz")
+        return "Windows-1250";
+    else if (region == "ru")
+        return "Windows-1251";
+    else if (region == "en" || region == "fr" || region == "es")
+        return "Windows-1252";
+    else if (region == "tr")
+        return "Windows-1254";
 }

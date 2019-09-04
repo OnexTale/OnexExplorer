@@ -12,12 +12,13 @@ namespace Ui {
 class SingleTextFilePreview : public QWidget {
 Q_OBJECT
 public:
-    explicit SingleTextFilePreview(QByteArray &item, QWidget *parent = nullptr);
+    explicit SingleTextFilePreview(QByteArray &item, const QString &encoding = "Windows-1250", QWidget *parent = nullptr);
     ~SingleTextFilePreview() override;
 private slots:
     void onReplaced(const QByteArray &text);
 private:
     Ui::SingleTextFilePreview *ui;
+    QTextCodec *codec;
 };
 
 #endif // SINGLETEXTFILEPREVIEW_H

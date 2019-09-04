@@ -202,21 +202,24 @@ void MainWindow::on_actionImport_from_config_triggered() {
 }
 
 void MainWindow::filterItems() {
-    QString searched = ui->filterInput->text();
     for (int i = 0; i < ui->treeWidget->topLevelItemCount(); i++) {
         for (int j = 0; j < ui->treeWidget->topLevelItem(i)->childCount(); j++)
             ui->treeWidget->topLevelItem(i)->child(j)->setHidden(true);
     }
-    QList<QTreeWidgetItem *> matches = ui->treeWidget->findItems(searched, Qt::MatchContains | Qt::MatchRecursive);
-    for (QTreeWidgetItem *m : matches) {
-        if (m->parent() && m->parent()->isHidden()) {
-            m->parent()->setHidden(false);
-            if (m->parent()->parent()) {
-                for (int i = 0; i < m->parent()->childCount(); i++)
-                    m->parent()->child(i)->setHidden(true);
+    QStringList searchList = ui->filterInput->text().split(";");
+    bool exactSearch = ui->filterInput->text().contains(";");
+    for (const QString &searched : searchList) {
+        QList<QTreeWidgetItem *> matches = ui->treeWidget->findItems(searched, (exactSearch ? Qt::MatchExactly : Qt::MatchContains) | Qt::MatchRecursive);
+        for (QTreeWidgetItem *m : matches) {
+            if (m->parent() && m->parent()->isHidden()) {
+                m->parent()->setHidden(false);
+                if (m->parent()->parent()) {
+                    for (int i = 0; i < m->parent()->childCount(); i++)
+                        m->parent()->child(i)->setHidden(true);
+                }
             }
+            m->setHidden(false);
         }
-        m->setHidden(false);
     }
 }
 

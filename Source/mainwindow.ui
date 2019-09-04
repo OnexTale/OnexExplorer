@@ -39,7 +39,7 @@
                             </size>
                         </property>
                         <property name="placeholderText">
-                            <string>Search...</string>
+                            <string>Search... example1;example2;example3</string>
                         </property>
                     </widget>
                 </item>

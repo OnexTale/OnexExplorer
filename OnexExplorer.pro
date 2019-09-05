@@ -38,6 +38,7 @@ SOURCES += \
     Source/Openers/JsonConfigOpener.cpp \
     Source/Ui/OnexTreeItem.cpp \
     Source/Ui/FileInfo.cpp \
+    Source/Ui/Settings.cpp \
     Source/Ui/Previews/SingleTextFilePreview.cpp \
     Source/Ui/Previews/SingleImagePreview.cpp \
     Source/Ui/Previews/MultiImagePreview.cpp \
@@ -76,6 +77,7 @@ HEADERS  += \
     Source/Openers/JsonConfigOpener.h \
     Source/Ui/OnexTreeItem.h \
     Source/Ui/FileInfo.h \
+    Source/Ui/settings.h \
     Source/Ui/Previews/SingleTextFilePreview.h \
     Source/Ui/Previews/SingleImagePreview.h \
     Source/Ui/Previews/MultiImagePreview.h \
@@ -99,6 +101,7 @@ FORMS    += \
     Source/Ui/Previews/SingleTextFilePreview.ui \
     Source/Ui/Previews/SingleImagePreview.ui \
     Source/Ui/Previews/MultiImagePreview.ui \
+    Source/Ui/Settings.ui
 
 DISTFILES +=
 

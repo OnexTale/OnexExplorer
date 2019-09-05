@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
     this->setAcceptDrops(true);
     this->setWindowTitle(QString("OnexExplorer %1 [Beta]").arg(VERSION));
+    settings = new Settings();
     ui->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->treeWidget, SIGNAL(itemChanged(QTreeWidgetItem * , int)), this,
             SLOT(itemEdited(QTreeWidgetItem * , int)));
@@ -25,7 +26,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_actionOpen_triggered() {
-    QStringList selectedFiles = getOpenFiles(nosPath, "NosTale Files (*.NOS)");
+    QStringList selectedFiles = getOpenFiles(settings->getOpenPath(), "NosTale Files (*.NOS)");
     if (!selectedFiles.empty()) {
         for (auto &file : selectedFiles)
             openFile(file);
@@ -81,19 +82,19 @@ void MainWindow::replaceInfo(FileInfo *info) {
 }
 
 void MainWindow::on_actionReplace_triggered() {
-    fileOperationOnSelectedItems(&OnexTreeItem::onReplace, inExportPath, "Replaced", false);
+    fileOperationOnSelectedItems(&OnexTreeItem::onReplace, settings->getReplacePath(), "Replaced", false);
 }
 
 void MainWindow::on_actionReplace_with_raw_triggered() {
-    fileOperationOnSelectedItems(&OnexTreeItem::onReplaceRaw, inExportPath, "Replaced", false, "Rawdata (*.bin)");
+    fileOperationOnSelectedItems(&OnexTreeItem::onReplaceRaw, settings->getReplacePath(), "Replaced", false, "Rawdata (*.bin)");
 }
 
 void MainWindow::on_actionExport_triggered() {
-    fileOperationOnSelectedItems(&OnexTreeItem::onExport, inExportPath, "Exported", true);
+    fileOperationOnSelectedItems(&OnexTreeItem::onExport, settings->getExportPath(), "Exported", true);
 }
 
 void MainWindow::on_actionExport_to_raw_triggered() {
-    fileOperationOnSelectedItems(&OnexTreeItem::onExportRaw, inExportPath, "Exported", true, "Rawdata (*.bin)");
+    fileOperationOnSelectedItems(&OnexTreeItem::onExportRaw, settings->getExportPath(), "Exported", true, "Rawdata (*.bin)");
 }
 
 void MainWindow::on_actionSave_triggered() {
@@ -156,10 +157,7 @@ void MainWindow::on_deleteButton_clicked() {
 void MainWindow::on_actionSave_as_triggered() {
     OnexTreeItem *root = getTreeRoot();
     if (root != nullptr) {
-        if (nosPath.isNull())
-            nosPath = neatPath(root->data(0, Qt::UserRole).toString());
-        QString path = getSaveFile(nosPath + root->getName(), "NOS Archive (*.NOS)");
-        nosPath = neatPath(path);
+        QString path = getSaveFile(settings->getSavePath() + root->getName(), "NOS Archive (*.NOS)");
         root->onExportAsOriginal(path);
     } else {
         QMessageBox::information(nullptr, tr("Info"), tr("Select .NOS file first"));
@@ -169,10 +167,9 @@ void MainWindow::on_actionSave_as_triggered() {
 void MainWindow::on_actionExport_with_config_triggered() {
     OnexTreeItem *root = getTreeRoot();
     if (root != nullptr) {
-        QString directory = getSelectedDirectory(inExportPath);
+        QString directory = getSelectedDirectory(settings->getExportPath());
         if (directory.isEmpty())
             return;
-        inExportPath = directory;
         int count = root->onExport(directory);
         QByteArray output = QJsonDocument(root->generateConfig()).toJson();
         QFile file(directory + root->getName() + ".json");
@@ -189,10 +186,9 @@ void MainWindow::on_actionExport_with_config_triggered() {
 }
 
 void MainWindow::on_actionImport_from_config_triggered() {
-    QString path = getOpenFile(inExportPath, "JSON File (*.json)");
+    QString path = getOpenFile(settings->getReplacePath(), "JSON File (*.json)");
     if (path.isEmpty())
         return;
-    inExportPath = neatPath(path);
 
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly))
@@ -241,12 +237,12 @@ void MainWindow::onCustomMenuShow(const QPoint &point) {
         auto *exportWithConfigAction = new QAction(QObject::tr("Export with Config"), contextMenu);
         contextMenu->addAction(exportWithConfigAction);
         QObject::connect(exportWithConfigAction, SIGNAL(triggered(bool)), this, SLOT(on_actionExport_with_config_triggered()));
-        auto *exportOriginalAction = new QAction(QObject::tr("Export as .NOS"), contextMenu);
-        contextMenu->addAction(exportOriginalAction);
-        QObject::connect(exportOriginalAction, SIGNAL(triggered(bool)), this, SLOT(on_actionSave_as_triggered()));
         auto *replaceAction = new QAction(QObject::tr("Replace"), contextMenu);
         contextMenu->addAction(replaceAction);
         QObject::connect(replaceAction, SIGNAL(triggered(bool)), this, SLOT(on_actionReplace_triggered()));
+        auto *exportOriginalAction = new QAction(QObject::tr("Export as .NOS"), contextMenu);
+        contextMenu->addAction(exportOriginalAction);
+        QObject::connect(exportOriginalAction, SIGNAL(triggered(bool)), this, SLOT(on_actionSave_as_triggered()));
         auto *closeThisItem = new QAction(QObject::tr("Close"), contextMenu);
         contextMenu->addAction(closeThisItem);
         QObject::connect(closeThisItem, SIGNAL(triggered(bool)), this, SLOT(on_actionClose_selected_triggered()));
@@ -320,6 +316,10 @@ void MainWindow::on_actionClose_all_triggered() {
     }
 }
 
+void MainWindow::on_actionSettings_triggered() {
+    settings->show();
+}
+
 void MainWindow::on_actionExit_triggered() {
     QMessageBox::StandardButton message =
             QMessageBox::question(this, "", "Exit program? All unsaved changes will be lost!");
@@ -391,7 +391,7 @@ INosFileOpener *MainWindow::getOpener(const QByteArray &header) {
 }
 
 template<typename TreeFunction>
-void MainWindow::fileOperationOnSelectedItems(TreeFunction treeFunction, QString &defaultPath, QString operationName, bool saveDialog, QString filter) {
+void MainWindow::fileOperationOnSelectedItems(TreeFunction treeFunction, const QString &defaultPath, QString operationName, bool saveDialog, QString filter) {
     QList<QTreeWidgetItem *> selectedItems = ui->treeWidget->selectedItems();
     if (selectedItems.empty()) {
         QMessageBox::information(nullptr, tr("Info"), tr("Select file first"));
@@ -410,7 +410,6 @@ void MainWindow::fileOperationOnSelectedItems(TreeFunction treeFunction, QString
         path = getSelectedDirectory(defaultPath);
     if (path.isEmpty())
         return;
-    defaultPath = neatPath(path);
 
     for (auto &s: selectedItems) {
         auto *item = dynamic_cast<OnexTreeItem *>(s);

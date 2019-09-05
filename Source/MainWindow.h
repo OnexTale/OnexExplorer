@@ -6,6 +6,7 @@
 #include "Openers/NosZlibOpener.h"
 #include "Ui/Previews/SingleImagePreview.h"
 #include "Ui/Previews/SingleTextFilePreview.h"
+#include "Ui/Settings.h"
 #include <QDebug>
 #include <QDropEvent>
 #include <QFileDialog>
@@ -41,6 +42,7 @@ public slots:
     void clearMenu();
     void on_actionClose_selected_triggered();
     void on_actionClose_all_triggered();
+    void on_actionSettings_triggered();
     void on_actionExit_triggered();
     void on_actionAbout_triggered();
     void on_actionHelp_triggered();
@@ -48,18 +50,18 @@ public slots:
     void itemEdited(QTreeWidgetItem *item, int column);
 private:
     Ui::MainWindow *ui;
+    Settings *settings;
     QMenu *contextMenu = nullptr;
     NosTextOpener textOpener;
     NosZlibOpener zlibOpener;
     NosCCInfOpener ccinfOpener;
     JsonConfigOpener jsonOpener;
-    QString inExportPath;
-    QString nosPath;
     void openFile(const QString &path);
     void handleOpenResults(OnexTreeItem *item, const QString &path);
     INosFileOpener *getOpener(const QByteArray &header);
     template<typename TreeFunction>
-    void fileOperationOnSelectedItems(TreeFunction treeFunction, QString &defaultPath, QString operationName, bool saveDialog, QString filter = QString());
+    void fileOperationOnSelectedItems(TreeFunction treeFunction, const QString &defaultPath, QString operationName, bool saveDialog,
+                                      QString filter = QString());
     QString getSelectedDirectory(const QString &suggestion);
     QString getOpenFile(const QString &suggestion, const QString &filter);
     QStringList getOpenFiles(const QString &suggestion, const QString &filter);

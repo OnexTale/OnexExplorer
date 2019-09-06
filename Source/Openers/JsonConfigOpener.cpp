@@ -28,6 +28,35 @@ OnexTreeItem *JsonConfigOpener::load(QFile &file, const QString &directory) {
     return root;
 }
 
+void JsonConfigOpener::load(OnexTreeItem *root, QFile &file, const QString &directory) {
+    QJsonObject jo = QJsonDocument::fromJson(file.readAll()).object();
+    int headerNumber = getNTHeaderNumber(QByteArray::fromHex(jo["Header"].toString().toLocal8Bit()));
+    if (headerNumber == -1) {
+        QMessageBox::critical(nullptr, "Not supported!", "This feature is not available for this archive");
+        return;
+    }
+
+    if (root->getContent() != QByteArray::fromHex(jo["Header"].toString().toLocal8Bit())) {
+        QMessageBox::critical(nullptr, "Error!", "The patch is not valid for this .NOS!");
+        return;
+    }
+
+    QJsonArray contentArray = jo["content"].toArray();
+    int added = 0;
+    int replaced = 0;
+    for (auto &&i : contentArray) {
+        OnexTreeItem *item = generateItem(headerNumber, i.toObject(), directory);
+        if (findChildByName(root, item->getName()) != -1) {
+            delete root->takeChild(findChildByName(root, item->getName()));
+            replaced++;
+        } else
+            added++;
+        root->addChild(item);
+    }
+
+    QMessageBox::information(nullptr, "End of operation", "Replaced " + QString::number(replaced) + " and added " + QString::number(added) + " file(s)");
+}
+
 OnexTreeItem *JsonConfigOpener::generateRoot(int headerNumber, const QJsonObject &jo) {
     switch (headerNumber) {
         case NSipData:
@@ -95,4 +124,12 @@ int JsonConfigOpener::getNTHeaderNumber(const QString &header) {
         return 199;
     else
         return -1;
+}
+
+int JsonConfigOpener::findChildByName(OnexTreeItem *item, const QString &searched) {
+    for (int c = 0; c < item->childCount(); c++) {
+        if (item->child(c)->text(0) == searched)
+            return c;
+    }
+    return -1;
 }

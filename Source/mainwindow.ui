@@ -203,10 +203,12 @@
                 <addaction name="actionReplace"/>
                 <addaction name="actionExport_to_raw"/>
                 <addaction name="actionReplace_with_raw"/>
-                <addaction name="actionRename"/>
+                <addaction name="separator"/>
                 <addaction name="actionExport_with_config"/>
                 <addaction name="actionImport_from_config"/>
+                <addaction name="actionApplyPatch"/>
                 <addaction name="separator"/>
+                <addaction name="actionRename"/>
             </widget>
             <addaction name="menuFile"/>
             <addaction name="menuTools"/>
@@ -359,6 +361,14 @@
         <action name="actionSettings">
             <property name="text">
                 <string>Settings</string>
+            </property>
+        </action>
+        <action name="actionApplyPatch">
+            <property name="text">
+                <string>Add and replace by config</string>
+            </property>
+            <property name="toolTip">
+                <string>Load items that should be added or replaced from a config file</string>
             </property>
         </action>
     </widget>

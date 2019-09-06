@@ -195,6 +195,22 @@ void MainWindow::on_actionImport_from_config_triggered() {
         return;
     handleOpenResults(jsonOpener.load(file, neatPath(path)), "");
     file.close();
+    ui->treeWidget->sortItems(0, Qt::AscendingOrder);
+}
+
+void MainWindow::on_actionApplyPatch_triggered() {
+    if (ui->treeWidget->currentItem()) {
+        QString path = getOpenFile(settings->getReplacePath(), "JSON File (*.json)");
+        if (path.isEmpty())
+            return;
+        QFile file(path);
+        if (!file.open(QIODevice::ReadOnly))
+            return;
+        jsonOpener.load(getTreeRoot(), file, neatPath(path));
+    } else {
+        QMessageBox::information(nullptr, tr("Info"), tr("Select .NOS file first"));
+    }
+    ui->treeWidget->sortItems(0, Qt::AscendingOrder);
 }
 
 void MainWindow::filterItems() {
@@ -234,15 +250,18 @@ void MainWindow::onCustomMenuShow(const QPoint &point) {
         auto *exportAllAction = new QAction(QObject::tr("Export"), contextMenu);
         contextMenu->addAction(exportAllAction);
         QObject::connect(exportAllAction, SIGNAL(triggered(bool)), this, SLOT(on_actionExport_triggered()));
-        auto *exportWithConfigAction = new QAction(QObject::tr("Export with Config"), contextMenu);
-        contextMenu->addAction(exportWithConfigAction);
-        QObject::connect(exportWithConfigAction, SIGNAL(triggered(bool)), this, SLOT(on_actionExport_with_config_triggered()));
         auto *replaceAction = new QAction(QObject::tr("Replace"), contextMenu);
         contextMenu->addAction(replaceAction);
         QObject::connect(replaceAction, SIGNAL(triggered(bool)), this, SLOT(on_actionReplace_triggered()));
         auto *exportOriginalAction = new QAction(QObject::tr("Export as .NOS"), contextMenu);
         contextMenu->addAction(exportOriginalAction);
         QObject::connect(exportOriginalAction, SIGNAL(triggered(bool)), this, SLOT(on_actionSave_as_triggered()));
+        auto *exportWithConfigAction = new QAction(QObject::tr("Export with config"), contextMenu);
+        contextMenu->addAction(exportWithConfigAction);
+        QObject::connect(exportWithConfigAction, SIGNAL(triggered(bool)), this, SLOT(on_actionExport_with_config_triggered()));
+        auto *applyPatchAction = new QAction(QObject::tr("Add and replace by config"), contextMenu);
+        contextMenu->addAction(applyPatchAction);
+        QObject::connect(applyPatchAction, SIGNAL(triggered(bool)), this, SLOT(on_actionApplyPatch_triggered()));
         auto *closeThisItem = new QAction(QObject::tr("Close"), contextMenu);
         contextMenu->addAction(closeThisItem);
         QObject::connect(closeThisItem, SIGNAL(triggered(bool)), this, SLOT(on_actionClose_selected_triggered()));

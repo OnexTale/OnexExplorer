@@ -22,7 +22,7 @@ Q_OBJECT
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
-    const QString VERSION = "v0.6.5";
+    const QString VERSION = "v0.7";
 public slots:
     void on_actionOpen_triggered();
     void on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *prev);
@@ -35,6 +35,7 @@ public slots:
     void on_actionSave_as_triggered();
     void on_actionExport_with_config_triggered();
     void on_actionImport_from_config_triggered();
+    void on_actionApplyPatch_triggered();
     void on_addButton_clicked();
     void on_deleteButton_clicked();
     void filterItems();

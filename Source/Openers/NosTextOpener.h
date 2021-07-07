@@ -5,6 +5,7 @@
 #include <QDebug>
 #include "INosFileOpener.h"
 #include "../Decryptors/NosTextDatFileDecryptor.h"
+#include "../Decryptors/NosTextOthersFileDecryptor.h"
 #include "../Ui/OnexTreeText.h"
 
 class NosTextOpener : public QObject, INosFileOpener
@@ -12,6 +13,7 @@ class NosTextOpener : public QObject, INosFileOpener
     Q_OBJECT
 private:
     NosTextDatFileDecryptor datDecryptor;
+    NosTextOthersFileDecryptor lstDecryptor;
 public:
     NosTextOpener();
     virtual OnexTreeItem* decrypt(QFile& file);

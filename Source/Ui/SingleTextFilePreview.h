@@ -2,6 +2,7 @@
 #define SINGLETEXTFILEPREVIEW_H
 
 #include <QWidget>
+#include <QTextCodec>
 #include <iostream>
 #include "OnexTreeText.h"
 

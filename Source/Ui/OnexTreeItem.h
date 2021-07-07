@@ -36,6 +36,7 @@ public slots:
     virtual void onExporSingleRaw();
     virtual void onExporAsOriginal();
     virtual void onReplace();
+    virtual void onDelete();
     virtual void actionClose();
 };
 

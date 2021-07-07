@@ -83,8 +83,10 @@ void MainWindow::openFile(QString path)
     if (!file.open(QIODevice::ReadOnly))
         return;
 
-    if (hasValidHeader(file))
+    if (hasValidHeader(file) == 1)
         handleOpenResults(zlibOpener.decrypt(file));
+    else if (hasValidHeader(file) == 2)
+        handleOpenResults(ccinfOpener.decrypt(file));
     else
         handleOpenResults(textOpener.decrypt(file));
 
@@ -97,13 +99,15 @@ void MainWindow::handleOpenResults(OnexTreeItem *item)
     item->setExpanded(true);
 }
 
-bool MainWindow::hasValidHeader(QFile &file)
+int MainWindow::hasValidHeader(QFile &file)
 {
     file.seek(0);
     QByteArray header = file.read(0x0B);
     if (header.mid(0, 7) == "NT Data" || header.mid(0, 10) == "32GBS V1.0" || header.mid(0, 10) == "ITEMS V1.0")
-        return true;
-    return false;
+        return 1;
+    else if (header.mid(0, 11) == "CCINF V1.20")
+        return 2;
+    return 0;
 }
 
 void MainWindow::dropEvent(QDropEvent *e)
@@ -165,8 +169,6 @@ void MainWindow::on_actionReplace_triggered()
 
         OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
         if(item->hasParent()){
-
-            item->onReplace();
         }else{
             QMessageBox::information(NULL, tr("Info"), tr("Select correct file not *.NOS"));
         }
@@ -205,7 +207,7 @@ void MainWindow::on_actionSave_as_triggered()
 {
     if(ui->treeWidget->currentItem()){
 
-        OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem());
+        OnexTreeItem* item = static_cast<OnexTreeItem*>(ui->treeWidget->currentItem()->parent());
         if(!item->hasParent()){
             item->onExporAsOriginal();
         }else{
@@ -248,4 +250,9 @@ void MainWindow::on_actionOptions_triggered()
         return;
     FileInfo dialog(item);
     dialog.exec();
+}
+
+void MainWindow::on_actionClose_windows_triggered()
+{
+    ui->mdiArea->closeAllSubWindows();
 }

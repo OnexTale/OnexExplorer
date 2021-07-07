@@ -82,6 +82,10 @@ QMenu *OnexTreeItem::getContextMenu()
         QAction* replaceAction = new QAction(QObject::tr("Replace"), contextMenu);
         contextMenu->addAction(replaceAction);
         QObject::connect(replaceAction, SIGNAL(triggered(bool)), this, SLOT(onReplace()));
+
+        QAction* deleteAction = new QAction(QObject::tr("Delete"), contextMenu);
+        contextMenu->addAction(deleteAction);
+        QObject::connect(deleteAction, SIGNAL(triggered(bool)), this, SLOT(onDelete()));
     }
 
     return contextMenu;
@@ -127,7 +131,15 @@ void OnexTreeItem::onExporAsOriginal()
 
 void OnexTreeItem::onReplace()
 {
-    QMessageBox::warning(NULL, tr("Not yet"), tr("This isn't implemented yet"));
+    QString fileName = getOpenDirectory("All files (*.*)");
+    QFile file(fileName);
+    if (file.open(QIODevice::ReadOnly))
+        this->content = file.readAll();
+}
+
+void OnexTreeItem::onDelete()
+{
+    delete this;
 }
 
 void OnexTreeItem::actionClose()
